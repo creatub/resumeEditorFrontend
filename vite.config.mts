@@ -22,6 +22,9 @@ export default defineConfig(() => {
       alias: [{ find: "@", replacement: resolve(__dirname, "./src") }],
       extensions: [".js", ".jsx", ".ts", ".tsx"],
     },
-    base: "./",
+    baseUrl: ".",
+    paths: {
+      "@/*": ["/*"],
+    },
   };
 });
