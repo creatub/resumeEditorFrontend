@@ -1,8 +1,25 @@
 import { Avatar, Button, Divider, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 import CustomFooter from "../../components/footer";
+import axios from "axios";
 
 const Login = () => {
+  const tryLogin = async ({ username, password }) => {
+    let data = new FormData();
+    data.append("username", username);
+    data.append("password", password);
+    console.log(data);
+    try {
+      let response = await axios.post("/login", data);
+      if (response) {
+        console.log(response.headers);
+        console.log(response.data);
+        console.log(response.status);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div style={{ marginTop: "5vh" }}>
       <div
@@ -39,15 +56,15 @@ const Login = () => {
               className="formWrapper"
               style={{ marginTop: "10%", width: "60%" }}
             >
-              <Form>
-                <Form.Item style={{ marginBottom: "2%" }}>
+              <Form onFinish={tryLogin}>
+                <Form.Item name="username" style={{ marginBottom: "2%" }}>
                   <Input
                     style={{ width: "100%" }}
                     size="large"
                     placeholder="이메일 입력"
                   />
                 </Form.Item>
-                <Form.Item>
+                <Form.Item name="password">
                   <Input
                     style={{ width: "100%" }}
                     size="large"
@@ -56,6 +73,7 @@ const Login = () => {
                 </Form.Item>
                 <Form.Item>
                   <Button
+                    htmlType="submit"
                     style={{
                       width: "100%",
                       color: "white",
