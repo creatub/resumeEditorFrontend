@@ -16,7 +16,6 @@ const ResumeList = () => {
               {
                 headers: {
                   Authorization: `${token}`,
-                  "Access-Control-Allow-Origin": `http://localhost:8088`,
                 },
               }
             )
