@@ -8,14 +8,16 @@ const Login = () => {
     let data = new FormData();
     data.append("username", username);
     data.append("password", password);
-    console.log(data);
     try {
-      let response = await axios.post("/login", data);
-      if (response) {
-        console.log(response.headers);
-        console.log(response.data);
-        console.log(response.status);
-      }
+      let response = await axios
+        .post("/login", data, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          let accessToken = res.headers["access"];
+          localStorage.setItem("access", accessToken);
+          axios.defaults.headers.common["access"] = `Bearer ${accessToken}`;
+        });
     } catch (err) {
       console.log(err);
     }
