@@ -17,6 +17,7 @@ const ResumeList = () => {
                 headers: {
                   Authorization: `${token}`,
                 },
+                withCredentials: true,
               }
             )
             .then((data) => console.log(data));
