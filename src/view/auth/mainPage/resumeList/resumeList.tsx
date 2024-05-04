@@ -9,7 +9,7 @@ const ResumeList = () => {
       <Button
         onClick={async () => {
           let token = localStorage.getItem("access");
-          // "https://port-0-resumeeditorbackend-1cupyg2klvkj0ixw.sel5.cloudtype.app/main/list",
+          // "https://port-0-resumeeditorbackend-1cupyg2klvkj0ixw.sel5.cloudtype.app/board/list",
           let response = await axios
             .get(
               "https://port-0-resumeeditorbackend-1cupyg2klvkj0ixw.sel5.cloudtype.app/board/list",

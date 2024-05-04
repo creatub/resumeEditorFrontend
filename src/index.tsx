@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import axios from "axios";
 import { CookiesProvider } from "react-cookie";
 
-axios.defaults.baseURL = "http://localhost:8088";
+// axios.defaults.baseURL = "http://localhost:8088";
 axios.interceptors.request.use(
   function (config) {
     config.withCredentials = true;
