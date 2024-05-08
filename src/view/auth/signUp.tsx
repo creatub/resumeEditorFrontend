@@ -3,8 +3,12 @@ import { useForm } from "antd/es/form/Form";
 import { Link } from "react-router-dom";
 import CustomFooter from "../../components/footer";
 import { useState } from "react";
-import axios from "axios";
 import Swal from "sweetalert2";
+import axios from "axios";
+import Timer from "./timer";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { start } from "@/store/features/timer/timerSlice";
 
 interface signUpParameter {
   email: string;
@@ -23,6 +27,9 @@ const SignUp = () => {
   let [submitForm] = useForm();
   const [userAge, setUserAge] = useState(0);
   const [selectedStatus, setSelectedStatus] = useState(-1);
+  const [emailSend, setEmailSend] = useState(false);
+  const timer = useSelector((state: RootState) => state.timer.value);
+  const dispatch = useDispatch();
   const onSubmitForm = async ({
     email,
     password,
@@ -35,19 +42,18 @@ const SignUp = () => {
     occupation,
     status,
   }) => {
-    let birthdate = `${userBirthDate.get("year")}-${
+    let birthDate = `${userBirthDate.get("year")}-${
       userBirthDate.get("month") + 1
     }-${userBirthDate.get("date")}`;
     let role = "user";
     let name = "user";
     let nickname = "왜이쒸";
-    console.log(email, password, username, gender, age, wish, status);
     try {
       let response = await axios.post("/signup", {
         email,
         password,
         username,
-        birthdate,  
+        birthDate,
         role,
         name,
         nickname,
@@ -121,7 +127,7 @@ const SignUp = () => {
                 <span>이미 계정이 있으신가요?</span>
                 <Link
                   className="backToLogin"
-                  to="/auth/login"
+                  to="/"
                   style={{
                     color: "black",
                     marginLeft: "5px",
@@ -158,7 +164,7 @@ const SignUp = () => {
                               );
                             } else if (!emailCheck) {
                               return Promise.reject(
-                                new Error("이메일 형식을 확인해 주세요!")
+                                new Error("유효하지 않은 이메일 형식 입니다!")
                               );
                             }
                             return Promise.resolve();
@@ -168,6 +174,65 @@ const SignUp = () => {
                     >
                       <Input size="large" placeholder="이메일 입력" />
                     </Form.Item>
+                    {emailSend ? (
+                      <Form.Item style={{ marginBottom: "0" }}>
+                        <Form.Item
+                          style={{
+                            display: "inline-block",
+                            width: "calc(77% - 8px)",
+                          }}
+                        >
+                          <Input placeholder="인증번호 입력" size="large" />
+                        </Form.Item>
+                        <Form.Item
+                          style={{
+                            display: "inline-block",
+                            width: "calc(23% - 8px)",
+                            margin: "0 8px",
+                          }}
+                        >
+                          <Button size="large">
+                            <Timer />
+                          </Button>
+                        </Form.Item>
+                      </Form.Item>
+                    ) : (
+                      <Form.Item>
+                        <Button
+                          onClick={() => {
+                            if (
+                              submitForm.getFieldValue("email") == undefined
+                            ) {
+                              Swal.fire({
+                                icon: "error",
+                                title: "이메일을 입력해주세요!",
+                                showConfirmButton: true,
+                                timer: 2000,
+                              });
+                            } else {
+                              let email = submitForm.getFieldValue("email");
+                              let response = axios.post(
+                                "/signup/auth-code",
+                                {
+                                  email,
+                                },
+                                {
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                }
+                              );
+                              setEmailSend(true);
+                              dispatch(start());
+                            }
+                          }}
+                          style={{ width: "100%" }}
+                          size="large"
+                        >
+                          이메일 인증하기
+                        </Button>
+                      </Form.Item>
+                    )}
                     <Form.Item
                       label={<b>비밀번호</b>}
                       style={{ marginBottom: "3%" }}
@@ -331,7 +396,7 @@ const SignUp = () => {
                       )}
                     </Form.Item>
                     <Form.Item label={<b>이직/취업 희망분야</b>} name="wish">
-                      <Input size="large" placeholder="회사" />
+                      <Input size="large" placeholder="분야" />
                     </Form.Item>
 
                     <Form.Item>

@@ -2,28 +2,23 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
+import { Provider as ReduxProvider } from "react-redux";
 import axios from "axios";
 import { CookiesProvider } from "react-cookie";
+import { store } from "./store/store";
 
-// axios.defaults.baseURL = "http://localhost:8088";
-axios.interceptors.request.use(
-  function (config) {
-    config.withCredentials = true;
-    return config;
-  },
-  function (error) {
-    return Promise.reject(error);
-  }
-);
+axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <CookiesProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </CookiesProvider>
+  <ReduxProvider store={store}>
+    <CookiesProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </CookiesProvider>
+  </ReduxProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

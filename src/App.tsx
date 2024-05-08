@@ -1,13 +1,13 @@
 import { Routes, Route } from "react-router-dom";
-import AdminLogin from "./view/auth/admin/adminLogin";
+import AdminLogin from "./view/admin/adminLogin";
 import Login from "./view/auth/login";
 import SignUp from "./view/auth/signUp";
 import LandingPage from "./view/landingPage/landing";
 import NotFound from "./view/error/notFound/notFound";
-import MainPage from "./view/auth/mainPage/mainPage";
-import ResumeEdit from "./view/auth/mainPage/resumeEdit/resumeEdit";
-import ResumeList from "./view/auth/mainPage/resumeList/resumeList";
-import MyPage from "./view/auth/mainPage/myPage/myPage";
+import MainPage from "./view/mainPage/mainPage";
+import ResumeEdit from "./view/mainPage/resumeEdit/resumeEdit";
+import ResumeList from "./view/mainPage/resumeList/resumeList";
+import MyPage from "./view/mainPage/myPage/myPage";
 
 function App() {
   return (

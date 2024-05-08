@@ -1,10 +1,16 @@
 import CustomFooter from "@/components/footer";
+import { RootState } from "@/store/store";
 import { Avatar, Button, Divider, Form, Input } from "antd";
+import axios from "axios";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { login, logout } from "@/store/features/user/userSlice";
 const LandingPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const controls1 = useAnimation();
   const controls2 = useAnimation();
   const controls3 = useAnimation();
@@ -21,6 +27,28 @@ const LandingPage = () => {
     };
     sequence();
   }, [controls1, controls2, controls3, controls4, controls5]);
+
+  const tryLogin = async ({ username, password }) => {
+    try {
+      let response = await axios
+        .post("/login", {
+          username: username,
+          password: password,
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            let accessToken = res.headers["access"];
+            let refreshToken = res.headers["refresh"];
+            localStorage.setItem("access", accessToken);
+            localStorage.setItem("refresh", refreshToken);
+            dispatch(login());
+            navigate("/main/resume");
+          }
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div>
@@ -156,16 +184,17 @@ const LandingPage = () => {
                   borderRadius: "20px",
                 }}
               >
-                <Form>
-                  <Form.Item style={{ marginBottom: "2%" }}>
+                <Form onFinish={tryLogin}>
+                  <Form.Item name="username" style={{ marginBottom: "2%" }}>
                     <Input
                       style={{ width: "100%" }}
                       size="large"
                       placeholder="아이디 입력"
                     />
                   </Form.Item>
-                  <Form.Item>
+                  <Form.Item name="password">
                     <Input
+                      type="password"
                       style={{ width: "100%" }}
                       size="large"
                       placeholder="비밀번호 입력"
@@ -173,6 +202,7 @@ const LandingPage = () => {
                   </Form.Item>
                   <Form.Item>
                     <Button
+                      htmlType="submit"
                       style={{
                         width: "100%",
                         color: "white",
