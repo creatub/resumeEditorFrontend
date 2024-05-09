@@ -49,19 +49,25 @@ const SignUp = () => {
     let name = "user";
     let nickname = "왜이쒸";
     try {
-      let response = await axios.post("/signup", {
-        email,
-        password,
-        username,
-        birthDate,
-        role,
-        name,
-        nickname,
-        gender,
-        age,
-        wish,
-        status,
-      });
+      let response = await axios.post(
+        "/signup",
+        {
+          email,
+          password,
+          username,
+          birthDate,
+          role,
+          name,
+          nickname,
+          gender,
+          age,
+          wish,
+          status,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       if (response) {
         Swal.fire({
           icon: "success",
