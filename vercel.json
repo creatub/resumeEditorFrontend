@@ -1,5 +1,11 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" },
+    {
+      "source": "/api/(.*)",
+      "destination": "https://port-0-resumeeditorbackend-1cupyg2klvkj0ixw.sel5.cloudtype.app/"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
