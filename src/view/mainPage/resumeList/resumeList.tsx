@@ -15,6 +15,7 @@ interface ResumeList {
   read_num: number;
   title: string;
   w_date: string;
+  content: string;
 }
 const ResumeList = () => {
   const [resumeList, setResumeList] = useState<ResumeList[]>([]);
@@ -121,14 +122,7 @@ const ResumeList = () => {
                       width: "100%",
                     }}
                   >
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                    Obcaecati asperiores explicabo facere repudiandae!
-                    Obcaecati, eius et dolorum nulla recusandae asperiores
-                    sapiente ratione magni ad, cum amet qui dolorem pariatur
-                    dolor. Lorem ipsum dolor, sit amet consectetur adipisicing
-                    elit. Repellendus dolorum repellat rerum aut ab esse,
-                    accusantium illum, hic culpa repudiandae nam! Quas nam
-                    delectus vitae modi ut veniam ea reprehenderit.
+                    {resume.content}
                   </div>
                   <div
                     className="contentFooter"

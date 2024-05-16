@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import AdminLogin from "./view/admin/adminLogin";
 import Login from "./view/auth/login";
 import SignUp from "./view/auth/signUp";
 import LandingPage from "./view/landingPage/landing";
@@ -19,7 +18,6 @@ function App() {
         <Route path="/auth/signup" element={<SignUp />} />
         <Route path="/auth/login" element={<Login />} />
         <Route path="/" element={<LandingPage />} />
-        <Route path="/auth/admin/login" element={<AdminLogin />} />
         <Route path="/main" element={<MainPage />}>
           <Route path="resume" element={<ResumeEdit />} />
           <Route path="resumelist/:id" element={<ResumeListDetails />} />
