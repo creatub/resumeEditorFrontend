@@ -9,13 +9,16 @@ const Login = () => {
     data.append("username", username);
     data.append("password", password);
     try {
-      let response = await axios.post("/login", data).then((res) => {
-        console.log(res);
-        let accessToken = res.headers["access"];
-        let refreshToken = res.headers["refresh"];
-        localStorage.setItem("access", accessToken);
-        localStorage.setItem("refresh", refreshToken);
-      });
+      let response = await axios
+        .post("/login", data, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          let accessToken = res.headers["access"];
+          let refreshToken = res.headers["refresh"];
+          localStorage.setItem("access", accessToken);
+          localStorage.setItem("refresh", refreshToken);
+        });
     } catch (err) {
       console.log(err);
     }

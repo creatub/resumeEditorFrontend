@@ -1,15 +1,38 @@
 import { Link, useNavigate } from "react-router-dom";
 import "./navbar.css";
-import { useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { Button } from "antd";
 import axios from "axios";
+import { useEffect } from "react";
+import { login } from "@/store/features/user/userSlice";
+import Swal from "sweetalert2";
+import { jwtDecode } from "jwt-decode";
+import { DecodedToken } from "@/store/features/token/tokenSlice";
+import axiosInstance from "@/api/api";
 
 const Navbar = () => {
   const user = useSelector((state: RootState) => state.user.value);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const accessToken = localStorage.getItem("access") ?? "";
+  const decodedToken: DecodedToken = jwtDecode(accessToken);
+  const username = decodedToken.username;
+
+  useEffect(() => {
+    let accessToken = localStorage.getItem("access");
+    if (!accessToken) {
+      Swal.fire({
+        title: "로그인을 먼저 해주세요",
+        icon: "warning",
+        confirmButtonColor: "#1890ff",
+      }).then((res) => {
+        navigate("/");
+      });
+    } else if (accessToken) {
+      dispatch(login());
+    }
+  }, []);
   return (
     <div>
       <nav className="navbar">
@@ -27,15 +50,10 @@ const Navbar = () => {
           <li>
             <Link to="/main/mypage">마이페이지</Link>
           </li>
-          <li>
-            <Link to="/">뭐라고하지</Link>
-          </li>
-          <li>
-            <Link to="/">뭐라고할까</Link>
-          </li>
         </ul>
         {user == true ? (
-          <ul className="navbar_links">
+          <ul className="navbar_links" style={{ alignItems: "center" }}>
+            <li>{username} 님</li>
             <li>
               <Button
                 style={{
@@ -46,7 +64,7 @@ const Navbar = () => {
                 }}
                 onClick={() => {
                   let refreshToken = localStorage.getItem("refresh");
-                  let res = axios
+                  let res = axiosInstance
                     .post(
                       "/logout",
                       {},

@@ -7,6 +7,9 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { login, logout } from "@/store/features/user/userSlice";
+import { DecodedToken } from "@/types/globalTypes";
+import { jwtDecode } from "jwt-decode";
+import { setToken } from "@/store/features/token/tokenSlice";
 const LandingPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,8 +44,14 @@ const LandingPage = () => {
             let refreshToken = res.headers["refresh"];
             localStorage.setItem("access", accessToken);
             localStorage.setItem("refresh", refreshToken);
+            let DecodedToken: DecodedToken = jwtDecode(accessToken);
             dispatch(login());
-            navigate("/main/resume");
+            dispatch(setToken(DecodedToken));
+            if (DecodedToken.role == "ROLE_ADMIN") {
+              navigate("/admin/main");
+            } else {
+              navigate("/main/resume");
+            }
           }
         });
     } catch (err) {
@@ -56,7 +65,7 @@ const LandingPage = () => {
         <div
           className="leftWrapper"
           style={{
-            backgroundColor: "#1FC997",
+            backgroundColor: "#85dad2",
             width: "50%",
             height: "100vh",
           }}
@@ -126,7 +135,7 @@ const LandingPage = () => {
           style={{
             height: "100vh",
             width: "50%",
-            backgroundColor: "#1FC997",
+            backgroundColor: "#85dad2",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -206,7 +215,7 @@ const LandingPage = () => {
                       style={{
                         width: "100%",
                         color: "white",
-                        backgroundColor: "#1FC997",
+                        backgroundColor: "#85dad2",
                         border: "1px solid white",
                         fontWeight: "bold",
                         fontSize: "16px",
@@ -245,14 +254,14 @@ const LandingPage = () => {
                     display: "flex",
                     justifyContent: "right",
                     textDecoration: "underline",
-                    textDecorationColor: "#1fc997",
+                    textDecorationColor: "#85dad2",
                     marginTop: "10px",
                   }}
                 >
                   <Link to="/auth/signup">
                     <span
                       style={{
-                        color: "#1fc997",
+                        color: "#85dad2",
                       }}
                     >
                       회원가입

@@ -4,7 +4,7 @@ const CustomFooter = () => {
       style={{
         color: "white",
         textAlign: "center",
-        backgroundColor: "#20C997",
+        backgroundColor: "#85dad2",
         height: "5vh",
         display: "flex",
         justifyContent: "center",

@@ -1,8 +1,8 @@
 import { Button, DatePicker, Form, Input, Radio, Select, Tooltip } from "antd";
 import { useForm } from "antd/es/form/Form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CustomFooter from "../../components/footer";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Timer from "./timer";
@@ -25,9 +25,11 @@ interface signUpParameter {
 
 const SignUp = () => {
   let [submitForm] = useForm();
+  const navigate = useNavigate();
   const [userAge, setUserAge] = useState(0);
   const [selectedStatus, setSelectedStatus] = useState(-1);
   const [emailSend, setEmailSend] = useState(false);
+  const [verified, setVerified] = useState(false);
   const timer = useSelector((state: RootState) => state.timer.value);
   const dispatch = useDispatch();
   const onSubmitForm = async ({
@@ -42,45 +44,61 @@ const SignUp = () => {
     occupation,
     status,
   }) => {
-    let birthDate = `${userBirthDate.get("year")}-${
-      userBirthDate.get("month") + 1
-    }-${userBirthDate.get("date")}`;
-    let role = "user";
-    let name = "user";
-    let nickname = "왜이쒸";
-    try {
-      let response = await axios.post(
-        "/signup",
-        {
-          email,
-          password,
-          username,
-          birthDate,
-          role,
-          name,
-          nickname,
-          gender,
-          age,
-          wish,
-          status,
-        },
-        {
-          withCredentials: true,
+    if (!verified) {
+      Swal.fire({
+        icon: "error",
+        title: "이메일 인증을 완료해주세요!",
+        showConfirmButton: true,
+        timer: 2000,
+      });
+    } else {
+      let birthDate = `${userBirthDate.get("year")}-${
+        userBirthDate.get("month") + 1
+      }-${userBirthDate.get("date")}`;
+      let role = "user";
+      let name = "user";
+      let nickname = "왜이쒸";
+      try {
+        let response = await axios.post(
+          "/signup",
+          {
+            email,
+            password,
+            company,
+            occupation,
+            username,
+            birthDate,
+            role,
+            name,
+            nickname,
+            gender,
+            age,
+            wish,
+            status,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        if (response) {
+          Swal.fire({
+            icon: "success",
+            title: "회원가입이 완료되었습니다!",
+            showConfirmButton: true,
+            timer: 1500,
+          });
+          navigate("/");
+        } else {
+          console.log(response);
         }
-      );
-      if (response) {
-        Swal.fire({
-          icon: "success",
-          title: "회원가입이 완료되었습니다!",
-          showConfirmButton: true,
-          timer: 1500,
-        });
-      } else {
-        console.log(response);
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
+  };
+
+  const removeKorean = (event: ChangeEvent<HTMLInputElement>) => {
+    event.target.value = event.target.value.replace(/[ㄱ-ㅎㅏ-ㅣ가-힣]/g, "");
   };
 
   return (
@@ -183,6 +201,7 @@ const SignUp = () => {
                     {emailSend ? (
                       <Form.Item style={{ marginBottom: "0" }}>
                         <Form.Item
+                          name="authCode"
                           style={{
                             display: "inline-block",
                             width: "calc(77% - 8px)",
@@ -190,6 +209,7 @@ const SignUp = () => {
                         >
                           <Input placeholder="인증번호 입력" size="large" />
                         </Form.Item>
+
                         <Form.Item
                           style={{
                             display: "inline-block",
@@ -199,6 +219,45 @@ const SignUp = () => {
                         >
                           <Button size="large">
                             <Timer />
+                          </Button>
+                        </Form.Item>
+                        <Form.Item>
+                          <Button
+                            onClick={() => {
+                              if (
+                                submitForm.getFieldValue("authCode") ==
+                                undefined
+                              ) {
+                                Swal.fire({
+                                  icon: "error",
+                                  title: "인증번호를 입력해주세요!",
+                                  showConfirmButton: true,
+                                  timer: 2000,
+                                });
+                              }
+                              let checkCode = axios
+                                .post("/signup/auth-check", {
+                                  email: submitForm.getFieldValue("email"),
+                                  authCode:
+                                    submitForm.getFieldValue("authCode"),
+                                })
+                                .then((res) => {
+                                  if (res.status == 200) {
+                                    setVerified(true);
+                                  } else if (res.status == 500) {
+                                    Swal.fire({
+                                      icon: "error",
+                                      title: "인증번호가 일치하지 않습니다!",
+                                      showConfirmButton: true,
+                                      timer: 2000,
+                                    });
+                                  }
+                                });
+                            }}
+                            style={{ width: "100%" }}
+                            size="large"
+                          >
+                            {verified ? "확인 되었습니다!" : "인증번호 확인"}
                           </Button>
                         </Form.Item>
                       </Form.Item>
@@ -299,14 +358,18 @@ const SignUp = () => {
                     </Form.Item>
                     <Form.Item style={{ marginBottom: "0" }}>
                       <Form.Item
-                        label={<b>이름</b>}
+                        label={<b>아이디</b>}
                         name="username"
                         style={{
                           display: "inline-block",
                           width: "calc(50% - 8px)",
                         }}
                       >
-                        <Input size="large" placeholder="이름" />
+                        <Input
+                          size="large"
+                          placeholder="아이디"
+                          onInput={removeKorean}
+                        />
                       </Form.Item>
                       <Form.Item
                         label={<b>성별</b>}
@@ -411,7 +474,7 @@ const SignUp = () => {
                         size="large"
                         style={{
                           width: "100%",
-                          backgroundColor: "rgb(32,201,151)",
+                          backgroundColor: "#85dad2",
                           color: "white",
                         }}
                       >

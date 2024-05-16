@@ -12,12 +12,10 @@ axiosInstance.interceptors.request.use(
     config.headers["Content-Type"] = "application/json";
 
     if (config.url === "/reissue") {
-      console.log("reissue");
       config.headers["refresh"] = refreshToken;
     } else {
       config.headers["access"] = accessToken;
     }
-
     return config;
   },
   (error: any) => {
@@ -28,7 +26,6 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log(response);
     return response;
   },
   async (error) => {
