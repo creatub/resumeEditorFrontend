@@ -41,9 +41,13 @@ const ResumeListDetails = () => {
   const DecodedToken: DecodedToken = jwtDecode(accessToken);
   const userInfo = DecodedToken.username;
   const param = useParams();
-  const fetchComment = () => {
+  const fetchComment = (page: number) => {
     let res = axiosInstance
-      .get(`/board/list/${param.id}/comment`)
+      .get(`/comments/${param.id}`, {
+        params: {
+          page: 0,
+        },
+      })
       .then((res) => {
         setComment(res.data.response);
       });
@@ -68,11 +72,11 @@ const ResumeListDetails = () => {
 
       onOk() {
         let res = axiosInstance
-          .put(`/board/list/delete/${c_num}`, {
+          .put(`/comments/delete/${c_num}`, {
             c_num: c_num,
           })
           .then((res) => {
-            fetchComment();
+            fetchComment(0);
           })
           .catch((err) => {
             console.log(err);
@@ -81,7 +85,7 @@ const ResumeListDetails = () => {
     });
   };
   useEffect(() => {
-    let res = Promise.all([fetchResume(), fetchComment()]);
+    let res = Promise.all([fetchResume(), fetchComment(0)]);
   }, []);
   return (
     <div
@@ -211,12 +215,12 @@ const ResumeListDetails = () => {
                       <Button
                         onClick={() => {
                           let res = axiosInstance
-                            .put(`/board/list/update/${comment.c_num}`, {
+                            .put(`/comments/update/${comment.c_num}`, {
                               c_num: comment.c_num,
                               c_content: editComment,
                             })
                             .then((res) => {
-                              fetchComment();
+                              fetchComment(0);
                               setEditId(null);
                             });
                         }}
@@ -258,13 +262,13 @@ const ResumeListDetails = () => {
                 let DecodedToken: any = jwtDecode(accessToken);
                 let u_num = DecodedToken.uNum;
                 let res = axiosInstance
-                  .post(`/board/list/comment`, {
+                  .post(`/comments/write`, {
                     ccontent: writeComment,
                     rnum: resume.r_num,
                     unum: u_num,
                   })
                   .then((res) => {
-                    fetchComment();
+                    fetchComment(0);
                   });
               }}
               style={{
