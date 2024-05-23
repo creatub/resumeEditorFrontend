@@ -10,6 +10,8 @@ import AdminUserList from "./adminUserList";
 import AdminResumeList from "./adminResumeList";
 import axiosInstance from "@/api/api";
 import { useNavigate } from "react-router-dom";
+import AdminResumeStat from "./adminResumeStat";
+import AdminUserStat from "./adminUserStat";
 
 const { Header, Content, Sider } = Layout;
 
@@ -22,6 +24,12 @@ const item3: MenuProps["items"] = [
         key: "userList",
         label: (
           <div style={{ color: "black", fontWeight: "bold" }}>회원 목록</div>
+        ),
+      },
+      {
+        key: "userStatistic",
+        label: (
+          <div style={{ color: "black", fontWeight: "bold" }}>회원 통계</div>
         ),
       },
     ],
@@ -62,6 +70,12 @@ const AdminPage = () => {
             <AdminUserList />
           </Suspense>
         );
+      case "userStatistic":
+        return (
+          <Suspense fallback={<div>로딩중입니다...</div>}>
+            <AdminUserStat />
+          </Suspense>
+        );
       case "resumeList":
         return (
           <Suspense fallback={<div>로딩중입니다...</div>}>
@@ -69,7 +83,11 @@ const AdminPage = () => {
           </Suspense>
         );
       case "resumeStatistic":
-        return <div>resumeStatistic</div>;
+        return (
+          <Suspense fallback={<div>로딩중입니다...</div>}>
+            <AdminResumeStat />
+          </Suspense>
+        );
       default:
         return <div>선택된 메뉴가 없습니다!</div>;
     }

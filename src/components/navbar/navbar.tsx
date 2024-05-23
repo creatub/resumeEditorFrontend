@@ -64,7 +64,7 @@ const Navbar = () => {
                 }}
                 onClick={() => {
                   let refreshToken = localStorage.getItem("refresh");
-                  let res = axiosInstance
+                  let res = axios
                     .post(
                       "/logout",
                       {},

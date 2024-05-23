@@ -49,7 +49,11 @@ const ResumeListDetails = () => {
         },
       })
       .then((res) => {
-        setComment(res.data.response);
+        if (res.data.response == "댓글이 없습니다.") {
+          return;
+        } else {
+          setComment(res.data.response);
+        }
       });
   };
   const fetchResume = () => {
