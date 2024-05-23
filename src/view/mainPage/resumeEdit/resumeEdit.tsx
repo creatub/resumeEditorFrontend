@@ -21,7 +21,7 @@ const ResumeEdit = () => {
   useEffect(() => {
     let res = axiosInstance
       .post(
-        "http://resume-gpt-qdrant.vercel.app/rag_chat",
+        "https://resume-gpt-qdrant.vercel.app/rag_chat",
         {
           status: "신입",
           company: "펄어비스",
