@@ -34,6 +34,7 @@ const ResumeEdit = () => {
           temperature: 0.8,
         },
         {
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
           },
