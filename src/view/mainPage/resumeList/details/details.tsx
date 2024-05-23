@@ -50,9 +50,9 @@ const ResumeListDetails = () => {
       })
       .then((res) => {
         if (res.data.response == "댓글이 없습니다.") {
-          return;
+          setComment([]);
         } else {
-          setComment(res.data.response);
+          setComment(res.data.response); // [{},{}]
         }
       });
   };
