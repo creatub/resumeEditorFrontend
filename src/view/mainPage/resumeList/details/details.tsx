@@ -45,7 +45,7 @@ const ResumeListDetails = () => {
     let res = axiosInstance
       .get(`/comments/${param.id}`, {
         params: {
-          page: 0,
+          page: page,
         },
       })
       .then((res) => {

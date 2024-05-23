@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { useEffect } from "react";
 
 interface DecodedToken {
   category: string;
@@ -12,13 +13,14 @@ interface DecodedToken {
 }
 
 const MyPage = () => {
+  useEffect(() => {}, []);
   return (
-    <div className="mypageWrapper" style={{ padding: "5% 10%" }}>
+    <div className="mypageWrapper" style={{ padding: "5% 25%" }}>
       <div
         className="mypageInnerWrapper"
-        style={{ backgroundColor: "rgb(220,220,220)" }}
+        style={{ border: "1px solid rgb(220,220,220)", padding: "5%" }}
       >
-        gd
+        <div className="myPageContentWrapper">ㅎㅇ</div>
       </div>
       <Button
         onClick={() => {

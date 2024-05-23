@@ -57,6 +57,12 @@ const tableColumns = [
       new Date(a.inDate).getTime() - new Date(b.inDate).getTime(),
   },
   {
+    title: "삭제일",
+    dataIndex: "delDate",
+    sorter: (a, b) =>
+      new Date(a.delDate).getTime() - new Date(b.delDate).getTime(),
+  },
+  {
     title: "Action",
     dataIndex: "",
     render: () => <Button>삭제</Button>,
@@ -79,6 +85,7 @@ const AdminUserList = () => {
             ...data,
             key: idx,
             inDate: data.inDate.slice(0, 10),
+            delDate: data.inDate.slice(0, 10),
           };
         });
         setUserList(newData);
