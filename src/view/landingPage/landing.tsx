@@ -226,13 +226,13 @@ const LandingPage = () => {
                     </Button>
                   </Form.Item>
                 </Form>
-                <Divider
+                {/* <Divider
                   orientation="center"
                   style={{ color: "rgb(200,200,200)" }}
                 >
-                  또는
-                </Divider>
-                <Button
+                  또는 */}
+                {/* </Divider> */}
+                {/* <Button
                   style={{
                     width: "100%",
                     backgroundColor: "#00C73C",
@@ -248,7 +248,7 @@ const LandingPage = () => {
                 >
                   <Avatar size={30} src={"/img/naver_icon.png"} />
                   네이버 로그인
-                </Button>
+                </Button> */}
                 <div
                   style={{
                     display: "flex",

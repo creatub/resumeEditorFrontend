@@ -7,7 +7,7 @@ interface UserList {
   authCode: string;
   birthDate: string;
   company: string | null;
-  delDate: string | null;
+  delDate: string;
   email: string;
   gender: string;
   inDate: string;
@@ -80,12 +80,13 @@ const AdminUserList = () => {
         },
       })
       .then((res) => {
+        console.log(res);
         let newData = res.data.response.map((data: any, idx: number) => {
           return {
             ...data,
             key: idx,
             inDate: data.inDate.slice(0, 10),
-            delDate: data.inDate.slice(0, 10),
+            delDate: data.delDate ? data.delDate.slice(0, 10) : null,
           };
         });
         setUserList(newData);

@@ -37,7 +37,7 @@ const ResumeList = () => {
     let res = await axiosInstance
       .get("/board/list", {
         params: {
-          page: page,
+          page: page - 1,
         },
       })
       .then((res) => {
