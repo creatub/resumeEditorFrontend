@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const {
       config,
-      response: { status },
+      response: { status, data },
     } = error;
     if (status == 401) {
       const originalRequest = config;
@@ -42,7 +42,6 @@ axiosInstance.interceptors.response.use(
         {},
         { headers: { refresh: refreshToken } }
       );
-      console.log(response);
       const accessToken = response.headers["access"];
       localStorage.removeItem("access");
 
@@ -51,6 +50,10 @@ axiosInstance.interceptors.response.use(
       originalRequest.headers["access"] = accessToken;
 
       return originalRequest;
+    }
+
+    if (status === 400 && data == "You have already been logged out.") {
+      window.location.href = "/";
     }
     return Promise.reject(error);
   }

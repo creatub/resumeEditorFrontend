@@ -7,8 +7,11 @@ import TextArea from "antd/es/input/TextArea";
 import "./resumeEdit.css";
 import PacmanLoader from "react-spinners/PacmanLoader";
 import PuffLoader from "react-spinners/PuffLoader";
-import SyncLoader from "react-spinners/SyncLoader";
+import BounceLoader from "react-spinners/BounceLoader";
 import FadeLoader from "react-spinners/FadeLoader";
+import { DecodedToken } from "@/types/globalTypes";
+import { jwtDecode } from "jwt-decode";
+import Swal from "sweetalert2";
 
 const ResumeEdit = () => {
   const [userInputForm] = useForm();
@@ -54,7 +57,7 @@ const ResumeEdit = () => {
       </div>,
       <div>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <SyncLoader color="#36d7b7" />
+          <BounceLoader color="#36d7b7" />
         </div>
         <div style={descriptionStyle}>
           수 만개의 정교한 자기소개서를 기반으로 지원자님의 자기소개서를
@@ -84,8 +87,26 @@ const ResumeEdit = () => {
     return spinner[randomIndex];
   };
   //resume resume_detail resume_all_1536
-  const onFinish = ({ status, company, occupation, question, answer }) => {
+  const onFinish = ({ status, company, occupation, question, answer, pro }) => {
+    if (
+      status == undefined ||
+      company == undefined ||
+      question == undefined ||
+      answer == undefined ||
+      occupation == undefined
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "입력되지 않은 항목이 있습니다.",
+        text: "모든 항목을 입력해주세요.",
+      });
+      return;
+    }
     setGenerated(true);
+    let mode = 1; // 라이트
+    if (pro) {
+      mode = 2; // 프로
+    }
     let res = axiosInstance
       .post(
         "https://resume-gpt-qdrant.vercel.app/rag_chat",
@@ -106,6 +127,21 @@ const ResumeEdit = () => {
       .then((res) => {
         setIsLoading(false);
         setResult(res.data.result);
+        let accessToken = localStorage.getItem("access") ?? "";
+        let DecodedToken: DecodedToken = jwtDecode(accessToken);
+        let saveData = axiosInstance
+          .post("/resume-edit/upload", {
+            company: company,
+            occupation: occupation,
+            item: question,
+            r_content: answer,
+            mode: mode,
+            u_num: DecodedToken.uNum,
+            content: res.data.result,
+          })
+          .then((res) => {
+            console.log(res);
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -165,7 +201,6 @@ const ResumeEdit = () => {
                   unCheckedChildren={<b>LITE</b>}
                   onChange={() => {
                     setSwtichSelected(!switchSelected);
-                    console.log(switchSelected);
                   }}
                   style={
                     switchSelected
@@ -310,7 +345,19 @@ const ResumeEdit = () => {
                 </div>
               )
             ) : (
-              <div>AI가 답변을 기다리고 있어요!</div>
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontWeight: "bold",
+                  fontSize: "1.3rem",
+                }}
+              >
+                Reditor가 답변을 기다리고 있어요!
+              </div>
             )}
           </div>
         </div>

@@ -59,7 +59,7 @@ const MyPage = () => {
     fetchUserInfo();
   }, []);
   return (
-    <div className="mypageWrapper" style={{ padding: "5% 25%" }}>
+    <div className="mypageWrapper" style={{ padding: "3% 25%" }}>
       <div
         className="mypageInnerWrapper"
         style={{
@@ -70,13 +70,27 @@ const MyPage = () => {
       >
         <div className="myPageContentWrapper">
           <Form form={userForm}>
-            <Form.Item name="username" label={<b>유저ID</b>}>
-              <Input size="large" disabled />
+            <Form.Item style={{ width: "100%" }}>
+              <Form.Item
+                name="username"
+                label={<b>유저ID</b>}
+                style={{ width: "calc(30%-8px)", display: "inline-block" }}
+              >
+                <Input size="large" disabled />
+              </Form.Item>
+              <Form.Item
+                name="email"
+                label={<b>이메일</b>}
+                style={{
+                  width: "calc(70%-8px)",
+                  display: "inline-block",
+                  marginLeft: "8px",
+                }}
+              >
+                <Input style={{ width: "100%" }} size="large" />
+              </Form.Item>
             </Form.Item>
             <Form.Item name="age" label={<b>나이</b>}>
-              <Input size="large" />
-            </Form.Item>
-            <Form.Item name="email" label={<b>이메일</b>}>
               <Input size="large" />
             </Form.Item>
             <Form.Item name="gender" label={<b>성별</b>}>
@@ -86,37 +100,47 @@ const MyPage = () => {
               <Input size="large" disabled />
             </Form.Item>
             <Form.Item>
-              <Button
-                size="large"
+              <div
+                className="buttonWrapper"
                 style={{
-                  backgroundColor: "#85DAD2",
-                  color: "white",
-                  fontWeight: "bold",
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "flex-end",
                 }}
               >
-                수정하기
-              </Button>
-              <Button
-                size="large"
-                onClick={() => {
-                  let accessToken = localStorage.getItem("access") ?? "";
-                  let Decoded: DecodedToken = jwtDecode(accessToken);
-                  let res = axios
-                    .post("/user/delete", {
-                      unum: Decoded.uNum,
-                    })
-                    .then((res) => {
-                      console.log(res);
-                    });
-                }}
-                style={{
-                  backgroundColor: "#E8524D",
-                  color: "white",
-                  fontWeight: "bold",
-                }}
-              >
-                회원 탈퇴
-              </Button>
+                <Button
+                  size="large"
+                  style={{
+                    backgroundColor: "#85DAD2",
+                    color: "white",
+                    fontWeight: "bold",
+                    marginRight: "1%",
+                  }}
+                >
+                  수정하기
+                </Button>
+                <Button
+                  size="large"
+                  onClick={() => {
+                    let accessToken = localStorage.getItem("access") ?? "";
+                    let Decoded: DecodedToken = jwtDecode(accessToken);
+                    let res = axios
+                      .post("/user/delete", {
+                        unum: Decoded.uNum,
+                      })
+                      .then((res) => {
+                        console.log(res);
+                      });
+                  }}
+                  style={{
+                    backgroundColor: "#E8524D",
+                    color: "white",
+                    fontWeight: "bold",
+                  }}
+                >
+                  회원 탈퇴
+                </Button>
+              </div>
             </Form.Item>
           </Form>
         </div>

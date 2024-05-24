@@ -110,7 +110,9 @@ const ResumeListDetails = () => {
         <div className="DetailContentDate">
           <h3>작성일자: {resume.w_date}</h3>
         </div>
-        <div className="DetailContentMain">{resume.content}</div>
+        <div className="DetailContentMain">
+          <p style={{ whiteSpace: "pre-wrap" }}>{resume.content}</p>
+        </div>
       </div>
       <div
         style={{
