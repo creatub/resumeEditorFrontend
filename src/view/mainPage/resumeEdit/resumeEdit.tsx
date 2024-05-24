@@ -23,6 +23,11 @@ const ResumeEdit = () => {
       textAlign: "center",
       marginTop: "3%",
     };
+
+    const tipStyle: CSSProperties = {
+      fontSize: "0.8rem",
+      marginTop: "5%",
+    };
     let spinner = [
       <div>
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -32,14 +37,19 @@ const ResumeEdit = () => {
           PRO모드는 LITE모드 보다 정교한 첨삭이 이루어지는
           <br /> 대신 게시판에 업로드가 됩니다
         </div>
+        <div style={tipStyle}>
+          Tip. 자기소개서에는 특별한 경험을 녹여낼 수록 좋아요.{" "}
+        </div>
       </div>,
       <div>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <PuffLoader color="#36d7b7" />
         </div>
         <div style={descriptionStyle}>
-          PRO모드는 LITE모드 보다 정교한 첨삭이 이루어지는
-          <br /> 대신 게시판에 업로드가 됩니다
+          Reditor는 Resume Editor의 줄임말입니다!
+        </div>
+        <div style={tipStyle}>
+          Tip. 지나치게 전문적인 용어만 가득한 자기소개서는 읽기 힘들어요.
         </div>
       </div>,
       <div>
@@ -47,8 +57,11 @@ const ResumeEdit = () => {
           <SyncLoader color="#36d7b7" />
         </div>
         <div style={descriptionStyle}>
-          PRO모드는 LITE모드 보다 정교한 첨삭이 이루어지는
-          <br /> 대신 게시판에 업로드가 됩니다
+          수 만개의 정교한 자기소개서를 기반으로 지원자님의 자기소개서를
+          <br /> 더욱 빛나게 해드리는 중입니다!
+        </div>
+        <div style={tipStyle}>
+          Tip. 추상적인 표현보다는 명료한 표현이 좋아요!
         </div>
       </div>,
       <div>
@@ -56,8 +69,12 @@ const ResumeEdit = () => {
           <FadeLoader color="#36d7b7" />
         </div>
         <div style={descriptionStyle}>
-          PRO모드는 LITE모드 보다 정교한 첨삭이 이루어지는
-          <br /> 대신 게시판에 업로드가 됩니다
+          Reditor에 등록된 높은 평점의 자기소개서는
+          <br /> 다시 자기소개서 첨삭AI에 활용돼요.
+        </div>
+        <div style={tipStyle}>
+          Tip. 데이터와 결과를 강조해보세요! 구체적인 숫자가 있을수록 신빙성이
+          올라갑니다.
         </div>
       </div>,
     ];
@@ -66,6 +83,7 @@ const ResumeEdit = () => {
 
     return spinner[randomIndex];
   };
+  //resume resume_detail resume_all_1536
   const onFinish = ({ status, company, occupation, question, answer }) => {
     setGenerated(true);
     let res = axiosInstance
@@ -78,6 +96,7 @@ const ResumeEdit = () => {
           question: question,
           answer: answer,
           model: "gpt-4o",
+          collection: "resume_all_1536",
           temperature: 1.2,
         },
         {
@@ -86,7 +105,6 @@ const ResumeEdit = () => {
       )
       .then((res) => {
         setIsLoading(false);
-
         setResult(res.data.result);
       })
       .catch((err) => {
@@ -133,7 +151,7 @@ const ResumeEdit = () => {
                     >
                       <InfoCircleOutlined style={{ marginRight: "3px" }} />
                     </Tooltip>
-                    <b>PRO/LiTE</b>
+                    <b>PRO/LITE</b>
                   </div>
                 }
                 style={{
@@ -253,10 +271,7 @@ const ResumeEdit = () => {
           className="gptResultWrapper"
           style={{ padding: "5% 5%", height: "100%" }}
         >
-          <div
-            className="gptResult"
-            style={{ fontWeight: "bold", fontSize: "1.2rem", height: "100%" }}
-          >
+          <div className="gptResult" style={{ height: "100%" }}>
             {generated ? (
               isLoading ? (
                 <div
@@ -279,8 +294,19 @@ const ResumeEdit = () => {
                   </div>
                 </div>
               ) : (
-                <div style={{ fontSize: "1rem" }}>
-                  <p style={{ whiteSpace: "pre-wrap" }}>{result}</p>
+                <div>
+                  <p
+                    style={{
+                      whiteSpace: "pre-wrap",
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                    }}
+                  >
+                    {result}
+                  </p>
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    글자수:{result.length}
+                  </div>
                 </div>
               )
             ) : (

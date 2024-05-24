@@ -37,7 +37,7 @@ const Navbar = () => {
     <div>
       <nav className="navbar">
         <div className="navbar_logo">
-          <Link to="/">Resume Editor</Link>
+          <Link to="/">Reditor</Link>
         </div>
 
         <ul className="navbar_menu">

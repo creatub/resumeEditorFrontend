@@ -164,7 +164,7 @@ const LandingPage = () => {
                 borderRadius: "20px",
               }}
             >
-              Resume Editor
+              Reditor
             </motion.div>
           </div>
           <div
