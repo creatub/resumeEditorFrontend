@@ -18,6 +18,13 @@ ChatGPT API를 활용하여 자기소개서 첨삭 서비스를 개발하였습�
 
 2024.04 - 2024.06
 
+## 🏠 URL
+
+<a href="https://resume-editor-frontend-indol.vercel.app/">데모</a><br/>
+<a href="https://github.com/MinjoonHK/resumeEditorFrontend">프론트엔드 레포지토리</a><br/>
+<a href="https://github.com/JavaBackEnd21st/resumeEditorBackend">백엔드 레포지토리</a><br/>
+<a href="https://github.com/JavaBackEnd21st/resume_gpt_qdrant">AI 레포지토리</a><br/>
+
 ### ⚙️ 개발 환경
 
 <ul>
