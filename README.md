@@ -31,9 +31,10 @@ ChatGPT API를 활용하여 자기소개서 첨삭 서비스를 개발하였습�
   <li>Front-end: React.js@18.2.0, TypeScript, Redux Toolkit@9.1.0, Antd</li>
   <li>Back-end: Spring Boot, Spring Security, Hibernate</li>
   <li>AI: ChatGPT API, Qdrant, Flask</li>
-  <li>Env : Node.js@v18.17.0, JAVA 17</li>
-  <li>IDE : VScode, IntelliJ</li>
-  <li>DB : MySQL</li>
+  <li>Env: Node.js@v18.17.0, JAVA 17</li>
+  <li>Build: Vite, Gradle</li>
+  <li>IDE: VScode, IntelliJ</li>
+  <li>DB: MySQL</li>
   <li>CI/CD: Github Actions</li>
   <li>Deploy: Vercel, CloudType</li>
   <li>Collaboration: Slack, Notion, Swagger@2.0.2</li>
