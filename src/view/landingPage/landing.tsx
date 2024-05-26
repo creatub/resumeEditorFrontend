@@ -1,6 +1,6 @@
 import CustomFooter from "@/components/footer";
 import { RootState } from "@/store/store";
-import { Avatar, Button, Divider, Form, Input } from "antd";
+import { Avatar, Button, Divider, Form, Input, notification } from "antd";
 import axios from "axios";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect } from "react";
@@ -10,6 +10,7 @@ import { login, logout } from "@/store/features/user/userSlice";
 import { DecodedToken } from "@/types/globalTypes";
 import { jwtDecode } from "jwt-decode";
 import { setToken } from "@/store/features/token/tokenSlice";
+import LandingComment from "./landingComment";
 const LandingPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const LandingPage = () => {
   const controls4 = useAnimation();
   const controls5 = useAnimation();
 
+  const [notify, contextHolder] = notification.useNotification();
   useEffect(() => {
     const sequence = async () => {
       await controls1.start({ opacity: 1, scale: 1 });
@@ -30,6 +32,15 @@ const LandingPage = () => {
     };
     sequence();
   }, [controls1, controls2, controls3, controls4, controls5]);
+
+  const callNotification = () => {
+    notify.error({
+      message: "로그인 실패",
+      description: "아이디와 비밀번호를 확인해주세요",
+      placement: "topRight",
+      duration: 5,
+    });
+  };
 
   const tryLogin = async ({ username, password }) => {
     try {
@@ -55,12 +66,15 @@ const LandingPage = () => {
           }
         });
     } catch (err) {
-      console.log(err);
+      if (err.response.data.status == "Fail") {
+        callNotification();
+      }
     }
   };
 
   return (
     <div>
+      {contextHolder}
       <div className="wrapper" style={{ display: "flex" }}>
         <div
           className="leftWrapper"
@@ -273,6 +287,7 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
+      {/* <LandingComment /> */}
       <CustomFooter />
     </div>
   );

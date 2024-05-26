@@ -57,7 +57,6 @@ const SignUp = () => {
       }-${userBirthDate.get("date")}`;
       let role = "user";
       let name = "user";
-      let nickname = "왜이쒸";
       try {
         let response = await axios.post(
           "/signup",
@@ -70,7 +69,6 @@ const SignUp = () => {
             birthDate,
             role,
             name,
-            nickname,
             gender,
             age,
             wish,
@@ -276,19 +274,32 @@ const SignUp = () => {
                               });
                             } else {
                               let email = submitForm.getFieldValue("email");
-                              let response = axios.post(
-                                "/signup/auth-code",
-                                {
-                                  email,
-                                },
-                                {
-                                  headers: {
-                                    "Content-Type": "application/json",
+                              let response = axios
+                                .post(
+                                  "/signup/auth-code",
+                                  {
+                                    email,
                                   },
-                                }
-                              );
-                              setEmailSend(true);
-                              dispatch(start());
+                                  {
+                                    headers: {
+                                      "Content-Type": "application/json",
+                                    },
+                                  }
+                                )
+                                .then((res) => {
+                                  setEmailSend(true);
+                                  dispatch(start());
+                                })
+                                .catch((err) => {
+                                  if (err.response.status === 500) {
+                                    Swal.fire({
+                                      icon: "error",
+                                      title: "이미 가입된 이메일 입니다!",
+                                      showConfirmButton: true,
+                                      timer: 2000,
+                                    });
+                                  }
+                                });
                             }
                           }}
                           style={{ width: "100%" }}

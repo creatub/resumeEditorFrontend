@@ -1,9 +1,10 @@
-import { Avatar, Button, Divider, Form, Input } from "antd";
+import { Avatar, Button, Divider, Form, Input, notification } from "antd";
 import { Link } from "react-router-dom";
 import CustomFooter from "../../components/footer";
 import axios from "axios";
 
 const Login = () => {
+  const [notify, contextHolder] = notification.useNotification();
   const tryLogin = async ({ username, password }) => {
     let data = new FormData();
     data.append("username", username);
@@ -20,8 +21,18 @@ const Login = () => {
           localStorage.setItem("refresh", refreshToken);
         });
     } catch (err) {
-      console.log(err);
+      if (err.response.data.status == "Fail") {
+        callNotification();
+      }
     }
+  };
+
+  const callNotification = () => {
+    notify.error({
+      message: "로그인 실패",
+      description: "아이디와 비밀번호를 확인해주세요",
+      placement: "topRight",
+    });
   };
   return (
     <div style={{ marginTop: "5vh" }}>

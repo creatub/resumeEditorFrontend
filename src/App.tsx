@@ -10,6 +10,7 @@ import MyPage from "./view/mainPage/myPage/myPage";
 import ResumeListDetails from "./view/mainPage/resumeList/details/details";
 import AdminPage from "./view/admin/adminPage";
 import ProtectedRoute from "./routes/protectedRoutes";
+import ProtectLoginRoute from "./routes/protectLoginRoute";
 
 function App() {
   return (
@@ -17,7 +18,14 @@ function App() {
       <Routes>
         <Route path="/auth/signup" element={<SignUp />} />
         <Route path="/auth/login" element={<Login />} />
-        <Route path="/" element={<LandingPage />} />
+        <Route
+          path="/"
+          element={
+            <ProtectLoginRoute>
+              <LandingPage />
+            </ProtectLoginRoute>
+          }
+        />
         <Route path="/main" element={<MainPage />}>
           <Route path="resume" element={<ResumeEdit />} />
           <Route path="resumelist/:id" element={<ResumeListDetails />} />

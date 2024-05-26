@@ -37,7 +37,11 @@ const Navbar = () => {
     <div>
       <nav className="navbar">
         <div className="navbar_logo">
-          <Link to="/">Reditor</Link>
+          {accessToken == "" ? (
+            <Link to="/">Reditor</Link>
+          ) : (
+            <Link to="/main/resume">Reditor</Link>
+          )}
         </div>
 
         <ul className="navbar_menu">
