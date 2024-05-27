@@ -67,20 +67,15 @@ const LandingPage = () => {
           }
         });
     } catch (err) {
-      if (err.response.data.status == "Fail") {
-        Swal.fire({
-          icon: "error",
-          title: "로그인 실패",
-          text: "아이디와 비밀번호를 확인해주세요",
-        });
-        // callNotification();
+      if (err.response.status === 403) {
+        callNotification();
       }
     }
   };
 
   return (
     <div>
-      {/* {contextHolder} */}
+      {contextHolder}
       <div className="wrapper" style={{ display: "flex" }}>
         <div
           className="leftWrapper"
