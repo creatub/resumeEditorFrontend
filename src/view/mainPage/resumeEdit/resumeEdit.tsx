@@ -20,6 +20,8 @@ const ResumeEdit = () => {
   const [generated, setGenerated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState("");
+  const [diffResult, setDiffResult] = useState([]); // 추가된 줄
+  const [showDiff, setShowDiff] = useState(false); // Diff 결과를 보여줄지 여부를 저장하는 상태
 
   const randomSpinner = () => {
     const descriptionStyle: CSSProperties = {
@@ -125,8 +127,8 @@ const ResumeEdit = () => {
         }
       )
       .then((res) => {
-        setIsLoading(false);
         setResult(res.data.result);
+        setDiffResult(res.data.diff); // 추가
         let accessToken = localStorage.getItem("access") ?? "";
         let DecodedToken: DecodedToken = jwtDecode(accessToken);
         let saveData = axiosInstance
@@ -144,8 +146,53 @@ const ResumeEdit = () => {
           });
       })
       .catch((err) => {
-        console.log(err);
+        setGenerated(false);
+        if (err) {
+          Swal.fire({
+            icon: "error",
+            title: "오류가 발생했습니다.",
+            text: "다시 시도해 주세요!.",
+          });
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
+  };
+  // 추가된 함수
+  const renderDiffResult = () => {
+    return diffResult.map((item, index) => {
+      if (item[0] === 0) {
+        return (
+          <span key={index} style={{ color: "black" }}>
+            {item[1]}
+          </span>
+        );
+      } else if (item[0] === -1) {
+        return (
+          <span
+            key={index}
+            style={{
+              color: "black",
+              backgroundColor: "#FFD6D6",
+              textDecoration: "line-through",
+            }}
+          >
+            {item[1]}
+          </span>
+        );
+      } else if (item[0] === 1) {
+        return (
+          <span
+            key={index}
+            style={{ color: "black", backgroundColor: "#D4F7DC" }}
+          >
+            {item[1]}
+          </span>
+        );
+      }
+      return null;
+    });
   };
   return (
     <div className="Wrapper" style={{ padding: "5% 5%", display: "flex" }}>
@@ -330,18 +377,68 @@ const ResumeEdit = () => {
                 </div>
               ) : (
                 <div>
-                  <p
-                    style={{
-                      whiteSpace: "pre-wrap",
-                      fontWeight: "bold",
-                      fontSize: "1rem",
-                    }}
-                  >
-                    {result}
-                  </p>
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    글자수:{result.length}
-                  </div>
+                  {!showDiff ? (
+                    <div>
+                      <p
+                        style={{
+                          whiteSpace: "pre-wrap",
+                          fontWeight: "bold",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        {result}
+                      </p>
+                      <div
+                        style={{ display: "flex", justifyContent: "flex-end" }}
+                      >
+                        글자수:{result.length}
+                      </div>
+                      <div
+                        style={{ display: "flex", justifyContent: "flex-end" }}
+                      >
+                        <Button
+                          size="large"
+                          onClick={() => setShowDiff(true)}
+                          style={{
+                            backgroundColor: "#85DAD2",
+                            color: "white",
+                            fontWeight: "bold",
+                            marginTop: "10px",
+                          }}
+                        >
+                          달라진점 확인하기!
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div
+                        style={{
+                          whiteSpace: "pre-wrap",
+                          fontWeight: "bold",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        {renderDiffResult()}
+                      </div>
+                      <div
+                        style={{ display: "flex", justifyContent: "flex-end" }}
+                      >
+                        <Button
+                          size="large"
+                          onClick={() => setShowDiff(false)}
+                          style={{
+                            backgroundColor: "#85DAD2",
+                            color: "white",
+                            fontWeight: "bold",
+                            marginTop: "10px",
+                          }}
+                        >
+                          원본 결과 보기
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )
             ) : (
