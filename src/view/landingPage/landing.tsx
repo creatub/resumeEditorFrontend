@@ -11,6 +11,7 @@ import { DecodedToken } from "@/types/globalTypes";
 import { jwtDecode } from "jwt-decode";
 import { setToken } from "@/store/features/token/tokenSlice";
 import LandingComment from "./landingComment";
+import Swal from "sweetalert2";
 const LandingPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,14 +68,19 @@ const LandingPage = () => {
         });
     } catch (err) {
       if (err.response.data.status == "Fail") {
-        callNotification();
+        Swal.fire({
+          icon: "error",
+          title: "로그인 실패",
+          text: "아이디와 비밀번호를 확인해주세요",
+        });
+        // callNotification();
       }
     }
   };
 
   return (
     <div>
-      {contextHolder}
+      {/* {contextHolder} */}
       <div className="wrapper" style={{ display: "flex" }}>
         <div
           className="leftWrapper"
