@@ -90,7 +90,7 @@ const LandingPage = () => {
               display: "flex",
               flexDirection: "column",
               color: "white",
-              paddingTop: "15%",
+              paddingTop: "5%",
               paddingBottom: "15%",
               paddingRight: "15%",
               paddingLeft: "20%",
@@ -101,21 +101,19 @@ const LandingPage = () => {
               animate={controls1}
               transition={{ duration: 0.5 }}
             >
-              <h1>
-                당신만을 위한 자소서 AI 자소서
-                <br /> 컨설턴트!
-              </h1>
+              <p style={{ fontSize: "3rem", fontWeight: "bold" }}>
+                당신만을 위한 자소서 AI 자소서 컨설턴트!
+              </p>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
               animate={controls2}
               transition={{ duration: 0.5 }}
             >
-              <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Corporis a culpa minima, eos hic ut unde harum impedit esse
-                officiis dolorem? Deleniti ut voluptatem est perspiciatis
-                obcaecati minus assumenda distinctio.
+              <p style={{ fontSize: "1.2rem" }}>
+                "당신의 경력과 능력을 효과적으로 표현하는 자소서
+                <br />
+                Reditor가 도와드리겠습니다!"
               </p>
             </motion.div>
             <motion.div
@@ -123,11 +121,9 @@ const LandingPage = () => {
               animate={controls3}
               transition={{ duration: 0.5 }}
             >
-              <p>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eos
-                quas adipisci atque minima maiores, veniam quo doloremque
-                doloribus a nostrum. Ratione ex molestiae autem numquam aperiam
-                illum praesentium sed quod!
+              <p style={{ fontSize: "1.2rem" }}>
+                "수많은 자기소개서 중에서도 돋보일 수 있도록, 당신의 강점을
+                최대한 부각시키는 자소서를 작성해드립니다."
               </p>
             </motion.div>
             <motion.div
@@ -135,11 +131,9 @@ const LandingPage = () => {
               animate={controls4}
               transition={{ duration: 0.5 }}
             >
-              <p>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eos
-                quas adipisci atque minima maiores, veniam quo doloremque
-                doloribus a nostrum. Ratione ex molestiae autem numquam aperiam
-                illum praesentium sed quod!
+              <p style={{ fontSize: "1.2rem" }}>
+                "AI의 정교한 분석을 통해 맞춤형 자소서를 작성하여,
+                <br /> 취업 경쟁력을 높이세요!"
               </p>
             </motion.div>
           </div>
