@@ -54,6 +54,10 @@ axiosInstance.interceptors.response.use(
 
     if (status === 400 && data == "You have already been logged out.") {
       window.location.href = "/";
+    } else if (status === 400 && data == "invalid refresh token") {
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      window.location.href = "/";
     }
     return Promise.reject(error);
   }
