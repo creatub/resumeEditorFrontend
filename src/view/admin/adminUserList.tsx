@@ -65,7 +65,7 @@ const tableColumns = [
   {
     title: "Action",
     dataIndex: "",
-    render: () => <Button>삭제</Button>,
+    render: () => <Button onClick={(e) => console.log(e)}>삭제</Button>,
   },
 ];
 
@@ -105,6 +105,7 @@ const AdminUserList = () => {
           pageSize: 20,
           total: totalPage * 20,
         }}
+        onChange={(e) => console.log(e)}
         dataSource={userList}
         columns={tableColumns}
       />

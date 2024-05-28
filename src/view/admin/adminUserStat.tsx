@@ -5,23 +5,29 @@ import { Divider } from "antd";
 
 const AdminUserStat = () => {
   const [userCount, setUserCount] = useState(0);
+  const [userProCount, setUserProCount] = useState(0);
+  const [totalVisit, setTotalVisit] = useState(0);
+  const [todayVisit, setTodayVisit] = useState(0);
   const [userGender, setUserGender] = useState({});
   const [employRate, setEmployRate] = useState({});
   const [ageRange, setAgeRange] = useState({});
   const [companyRanking, setCompanyRanking] = useState({});
   const [occupationRanking, setOccupationRanking] = useState({});
+  const [wishRanking, setWishRanking] = useState({});
 
   const fetchAdminStatData = async (group: string) => {
     let res = await axiosInstance
       .get(`admin/stat/rank/${group}`)
       .then((res) => {
-        console.log(res.data.response.ranking_user);
         switch (group) {
           case "occupation":
             setOccupationRanking(res.data.response.ranking_user);
             break;
           case "company":
             setCompanyRanking(res.data.response.ranking_user);
+            break;
+          case "wish":
+            setWishRanking(res.data.response.ranking_user);
             break;
         }
       })
@@ -50,6 +56,15 @@ const AdminUserStat = () => {
           case "status":
             setEmployRate(res.data.response);
             break;
+          case "pro":
+            setUserProCount(res.data.response.pro);
+            break;
+          case "visitTotal":
+            setTotalVisit(res.data.response.total_visit);
+            break;
+          case "visitToday":
+            setTodayVisit(res.data.response.today_visit);
+            break;
         }
       })
       .catch((err) => {
@@ -59,11 +74,15 @@ const AdminUserStat = () => {
   useEffect(() => {
     Promise.all([
       fetchUserStatData("count"),
+      fetchUserStatData("pro"),
+      fetchUserStatData("visitTotal"),
+      fetchUserStatData("visitToday"),
       fetchUserStatData("gender"),
       fetchUserStatData("age"),
       fetchUserStatData("status"),
       fetchAdminStatData("occupation"),
       fetchAdminStatData("company"),
+      fetchAdminStatData("wish"),
     ]);
   }, []);
 
@@ -93,6 +112,11 @@ const AdminUserStat = () => {
       labelName: "유저수",
       graphTitle: "TOP5 회사랭킹",
     },
+    {
+      dataObject: wishRanking,
+      labelName: "유저수",
+      graphTitle: "TOP5 희망직업랭킹",
+    },
   ];
 
   const squareData = [
@@ -101,15 +125,15 @@ const AdminUserStat = () => {
       title: "총 유저수",
     },
     {
-      dataObject: userCount,
+      dataObject: userProCount,
       title: "프로 유저수",
     },
     {
-      dataObject: userCount,
+      dataObject: totalVisit,
       title: "총 방문자수",
     },
     {
-      dataObject: userCount,
+      dataObject: todayVisit,
       title: "오늘 방문자수",
     },
   ];

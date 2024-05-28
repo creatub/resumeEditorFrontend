@@ -67,12 +67,7 @@ const LandingPage = () => {
         });
     } catch (err) {
       if (err.response.status === 401) {
-        if (
-          err.response.response ===
-          "Authentication failed: Invalid username or password"
-        ) {
-          callNotification();
-        }
+        callNotification();
       }
     }
   };
