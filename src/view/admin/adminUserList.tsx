@@ -80,7 +80,6 @@ const AdminUserList = () => {
         },
       })
       .then((res) => {
-        console.log(res);
         let newData = res.data.response.map((data: any, idx: number) => {
           return {
             ...data,

@@ -8,17 +8,29 @@ const AdminUserStat = () => {
   const [userGender, setUserGender] = useState({});
   const [employRate, setEmployRate] = useState({});
   const [ageRange, setAgeRange] = useState({});
+  const [companyRanking, setCompanyRanking] = useState({});
+  const [occupationRanking, setOccupationRanking] = useState({});
 
-  const fetchAdminStatData = (group: string) => {
-    let res = axiosInstance
+  const fetchAdminStatData = async (group: string) => {
+    let res = await axiosInstance
       .get(`admin/stat/rank/${group}`)
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res.data.response.ranking_user);
+        switch (group) {
+          case "occupation":
+            setOccupationRanking(res.data.response.ranking_user);
+            break;
+          case "company":
+            setCompanyRanking(res.data.response.ranking_user);
+            break;
+        }
+      })
       .catch((err) => {
         console.log(err);
       });
   };
-  const fetchUserStatData = (group: string) => {
-    let res = axiosInstance
+  const fetchUserStatData = async (group: string) => {
+    let res = await axiosInstance
       .get("/admin/stat/user", {
         params: {
           group: group,
@@ -71,6 +83,16 @@ const AdminUserStat = () => {
       labelName: "나잇대",
       graphTitle: "나이 비율",
     },
+    {
+      dataObject: occupationRanking,
+      labelName: "유저수",
+      graphTitle: "TOP5 직업랭킹",
+    },
+    {
+      dataObject: companyRanking,
+      labelName: "유저수",
+      graphTitle: "TOP5 회사랭킹",
+    },
   ];
 
   const squareData = [
@@ -91,7 +113,6 @@ const AdminUserStat = () => {
       title: "오늘 방문자수",
     },
   ];
-
   return (
     <div className="Wrapper" style={{ padding: "1% 5%" }}>
       <div
