@@ -6,8 +6,6 @@ import { useParams } from "react-router-dom";
 import { UserOutlined, DeleteOutlined } from "@ant-design/icons";
 import { jwtDecode } from "jwt-decode";
 import { DecodedToken } from "@/types/globalTypes";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
 
 interface Resume {
   content: string;
@@ -15,6 +13,7 @@ interface Resume {
   rating: number;
   rating_count: number;
   read_num: number;
+  item: string;
   title: string;
   username: string;
   u_num: number;
@@ -52,7 +51,7 @@ const ResumeListDetails = () => {
         if (res.data.response == "댓글이 없습니다.") {
           setComment([]);
         } else {
-          setComment(res.data.response); // [{},{}]
+          setComment(res.data.response);
         }
       });
   };
@@ -89,6 +88,7 @@ const ResumeListDetails = () => {
     });
   };
   useEffect(() => {
+    console.log(resume);
     let res = Promise.all([fetchResume(), fetchComment(0)]);
   }, []);
   return (
@@ -109,6 +109,9 @@ const ResumeListDetails = () => {
         </div>
         <div className="DetailContentDate">
           <h3>작성일자: {resume.w_date}</h3>
+        </div>
+        <div className="DetailContentTitle">
+          <h3>{resume.item}</h3>
         </div>
         <div className="DetailContentMain">
           <p style={{ whiteSpace: "pre-wrap" }}>{resume.content}</p>
