@@ -2,6 +2,7 @@ import axiosInstance from "@/api/api";
 import { useEffect, useState } from "react";
 import DougnutGraph from "./dougnutGraph";
 import { Divider } from "antd";
+import LineGraph from "./lineGraph";
 
 const AdminUserStat = () => {
   const [userCount, setUserCount] = useState(0);
@@ -14,6 +15,8 @@ const AdminUserStat = () => {
   const [companyRanking, setCompanyRanking] = useState({});
   const [occupationRanking, setOccupationRanking] = useState({});
   const [wishRanking, setWishRanking] = useState({});
+  const [trafficData, setTrafficData] = useState({});
+  const [signupData, setSignupData] = useState({});
 
   const fetchAdminStatData = async (group: string) => {
     let res = await axiosInstance
@@ -32,7 +35,7 @@ const AdminUserStat = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log("박스데이터를 가져오는데 오류가 발생했습니다", err);
       });
   };
   const fetchUserStatData = async (group: string) => {
@@ -68,7 +71,25 @@ const AdminUserStat = () => {
         }
       })
       .catch((err) => {
-        console.log("데이터를 가져오는데 오류가 발생했습니다", err);
+        console.log("도넛데이터를 가져오는데 오류가 발생했습니다", err);
+      });
+  };
+
+  const fetchAccumulatedData = async (group: string) => {
+    let res = await axiosInstance
+      .get(`/admin/stat/user/${group}`)
+      .then((res) => {
+        switch (group) {
+          case "traffic":
+            setTrafficData(res.data.response.traffic_data);
+            break;
+          case "signup":
+            setSignupData(res.data.response.signup_data);
+            break;
+        }
+      })
+      .catch((err) => {
+        console.log("집계데이터를 불러오는데에 실패했습니다!", err);
       });
   };
   useEffect(() => {
@@ -83,6 +104,8 @@ const AdminUserStat = () => {
       fetchAdminStatData("occupation"),
       fetchAdminStatData("company"),
       fetchAdminStatData("wish"),
+      fetchAccumulatedData("traffic"),
+      fetchAccumulatedData("signup"),
     ]);
   }, []);
 
@@ -135,6 +158,19 @@ const AdminUserStat = () => {
     {
       dataObject: todayVisit,
       title: "오늘 방문자수",
+    },
+  ];
+
+  const lineData = [
+    {
+      dataObject: trafficData,
+      labelName: "방문자수",
+      graphTitle: "주간 방문자수",
+    },
+    {
+      dataObject: signupData,
+      labelName: "가입자수",
+      graphTitle: "주간 가입자수",
     },
   ];
   return (
@@ -219,6 +255,28 @@ const AdminUserStat = () => {
         })}
       </div>
       <Divider style={{ border: "1px solid black" }} />
+      {
+        <div
+          className="lineWrapper"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: "20px",
+          }}
+        >
+          {lineData.map((data, index) => {
+            return (
+              <div style={{ width: "500px" }} key={`line${index}`}>
+                <LineGraph
+                  dataObject={data.dataObject}
+                  labelName={data.labelName}
+                  graphTitle={data.graphTitle}
+                />
+              </div>
+            );
+          })}
+        </div>
+      }
     </div>
   );
 };
