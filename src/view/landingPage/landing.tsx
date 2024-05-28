@@ -3,7 +3,7 @@ import { RootState } from "@/store/store";
 import { Avatar, Button, Divider, Form, Input, notification } from "antd";
 import axios from "axios";
 import { motion, useAnimation } from "framer-motion";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { login, logout } from "@/store/features/user/userSlice";

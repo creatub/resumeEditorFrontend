@@ -1,6 +1,6 @@
 import axiosInstance from "@/api/api";
 import { Button, Table } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface UserList {
   age: number;

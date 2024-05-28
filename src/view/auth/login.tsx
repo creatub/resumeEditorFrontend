@@ -2,6 +2,7 @@ import { Avatar, Button, Divider, Form, Input, notification } from "antd";
 import { Link } from "react-router-dom";
 import CustomFooter from "../../components/footer";
 import axios from "axios";
+import React from "react";
 
 const Login = () => {
   const [notify, contextHolder] = notification.useNotification();

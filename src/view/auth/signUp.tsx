@@ -9,6 +9,7 @@ import Timer from "./timer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { start } from "@/store/features/timer/timerSlice";
+import React from "react";
 
 interface signUpParameter {
   email: string;

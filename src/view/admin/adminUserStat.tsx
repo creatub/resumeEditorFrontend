@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import DougnutGraph from "./dougnutGraph";
 import { Divider } from "antd";
 import LineGraph from "./lineGraph";
+import React from "react";
 
 const AdminUserStat = () => {
   const [userCount, setUserCount] = useState(0);
@@ -66,6 +67,7 @@ const AdminUserStat = () => {
             setTotalVisit(res.data.response.total_visit);
             break;
           case "visitToday":
+            console.log(res.data);
             setTodayVisit(res.data.response.today_visit);
             break;
         }

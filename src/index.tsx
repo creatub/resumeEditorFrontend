@@ -6,6 +6,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import axios from "axios";
 import { CookiesProvider } from "react-cookie";
 import { store } from "./store/store";
+import React from "react";
 
 axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
 const root = ReactDOM.createRoot(

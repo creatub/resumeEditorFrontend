@@ -15,9 +15,6 @@ export default defineConfig(() => {
     server: {
       port: 3000,
     },
-    esbuild: {
-      jsxInject: `import React from 'react'`,
-    },
     resolve: {
       alias: [{ find: "@", replacement: resolve(__dirname, "./src") }],
       extensions: [".js", ".jsx", ".ts", ".tsx"],
