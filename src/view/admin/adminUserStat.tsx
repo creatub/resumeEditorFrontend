@@ -131,10 +131,11 @@ const AdminUserStat = () => {
 
   const handleChangeDebut = (range) => {
     if (selectedType == "월별") {
-      console.log(range);
+      const valueOfInput = range.format();
     } else {
-      console.log(range[0].format());
-      console.log(range[1].format());
+      const valueOfInput1 = range[0].format();
+      const valueOfInput2 = range[1].format();
+      fetchAccumulatedData;
     }
   };
 
