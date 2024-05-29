@@ -54,11 +54,6 @@ axiosInstance.interceptors.response.use(
 
     if (status === 400 && data == 'You have already been logged out.') {
       window.location.href = '/';
-      // Access 토큰 삭제
-      localStorage.removeItem('access');
-
-      // Refresh 토큰 삭제
-      localStorage.removeItem('refresh');
     }
     return Promise.reject(error);
   }

@@ -10,7 +10,6 @@ import Swal from 'sweetalert2';
 import { jwtDecode } from 'jwt-decode';
 import { DecodedToken } from '@/store/features/token/tokenSlice';
 import axiosInstance from '@/api/api';
-import React, { useState, useEffect } from 'react';
 
 const Navbar = () => {
   const user = useSelector((state: RootState) => state.user.value);
@@ -19,7 +18,6 @@ const Navbar = () => {
   const accessToken = localStorage.getItem('access') ?? '';
   const decodedToken: DecodedToken = jwtDecode(accessToken);
   const username = decodedToken.username;
-  const [refreshTokenExpired, setRefreshTokenExpired] = useState(false); // 리프레시 토큰 만료 여부
 
   useEffect(() => {
     let accessToken = localStorage.getItem('access');
