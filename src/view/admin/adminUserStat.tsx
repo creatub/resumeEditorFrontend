@@ -67,7 +67,6 @@ const AdminUserStat = () => {
             setTotalVisit(res.data.response.total_visit);
             break;
           case "visitToday":
-            console.log(res.data);
             setTodayVisit(res.data.response.today_visit);
             break;
         }
@@ -78,24 +77,23 @@ const AdminUserStat = () => {
   };
 
   const fetchAccumulatedData = async (group: string) => {
-    let res = await axiosInstance
-      .get(`/admin/stat/user/${group}`)
-      .then((res) => {
-        switch (group) {
-          case "traffic":
-            setTrafficData(res.data.response.traffic_data);
-            break;
-          case "signup":
-            setSignupData(res.data.response.signup_data);
-            break;
-        }
-      })
-      .catch((err) => {
-        console.log("집계데이터를 불러오는데에 실패했습니다!", err);
-      });
+    try {
+      const res = await axiosInstance.get(`/admin/stat/user/${group}`);
+      switch (group) {
+        case "traffic":
+          setTrafficData(res.data.response.traffic_data);
+          break;
+        case "signup":
+          setSignupData(res.data.response.signup_data);
+          break;
+      }
+    } catch (err) {
+      console.log("집계데이터를 불러오는데에 실패했습니다!", err);
+    }
   };
-  useEffect(() => {
-    Promise.all([
+
+  const fetchData = async () => {
+    await Promise.all([
       fetchUserStatData("count"),
       fetchUserStatData("pro"),
       fetchUserStatData("visitTotal"),
@@ -109,6 +107,10 @@ const AdminUserStat = () => {
       fetchAccumulatedData("traffic"),
       fetchAccumulatedData("signup"),
     ]);
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   const doughnutData = [
@@ -181,7 +183,9 @@ const AdminUserStat = () => {
         className="statHeader"
         style={{ width: "100%", textAlign: "center" }}
       >
-        <h1>{`${new Date().getFullYear()}년 ${new Date().getMonth()}월 ${new Date().getDay()}일 ${new Date().getHours()}:00 기준 통계`}</h1>
+        <h1>{`${new Date().getFullYear()}년 ${
+          new Date().getMonth() + 1
+        }월 ${new Date().getDate()}일 ${new Date().getHours()}:00 기준 통계`}</h1>
       </div>
       <div
         className="squareWrapper"
