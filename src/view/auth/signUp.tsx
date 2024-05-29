@@ -235,7 +235,7 @@ const SignUp = () => {
                                 });
                               }
                               let checkCode = axios
-                                .post("/signup/auth-check", {
+                                .post("/signup/auth-code", {
                                   email: submitForm.getFieldValue("email"),
                                   authCode:
                                     submitForm.getFieldValue("authCode"),

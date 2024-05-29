@@ -1,9 +1,24 @@
 import axiosInstance from "@/api/api";
 import { useEffect, useState } from "react";
 import DougnutGraph from "./dougnutGraph";
-import { Divider } from "antd";
+import {
+  Divider,
+  Input,
+  DatePicker,
+  Button,
+  Dropdown,
+  MenuProps,
+  Menu,
+} from "antd";
 import LineGraph from "./lineGraph";
 import React from "react";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
+
+const { RangePicker } = DatePicker;
+const dateFormat = "YYYY-MM-DD";
 
 const AdminUserStat = () => {
   const [userCount, setUserCount] = useState(0);
@@ -18,6 +33,7 @@ const AdminUserStat = () => {
   const [wishRanking, setWishRanking] = useState({});
   const [trafficData, setTrafficData] = useState({});
   const [signupData, setSignupData] = useState({});
+  const [selectedType, setSelectedType] = useState("타입");
 
   const fetchAdminStatData = async (group: string) => {
     let res = await axiosInstance
@@ -113,6 +129,15 @@ const AdminUserStat = () => {
     fetchData();
   }, []);
 
+  const handleChangeDebut = (range) => {
+    if (selectedType == "월별") {
+      console.log(range);
+    } else {
+      console.log(range[0].format());
+      console.log(range[1].format());
+    }
+  };
+
   const doughnutData = [
     {
       dataObject: userGender,
@@ -177,6 +202,32 @@ const AdminUserStat = () => {
       graphTitle: "주간 가입자수",
     },
   ];
+
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: (
+        <div
+          style={{ textAlign: "center" }}
+          onClick={() => setSelectedType("일별")}
+        >
+          일별
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <div
+          style={{ textAlign: "center" }}
+          onClick={() => setSelectedType("월별")}
+        >
+          월별
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="Wrapper" style={{ padding: "1% 5%" }}>
       <div
@@ -261,6 +312,38 @@ const AdminUserStat = () => {
         })}
       </div>
       <Divider style={{ border: "1px solid black" }} />
+      <div
+        className="lineHeader"
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <div style={{ marginRight: "2%" }}>
+          {selectedType == "월별" ? (
+            <DatePicker
+              onChange={handleChangeDebut}
+              picker="month"
+              defaultValue={dayjs("2024/05")}
+            />
+          ) : (
+            <RangePicker
+              onChange={handleChangeDebut}
+              defaultValue={[
+                dayjs("2024/05/01", dateFormat),
+                dayjs("2024/05/07", dateFormat),
+              ]}
+              format={dateFormat}
+            />
+          )}
+        </div>
+        <div>
+          <Dropdown menu={{ items }}>
+            <Button>{selectedType}</Button>
+          </Dropdown>
+        </div>
+      </div>
       {
         <div
           className="lineWrapper"
