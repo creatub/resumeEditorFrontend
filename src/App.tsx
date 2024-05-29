@@ -1,4 +1,3 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Login from "./view/auth/login";
 import SignUp from "./view/auth/signUp";
@@ -12,6 +11,8 @@ import ResumeListDetails from "./view/mainPage/resumeList/details/details";
 import AdminPage from "./view/admin/adminPage";
 import ProtectedRoute from "./routes/protectedRoutes";
 import ProtectLoginRoute from "./routes/protectLoginRoute";
+import ResumeHistoryDetail from "./view/mainPage/resumeList/details/resumeHistory";
+import React from "react";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="resumelist/:id" element={<ResumeListDetails />} />
           <Route path="resumelist" element={<ResumeList />} />
           <Route path="mypage" element={<MyPage />} />
+          <Route path="mypage/:id" element={<ResumeHistoryDetail />} />
         </Route>
         <Route
           path="/admin/main"

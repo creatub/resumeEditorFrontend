@@ -1,12 +1,11 @@
-import React from "react";
 import axiosInstance from "@/api/api";
 import { Button, Form, Pagination } from "antd";
 import "./resumeList.css";
-import { EyeOutlined } from "@ant-design/icons";
+import { EyeOutlined, StarOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import Search from "antd/es/input/Search";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import React from "react";
 
 interface ResumeList {
   num: number;
@@ -18,75 +17,242 @@ interface ResumeList {
   w_date: string;
   content: string;
 }
+
 const ResumeList = () => {
   const [resumeList, setResumeList] = useState<ResumeList[]>([]);
+  const [topRatedResumes, setTopRatedResumes] = useState<ResumeList[]>([]);
+  const [topReadResumes, setTopReadResumes] = useState<ResumeList[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
+
   async function fetchSearch(search: string) {
-    let res = await axiosInstance
-      .get("/board/list/search", {
-        params: {
-          page: 0,
-          keyword: search,
-        },
-      })
-      .then((res) => {
-        setResumeList(res.data.response);
-        setTotalPages(res.data.totalPages);
-      });
+    let res = await axiosInstance.get("/board/list/search", {
+      params: {
+        page: 0,
+        keyword: search,
+      },
+    });
+    setResumeList(res.data.response);
+    setTotalPages(res.data.totalPages);
   }
+
   async function fetchList(page: number) {
-    let res = await axiosInstance
-      .get("/board/list", {
-        params: {
-          page: page - 1,
-        },
-      })
-      .then((res) => {
-        setResumeList(res.data.response);
-        setTotalPages(res.data.totalPages);
-      });
+    let res = await axiosInstance.get("/board/list", {
+      params: {
+        page: page - 1,
+      },
+    });
+    setResumeList(res.data.response);
+    setTotalPages(res.data.totalPages);
   }
+
+  async function fetchTopResumes(
+    group: string,
+    setter: (data: ResumeList[]) => void
+  ) {
+    let res = await axiosInstance.get("/board/list/rank", {
+      params: { group },
+    });
+    setter(res.data.response);
+  }
+
+  const fetchData = async () => {
+    try {
+      let res = await Promise.all([
+        fetchList(0),
+        fetchTopResumes("rating", setTopRatedResumes),
+        fetchTopResumes("read_num", setTopReadResumes),
+      ]);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   useEffect(() => {
-    fetchList(0);
+    fetchData();
   }, []);
+
   return (
-    <div>
+    <div style={{ display: "flex" }}>
       <div
-        className="search"
-        style={{ display: "flex", justifyContent: "center", paddingTop: "3%" }}
+        className="leftWrapper"
+        style={{
+          width: "25%",
+          padding: "1%",
+          marginLeft: "5%",
+          marginTop: "10.2%",
+        }}
       >
-        <Search
-          onSearch={(value) => {
-            fetchSearch(value);
-          }}
-          size="large"
-          placeholder="검색어를 입력하세요"
-          style={{ width: "40%" }}
-        />
-      </div>
-      <div
-        style={{ display: "flex", justifyContent: "center", margin: "3% 0" }}
-      >
-        <Pagination
-          onChange={(page) => {
-            fetchList(page);
-          }}
-          pageSize={5}
-          showSizeChanger={false}
-          total={totalPages * 5 - 5}
-        />
-      </div>
-      <div className="wrapper">
         <div
-          className="innerWrapper"
           style={{
-            display: "flex",
-            width: "100%",
-            flexDirection: "column",
+            backgroundColor: "#85dad2",
+            padding: "1px",
+            borderRadius: "4px",
+            textAlign: "center",
+            marginBottom: "20px",
+            color: "white",
           }}
         >
-          {resumeList.map((resume, index) => {
-            return (
+          <h2>Top Rated Resumes</h2>
+        </div>
+        {topRatedResumes.map((resume, index) => (
+          <div
+            key={`topRated${index}`}
+            className="contentBox"
+            style={{
+              border: "1px solid rgb(225,225,225)",
+              padding: "2% 5%",
+              margin: "1% 0",
+              position: "relative",
+              display: "flex",
+            }}
+          >
+            <img
+              src="/img/most_viewed.png"
+              alt="Resume"
+              style={{
+                width: "80px",
+                height: "80px",
+                marginRight: "20px",
+                marginTop: "25px",
+              }}
+            />
+            <div style={{ flex: "1" }}>
+              <h3 style={{ color: "black" }}>
+                <Link
+                  to={`/main/resumelist/${resume.r_num}`}
+                  style={{ color: "black" }}
+                >
+                  {resume.title}
+                </Link>
+              </h3>
+              <p
+                style={{
+                  display: "-webkit-box",
+                  WebkitBoxOrient: "vertical",
+                  WebkitLineClamp: 2,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {resume.content}
+              </p>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span>{resume.w_date}</span>
+                <span>
+                  <EyeOutlined /> {resume.read_num}
+                </span>
+              </div>
+              <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+                <StarOutlined /> {resume.rating.toFixed(1)}
+              </div>
+            </div>
+          </div>
+        ))}
+
+        <div
+          style={{
+            backgroundColor: "#85dad2",
+            padding: "1px",
+            borderRadius: "4px",
+            textAlign: "center",
+            marginTop: "50px",
+            marginBottom: "20px",
+            color: "white",
+          }}
+        >
+          <h2>Most Viewed Resumes</h2>
+        </div>
+        {topReadResumes.map((resume, index) => (
+          <div
+            key={`topRead${index}`}
+            className="contentBox"
+            style={{
+              border: "1px solid rgb(225,225,225)",
+              padding: "2% 5%",
+              margin: "1% 0",
+              position: "relative",
+              display: "flex",
+            }}
+          >
+            <img
+              src="/img/recommended.png"
+              alt="Resume"
+              style={{
+                width: "80px",
+                height: "80px",
+                marginRight: "20px",
+                marginTop: "25px",
+              }}
+            />
+            <div style={{ flex: "1" }}>
+              <h3 style={{ color: "black" }}>
+                <Link
+                  to={`/main/resumelist/${resume.r_num}`}
+                  style={{ color: "black" }}
+                >
+                  {resume.title}
+                </Link>
+              </h3>
+              <p
+                style={{
+                  display: "-webkit-box",
+                  WebkitBoxOrient: "vertical",
+                  WebkitLineClamp: 2,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {resume.content}
+              </p>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span>{resume.w_date}</span>
+                <span>
+                  <EyeOutlined /> {resume.read_num}
+                </span>
+              </div>
+              <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+                <StarOutlined /> {resume.rating.toFixed(1)}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="rightWrapper" style={{ width: "75%", padding: "1%" }}>
+        <div
+          className="search"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            paddingTop: "3%",
+          }}
+        >
+          <Search
+            onSearch={(value) => {
+              fetchSearch(value);
+            }}
+            size="large"
+            placeholder="검색어를 입력하세요"
+            style={{ width: "60%" }}
+          />
+        </div>
+        <div
+          style={{ display: "flex", justifyContent: "center", margin: "3% 0" }}
+        >
+          <Pagination
+            onChange={(page) => {
+              fetchList(page);
+            }}
+            pageSize={5}
+            showSizeChanger={false}
+            total={totalPages * 5 - 5}
+          />
+        </div>
+        <div className="wrapper">
+          <div
+            className="innerWrapper"
+            style={{ display: "flex", width: "100%", flexDirection: "column" }}
+          >
+            {resumeList.map((resume, index) => (
               <div
                 key={`resume.r_num${index}`}
                 style={{ display: "flex", justifyContent: "center" }}
@@ -94,9 +260,9 @@ const ResumeList = () => {
                 <div
                   className="contentBox"
                   style={{
-                    width: "50%",
+                    width: "80%",
                     border: "1px solid rgb(225,225,225)",
-                    padding: "3% 5%",
+                    padding: "2% 5%",
                     margin: "1% 0",
                   }}
                 >
@@ -115,7 +281,7 @@ const ResumeList = () => {
                     style={{
                       display: "-webkit-box",
                       WebkitBoxOrient: "vertical",
-                      margin: "5% 0",
+                      margin: "1% 0",
                       fontSize: "16px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -140,8 +306,8 @@ const ResumeList = () => {
                   </div>
                 </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </div>
     </div>
