@@ -1,4 +1,13 @@
-import { Button, Form, Input, Radio, Spin, Switch, Tooltip } from 'antd';
+import {
+  Button,
+  Form,
+  Input,
+  Radio,
+  Spin,
+  Switch,
+  Tooltip,
+  Select,
+} from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { CSSProperties, useState } from 'react';
 import { useForm } from 'antd/es/form/Form';
@@ -13,15 +22,39 @@ import { DecodedToken } from '@/types/globalTypes';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 
+const { Option } = Select;
+
 const ResumeEdit = () => {
   const [userInputForm] = useForm();
   const [userAnswer, setUserAnser] = useState('');
   const [switchSelected, setSwtichSelected] = useState(false);
+  const [selectedTechnique, setSelectedTechnique] = useState('normal');
   const [generated, setGenerated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState('');
   const [diffResult, setDiffResult] = useState([]); // 추가된 줄
   const [showDiff, setShowDiff] = useState(false); // Diff 결과를 보여줄지 여부를 저장하는 상태
+
+  const techniques = {
+    normal: '기본',
+    STAR: 'STAR 기법',
+    SWOT: 'SWOT 분석',
+    AIDA: 'AIDA 기법',
+    '5W1H': '5W1H 기법',
+    에피소드: '에피소드 기법',
+  };
+
+  const techniqueDescriptions = {
+    normal:
+      '기본 모드입니다. Pro를 사용하시는 분들께는 더 다양한 기법이 제공됩니다.',
+    STAR: '**상황(Situation), 과제(Task), 행동(Action), 결과(Result)**를 중심으로 이야기하는 방식입니다. 이 기법은 특히 경험을 구체적으로 설명할 때 유용합니다.',
+    SWOT: '**강점(Strengths), 약점(Weaknesses), 기회(Opportunities), 위협(Threats)**을 분석하여 자신을 소개하는 방식입니다.',
+    AIDA: '**주의(Attention), 흥미(Interest), 욕구(Desire), 행동(Action)**의 단계를 통해 독자의 관심을 끄는 방식입니다.',
+    '5W1H':
+      '**누가(Who), 무엇을(What), 언제(When), 어디서(Where), 왜(Why), 어떻게(How)**의 질문에 답하는 방식입니다.',
+    에피소드:
+      '구체적인 에피소드를 통해 자신을 소개하는 방식입니다. 독자의 관심을 끌고 기억에 남기기 좋습니다.',
+  };
 
   const randomSpinner = () => {
     const descriptionStyle: CSSProperties = {
@@ -121,6 +154,7 @@ const ResumeEdit = () => {
           model: 'gpt-4o',
           collection: 'resume_all_1536',
           temperature: 1.2,
+          technique: selectedTechnique,
         },
         {
           withCredentials: true,
@@ -214,18 +248,20 @@ const ResumeEdit = () => {
                 name="pro"
                 label={
                   <div>
-                    <Tooltip
-                      placement="top"
-                      title={
-                        <div>
-                          <p>PRO는 더 좋은 결과를 제공하지만</p>
-                          <p>자소서 목록에 공유됩니다</p>
-                        </div>
-                      }
-                    >
-                      <InfoCircleOutlined style={{ marginRight: '3px' }} />
-                    </Tooltip>
-                    <b>PRO/LITE</b>
+                    <b>
+                      PRO/LITE{' '}
+                      <Tooltip
+                        placement="top"
+                        title={
+                          <div>
+                            <p>PRO는 더 좋은 결과를 제공하지만</p>
+                            <p>자소서 목록에 공유됩니다</p>
+                          </div>
+                        }
+                      >
+                        <InfoCircleOutlined style={{ marginRight: '3px' }} />
+                      </Tooltip>
+                    </b>
                   </div>
                 }
                 style={{
@@ -248,7 +284,37 @@ const ResumeEdit = () => {
                 />
               </Form.Item>
             </Form.Item>
-
+            {switchSelected && (
+              <Form.Item style={{ marginBottom: 0 }}>
+                <Form.Item
+                  name="technique"
+                  label={
+                    <b>
+                      기법 선택{' '}
+                      <Tooltip
+                        placement="top"
+                        title={techniqueDescriptions[selectedTechnique]}
+                      >
+                        <InfoCircleOutlined style={{ marginLeft: '8px' }} />
+                      </Tooltip>
+                    </b>
+                  }
+                  style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+                >
+                  <Select
+                    defaultValue="normal"
+                    size="large"
+                    onChange={(value) => setSelectedTechnique(value)}
+                  >
+                    {Object.entries(techniques).map(([key, value]) => (
+                      <Option value={key} key={key}>
+                        {value}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Form.Item>
+            )}
             <Form.Item style={{ marginBottom: 0 }}>
               <Form.Item
                 name="company"

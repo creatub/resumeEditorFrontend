@@ -56,7 +56,9 @@ const ResumeHistoryDetail = () => {
           >
             {resume.company} {resume.occupation}
           </div>
-          <div>{resume.r_content}</div>
+          <div>
+            <p>{resume.r_content}</p>
+          </div>
           <div style={{ marginTop: '15px' }}>
             글자수: {resume.r_content?.length}
           </div>

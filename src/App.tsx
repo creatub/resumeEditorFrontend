@@ -5,6 +5,7 @@ import LandingPage from './view/landingPage/landing';
 import NotFound from './view/error/notFound/notFound';
 import MainPage from './view/mainPage/mainPage';
 import ResumeEdit from './view/mainPage/resumeEdit/resumeEdit';
+import ResumeGuide from './view/mainPage/resumeGuide/resumeGuide';
 import ResumeList from './view/mainPage/resumeList/resumeList';
 import MyPage from './view/mainPage/myPage/myPage';
 import ResumeListDetails from './view/mainPage/resumeList/details/details';
@@ -28,6 +29,7 @@ function App() {
           }
         />
         <Route path="/main" element={<MainPage />}>
+          <Route path="resumeguide" element={<ResumeGuide />} />
           <Route path="resume" element={<ResumeEdit />} />
           <Route path="resumelist/:id" element={<ResumeListDetails />} />
           <Route path="resumelist" element={<ResumeList />} />

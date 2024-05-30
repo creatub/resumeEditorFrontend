@@ -68,7 +68,7 @@ const Ring: React.FC<RingProps> = ({ mode }) => {
     width: circleDiameter,
     height: circleDiameter,
     borderRadius: '50%',
-    border: `5px solid ${mode === 2 ? '#85DAD2' : 'transparent'}`,
+    border: `5px solid #85DAD2`,
     color: 'black', // Text color
     fontSize: '15px', // Font size
   };
@@ -109,11 +109,16 @@ const MyPage = () => {
     axiosInstance
       .get(`/user/edit-list?page=${page - 1}`)
       .then((res) => {
-        setEditRecords(res.data.response);
-        setTotalPages(res.data.totalPages);
+        if (res.data.response === '게시글이 없습니다.') {
+          setEditRecords([]);
+        } else {
+          setEditRecords(res.data.response);
+          setTotalPages(res.data.totalPages);
+        }
       })
       .catch((err) => {
         console.log(err);
+        setEditRecords([]);
       });
   };
 
@@ -121,11 +126,16 @@ const MyPage = () => {
     axiosInstance
       .get(`/user/bookmark?page=${page}`)
       .then((res) => {
-        setBookmarks(res.data.response);
-        setTotalPages(res.data.totalPages);
+        if (res.data.response === '게시글이 없습니다.') {
+          setBookmarks([]);
+        } else {
+          setBookmarks(res.data.response);
+          setTotalPages(res.data.totalPages);
+        }
       })
       .catch((err) => {
         console.log(err);
+        setBookmarks([]);
       });
   };
 
@@ -174,10 +184,11 @@ const MyPage = () => {
       ];
       return (
         <Table
-          dataSource={editRecords}
+          dataSource={editRecords.length > 0 ? editRecords : []}
           columns={columns}
           pagination={false}
           rowKey="r_num"
+          locale={{ emptyText: '게시글이 없습니다.' }}
         />
       );
     } else {
@@ -197,10 +208,11 @@ const MyPage = () => {
       ];
       return (
         <Table
-          dataSource={bookmarks}
+          dataSource={bookmarks.length > 0 ? bookmarks : []}
           columns={columns}
           pagination={false}
           rowKey="r_num"
+          locale={{ emptyText: '게시글이 없습니다.' }}
         />
       );
     }

@@ -46,6 +46,9 @@ const Navbar = () => {
 
         <ul className="navbar_menu">
           <li>
+            <Link to="/main/resumeguide">자소서 가이드</Link>
+          </li>
+          <li>
             <Link to="/main/resume">자소서 첨삭</Link>
           </li>
           <li>
@@ -81,6 +84,7 @@ const Navbar = () => {
                     .then((res) => {
                       if (res.status == 200) {
                         localStorage.removeItem('access');
+                        localStorage.removeItem('refresh');
                         navigate('/');
                       }
                     });
