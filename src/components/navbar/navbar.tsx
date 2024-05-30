@@ -4,7 +4,6 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { Button } from "antd";
-import axios from "axios";
 import { useEffect } from "react";
 import { login } from "@/store/features/user/userSlice";
 import Swal from "sweetalert2";

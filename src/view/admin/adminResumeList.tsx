@@ -1,5 +1,5 @@
 import axiosInstance from "@/api/api";
-import { Table } from "antd";
+import Table from "antd/es/table";
 import React, { useEffect, useState } from "react";
 
 interface ResumeList {

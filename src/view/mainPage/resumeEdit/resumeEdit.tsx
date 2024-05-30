@@ -1,5 +1,10 @@
 import React from "react";
-import { Button, Form, Input, Radio, Spin, Switch, Tooltip } from "antd";
+import Button from "antd/es/button";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import Radio from "antd/es/radio";
+import Switch from "antd/es/switch";
+import Tooltip from "antd/es/tooltip";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { CSSProperties, useState } from "react";
 import { useForm } from "antd/es/form/Form";

@@ -1,5 +1,11 @@
 import axiosInstance from "@/api/api";
-import { Button, Form, Input, Tooltip, Tabs, Table, Pagination } from "antd";
+import Button from "antd/es/button";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import Table from "antd/es/table";
+import Tooltip from "antd/es/tooltip";
+import Tabs from "antd/es/tabs";
+import Pagination from "antd/es/pagination";
 import { useForm } from "antd/es/form/Form";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -214,14 +220,14 @@ const MyPage = () => {
             <div>{userInfo.username}님</div>
             <div>
               <a
-                style={{ color: "gray" }}
+                style={{ color: "gray", cursor: "pointer" }}
                 onClick={() => setActiveTab("editHistory")}
               >
                 첨삭 기록
               </a>{" "}
               ·{" "}
               <a
-                style={{ color: "gray" }}
+                style={{ color: "gray", cursor: "pointer" }}
                 onClick={() => setActiveTab("bookmarks")}
               >
                 내 즐겨찾기

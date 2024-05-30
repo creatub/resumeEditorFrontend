@@ -1,17 +1,17 @@
 import CustomFooter from "@/components/footer";
-import { RootState } from "@/store/store";
-import { Avatar, Button, Divider, Form, Input, notification } from "antd";
+import Button from "antd/es/button";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import notification from "antd/es/notification";
 import axios from "axios";
 import { motion, useAnimation } from "framer-motion";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { login, logout } from "@/store/features/user/userSlice";
+import { login } from "@/store/features/user/userSlice";
 import { DecodedToken } from "@/types/globalTypes";
 import { jwtDecode } from "jwt-decode";
 import { setToken } from "@/store/features/token/tokenSlice";
-import LandingComment from "./landingComment";
-import Box from "./box";
 import Swal from "sweetalert2";
 
 const LandingPage = () => {

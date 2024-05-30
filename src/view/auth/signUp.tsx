@@ -1,4 +1,9 @@
-import { Button, DatePicker, Form, Input, Radio, Select, Tooltip } from "antd";
+import Button from "antd/es/button";
+import DatePicker from "antd/es/date-picker";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import Radio from "antd/es/radio";
+import Select from "antd/es/select";
 import { useForm } from "antd/es/form/Form";
 import { Link, useNavigate } from "react-router-dom";
 import CustomFooter from "../../components/footer";
@@ -354,7 +359,7 @@ const SignUp = () => {
                               return Promise.resolve();
                             }
                             return Promise.reject(
-                              new Error("비밀 번호를 확인해 주세요!")
+                              new Error("비밀 번호가 일치하지 않습니다!")
                             );
                           },
                         }),
