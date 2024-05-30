@@ -90,8 +90,24 @@ const ResumeListDetails = () => {
     });
   };
 
+  const fetchLiked = () => {
+    let res = axiosInstance.get(`/board/bookmark/${param.id}`).then((res) => {
+      if (res.data.response == "false") {
+        setStarClicked(false);
+      } else {
+        setStarClicked(true);
+      }
+    });
+  };
   useEffect(() => {
-    let res = Promise.all([fetchResume(), fetchComment(0)]);
+    const fetchData = async () => {
+      let res = await Promise.all([
+        fetchResume(),
+        fetchComment(0),
+        fetchLiked(),
+      ]);
+    };
+    fetchData();
   }, []);
   return (
     <div
