@@ -302,6 +302,18 @@ const SignUp = () => {
                                       showConfirmButton: true,
                                       timer: 2000,
                                     });
+                                  } else if (err.response.status === 400) {
+                                    let deleted =
+                                      err.response.data.response.deleted;
+                                    let available =
+                                      err.response.data.response.available;
+                                    Swal.fire({
+                                      icon: "error",
+                                      title: "탈퇴한 계정입니다",
+                                      html: `해당 이메일은 ${deleted}에 탈퇴하였습니다.<br/> ${available}에 재가입이 가능합니다.`,
+                                      showConfirmButton: true,
+                                      timer: 2000,
+                                    });
                                   }
                                 });
                             }
