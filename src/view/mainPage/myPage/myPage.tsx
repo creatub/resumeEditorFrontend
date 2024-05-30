@@ -13,7 +13,6 @@ interface DecodedToken {
   uNum: number;
   username: string;
 }
-
 interface UserInfo {
   age: number;
   authCode: null;
@@ -33,14 +32,12 @@ interface UserInfo {
   username: string;
   wish: string;
 }
-
 interface EditRecord {
   mode: number;
   r_num: number;
   title: string;
   w_date: string;
 }
-
 interface Bookmark {
   read_num: number;
   rating: number;
@@ -50,17 +47,13 @@ interface Bookmark {
   content: string;
   rating_count: number;
 }
-
 interface RingProps {
   mode: number;
 }
-
 const Ring: React.FC<RingProps> = ({ mode }) => {
   const text = mode === 2 ? "Pro" : "Lite";
-
   const textSize = 30;
   const circleDiameter = textSize + 6; // Add a bit more to accommodate text
-
   const ringStyle: React.CSSProperties = {
     display: "inline-flex",
     justifyContent: "center",
@@ -68,14 +61,12 @@ const Ring: React.FC<RingProps> = ({ mode }) => {
     width: circleDiameter,
     height: circleDiameter,
     borderRadius: "50%",
-    border: `5px solid ${mode === 2 ? "#85DAD2" : "transparent"}`,
+    border: `5px solid #85DAD2`,
     color: "black", // Text color
     fontSize: "15px", // Font size
   };
-
   return <div style={ringStyle}>{text}</div>;
 };
-
 const MyPage = () => {
   const [userInfo, setUserInfo] = useState<Partial<UserInfo>>({});
   const [userForm] = useForm();
@@ -84,7 +75,6 @@ const MyPage = () => {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
   const fetchUserInfo = () => {
     let res = axiosInstance
       .post("/user/search")
@@ -104,31 +94,38 @@ const MyPage = () => {
         console.log(err);
       });
   };
-
   const fetchEditRecords = (page: number) => {
     axiosInstance
       .get(`/user/edit-list?page=${page - 1}`)
       .then((res) => {
-        setEditRecords(res.data.response);
-        setTotalPages(res.data.totalPages);
+        if (res.data.response === "게시글이 없습니다.") {
+          setEditRecords([]);
+        } else {
+          setEditRecords(res.data.response);
+          setTotalPages(res.data.totalPages);
+        }
       })
       .catch((err) => {
         console.log(err);
+        setEditRecords([]);
       });
   };
-
   const fetchBookmarks = (page: number) => {
     axiosInstance
       .get(`/user/bookmark?page=${page}`)
       .then((res) => {
-        setBookmarks(res.data.response);
-        setTotalPages(res.data.totalPages);
+        if (res.data.response === "게시글이 없습니다.") {
+          setBookmarks([]);
+        } else {
+          setBookmarks(res.data.response);
+          setTotalPages(res.data.totalPages);
+        }
       })
       .catch((err) => {
         console.log(err);
+        setBookmarks([]);
       });
   };
-
   useEffect(() => {
     fetchUserInfo();
   }, []);
@@ -139,7 +136,6 @@ const MyPage = () => {
       fetchBookmarks(currentPage);
     }
   }, [activeTab, currentPage]);
-
   const renderMode = (mode: number) => {
     const modeText = mode === 1 ? "lite" : "pro";
     return (
@@ -155,7 +151,6 @@ const MyPage = () => {
       </div>
     );
   };
-
   const renderTable = () => {
     if (activeTab === "editHistory") {
       const columns = [
@@ -174,10 +169,11 @@ const MyPage = () => {
       ];
       return (
         <Table
-          dataSource={editRecords}
+          dataSource={editRecords.length > 0 ? editRecords : []}
           columns={columns}
           pagination={false}
           rowKey="r_num"
+          locale={{ emptyText: "게시글이 없습니다." }}
         />
       );
     } else {
@@ -197,10 +193,11 @@ const MyPage = () => {
       ];
       return (
         <Table
-          dataSource={bookmarks}
+          dataSource={bookmarks.length > 0 ? bookmarks : []}
           columns={columns}
           pagination={false}
           rowKey="r_num"
+          locale={{ emptyText: "게시글이 없습니다." }}
         />
       );
     }
@@ -232,7 +229,6 @@ const MyPage = () => {
             </div>
           </div>
         </div>
-
         <div
           style={{
             marginTop: "20px",
@@ -356,5 +352,4 @@ const MyPage = () => {
     </div>
   );
 };
-
 export default MyPage;

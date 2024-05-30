@@ -132,10 +132,47 @@ const AdminUserStat = () => {
   const handleChangeDebut = (range) => {
     if (selectedType == "월별") {
       const valueOfInput = range.format();
+      const res = axiosInstance
+        .get("/admin/stat/user/traffic", {
+          params: {
+            month: valueOfInput.slice(0, 10),
+          },
+        })
+        .then((res) => {
+          setTrafficData(res.data.response.traffic_data);
+        });
+      const res2 = axiosInstance
+        .get("/admin/stat/user/signup", {
+          params: {
+            month: valueOfInput.slice(0, 10),
+          },
+        })
+        .then((res) => {
+          setSignupData(res.data.response.signup_data);
+        });
     } else {
       const valueOfInput1 = range[0].format();
       const valueOfInput2 = range[1].format();
-      fetchAccumulatedData;
+      const res = axiosInstance
+        .get("/admin/stat/user/traffic", {
+          params: {
+            startDate: valueOfInput1.slice(0, 10),
+            endDate: valueOfInput2.slice(0, 10),
+          },
+        })
+        .then((res) => {
+          setTrafficData(res.data.response.traffic_data);
+        });
+      const res2 = axiosInstance
+        .get("/admin/stat/user/signup", {
+          params: {
+            startDate: valueOfInput1.slice(0, 10),
+            endDate: valueOfInput2.slice(0, 10),
+          },
+        })
+        .then((res) => {
+          setSignupData(res.data.response.signup_data);
+        });
     }
   };
 

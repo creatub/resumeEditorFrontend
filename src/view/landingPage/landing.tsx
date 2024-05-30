@@ -10,6 +10,9 @@ import { login, logout } from "@/store/features/user/userSlice";
 import { DecodedToken } from "@/types/globalTypes";
 import { jwtDecode } from "jwt-decode";
 import { setToken } from "@/store/features/token/tokenSlice";
+import LandingComment from "./landingComment";
+import Box from "./box";
+import Swal from "sweetalert2";
 
 const LandingPage = () => {
   const dispatch = useDispatch();
@@ -67,7 +70,24 @@ const LandingPage = () => {
         });
     } catch (err) {
       if (err.response.status === 401) {
-        callNotification();
+        console.log(
+          err.response.data.message.split(" ")[0],
+          err.response.data.message.split("blacklisted").join("")
+        );
+        if (err.response.data.message.split(" ")[0] === "blacklisted") {
+          const blackListedDate = err.response.data.message
+            .split("blacklisted")
+            .join("")
+            .slice(0, 11);
+          console.log(blackListedDate);
+          Swal.fire({
+            icon: "error",
+            title: "블랙리스트 계정안내",
+            text: `해당 계정은 ${blackListedDate}까지 블랙리스트로 지정되었습니다. 관리자에게 문의해주세요.`,
+          });
+        } else {
+          callNotification();
+        }
       }
     }
   };
@@ -282,6 +302,7 @@ const LandingPage = () => {
         </div>
       </div>
       {/* <LandingComment /> */}
+      {/* <Box /> */}
       <CustomFooter />
     </div>
   );
