@@ -36,13 +36,17 @@ const ResumeList = () => {
   }
 
   async function fetchList(page: number) {
-    let res = await axiosInstance.get("/board/list", {
-      params: {
-        page: page - 1,
-      },
-    });
-    setResumeList(res.data.response);
-    setTotalPages(res.data.totalPages);
+    let res = await axiosInstance
+      .get("/board/list", {
+        params: {
+          page: page - 1,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        setResumeList(res.data.response);
+        setTotalPages(res.data.totalPages);
+      });
   }
 
   async function fetchTopResumes(
@@ -300,8 +304,18 @@ const ResumeList = () => {
                     }}
                   >
                     <div className="contentDate">{resume.w_date}</div>
-                    <div className="contentView">
-                      <EyeOutlined /> {resume.read_num}
+                    <div
+                      className="contentView"
+                      style={{
+                        width: "20%",
+                        display: "flex",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <StarOutlined />
+                      {resume.rating}{" "}
+                      <EyeOutlined style={{ marginLeft: "7%" }} />{" "}
+                      {resume.read_num}
                     </div>
                   </div>
                 </div>
