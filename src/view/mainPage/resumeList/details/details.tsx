@@ -7,7 +7,14 @@ import { useParams } from "react-router-dom";
 import { UserOutlined } from "@ant-design/icons";
 import { jwtDecode } from "jwt-decode";
 import { DecodedToken } from "@/types/globalTypes";
-import { StarOutlined, StarFilled } from "@ant-design/icons";
+import "./star.css";
+import {
+  StarOutlined,
+  StarFilled,
+  HeartOutlined,
+  HeartFilled,
+} from "@ant-design/icons";
+import Swal from "sweetalert2";
 interface Resume {
   content: string;
   r_num: number;
@@ -37,7 +44,25 @@ const ResumeListDetails = () => {
   const [editId, setEditId] = useState<number | null>(null);
   const [writeComment, setWriteComment] = useState<string>("");
   const [editComment, setEditComment] = useState<string>("");
-  const [starClicked, setStarClicked] = useState<boolean>(false); // 별점 클릭 여부
+  const [starClicked, setStarClicked] = useState<boolean>(false); // 즐겨찾기 클릭 여부
+  const [rated, setRated] = useState<boolean>(false); // 별점 평가 여부
+  const [openRateModal, setOpenRateModal] = useState<boolean>(false); // 별점 모달 여부
+
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
+
+  const handleClick = (value) => {
+    let num = parseFloat(value);
+    setRating(num);
+  };
+
+  const handleMouseOver = (value) => {
+    setHover(value);
+  };
+
+  const handleMouseOut = () => {
+    setHover(0);
+  };
   const accessToken = localStorage.getItem("access") ?? "";
   const DecodedToken: DecodedToken = jwtDecode(accessToken);
   const userInfo = DecodedToken.username;
@@ -99,12 +124,23 @@ const ResumeListDetails = () => {
       }
     });
   };
+
+  const fetchRated = () => {
+    let res = axiosInstance.get(`/board/rating/${param.id}`).then((res) => {
+      if (res.data.response == 0) {
+        setRated(false);
+      } else {
+        setRated(true);
+      }
+    });
+  };
   useEffect(() => {
     const fetchData = async () => {
       let res = await Promise.all([
         fetchResume(),
         fetchComment(0),
         fetchLiked(),
+        fetchRated(),
       ]);
     };
     fetchData();
@@ -124,7 +160,7 @@ const ResumeListDetails = () => {
       >
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           {starClicked ? (
-            <StarFilled
+            <HeartFilled
               onClick={() => {
                 let res = axiosInstance
                   .post("/board/bookmark", {
@@ -136,10 +172,10 @@ const ResumeListDetails = () => {
                     setStarClicked(false);
                   });
               }}
-              style={{ fontSize: "25px", color: "#FFA808", cursor: "pointer" }}
+              style={{ fontSize: "25px", color: "#F1565C", cursor: "pointer" }}
             />
           ) : (
-            <StarOutlined
+            <HeartOutlined
               onClick={() => {
                 let res = axiosInstance
                   .post("/board/bookmark", {
@@ -192,8 +228,21 @@ const ResumeListDetails = () => {
             <b>작성일:</b> {resume.w_date}
           </div>
           <div>
-            <b>평점:</b> {resume.rating} / 5
+            <b>평점:</b> {resume.rating} / 5{" "}
           </div>
+
+          {!rated && (
+            <div style={{ marginTop: "2%" }}>
+              <Button
+                onClick={() => {
+                  setOpenRateModal(true);
+                }}
+              >
+                <span style={{ fontWeight: "bold" }}>별점 추가하기!</span>
+                <StarFilled style={{ color: "#F7A000" }} />
+              </Button>
+            </div>
+          )}
         </div>
         <Divider />
         <div className="commentListWrapper">
@@ -304,6 +353,7 @@ const ResumeListDetails = () => {
         <div className="writeCommentWrapper" style={{ width: "100%" }}>
           <div style={{ marginTop: "3%", marginBottom: "2%", width: "100%" }}>
             <TextArea
+              value={writeComment}
               onChange={(e) => {
                 setWriteComment(e.target.value);
               }}
@@ -328,6 +378,7 @@ const ResumeListDetails = () => {
                     unum: u_num,
                   })
                   .then((res) => {
+                    setWriteComment("");
                     fetchComment(0);
                   });
               }}
@@ -342,6 +393,85 @@ const ResumeListDetails = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        title={
+          <div style={{ textAlign: "center" }}>
+            해당 글에 대한 평점을 남겨주세요!
+          </div>
+        }
+        centered
+        open={openRateModal}
+        onCancel={() => {
+          setOpenRateModal(false);
+        }}
+        footer={[
+          <div
+            key={"onOk"}
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          >
+            <Button
+              style={{ backgroundColor: "#85DAD2", color: "white" }}
+              size="large"
+              onClick={() => {
+                console.log(typeof rating);
+                let res = axiosInstance
+
+                  .post("/board/rating", {
+                    rating: rating,
+                    unum: DecodedToken.uNum,
+                    rnum: resume.r_num,
+                  })
+                  .then((res) => {
+                    setOpenRateModal(false);
+                    setRated(true);
+                    fetchResume();
+                    Swal.fire({
+                      icon: "success",
+                      title: "평가가 완료되었습니다!",
+                      text: "감사합니다 :)",
+                    });
+                  });
+              }}
+            >
+              평가하기!
+            </Button>
+          </div>,
+        ]}
+      >
+        <div className="star-rating">
+          {[...Array(5)].map((_, index) => {
+            const value = (index + 1) * 2;
+            const halfValue = value - 1;
+            return (
+              <span
+                key={`star${index}`}
+                className="star"
+                onClick={() => {
+                  handleClick(value / 2);
+                }}
+                onMouseOver={() => handleMouseOver(value)}
+                onMouseOut={handleMouseOut}
+              >
+                {hover >= value || rating >= value / 2 ? (
+                  <StarFilled
+                    style={{ color: hover >= value ? "#ffc107" : "#ffa500" }}
+                  />
+                ) : hover >= halfValue || rating >= halfValue / 2 ? (
+                  <StarFilled
+                    style={{
+                      color: hover >= halfValue ? "#ffc107" : "#ffa500",
+                    }}
+                    className="half"
+                  />
+                ) : (
+                  <StarOutlined style={{ color: "#ddd" }} />
+                )}
+              </span>
+            );
+          })}
+        </div>
+      </Modal>
     </div>
   );
 };
