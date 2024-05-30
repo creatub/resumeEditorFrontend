@@ -19,6 +19,7 @@ dayjs.extend(customParseFormat);
 
 const { RangePicker } = DatePicker;
 const dateFormat = "YYYY-MM-DD";
+const today = dayjs();
 
 const AdminUserStat = () => {
   const [userCount, setUserCount] = useState(0);
@@ -94,15 +95,19 @@ const AdminUserStat = () => {
 
   const fetchAccumulatedData = async (group: string) => {
     try {
-      const res = await axiosInstance.get(`/admin/stat/user/${group}`);
-      switch (group) {
-        case "traffic":
-          setTrafficData(res.data.response.traffic_data);
-          break;
-        case "signup":
-          setSignupData(res.data.response.signup_data);
-          break;
-      }
+      const res = await axiosInstance
+        .get(`/admin/stat/user/${group}`)
+        .then((res) => {
+          console.log(res);
+          switch (group) {
+            case "traffic":
+              setTrafficData(res.data.response.traffic_data);
+              break;
+            case "signup":
+              setSignupData(res.data.response.signup_data);
+              break;
+          }
+        });
     } catch (err) {
       console.log("집계데이터를 불러오는데에 실패했습니다!", err);
     }
@@ -360,17 +365,13 @@ const AdminUserStat = () => {
       >
         <div style={{ marginRight: "2%" }}>
           {selectedType == "월별" ? (
-            <DatePicker
-              onChange={handleChangeDebut}
-              picker="month"
-              defaultValue={dayjs("2024/05")}
-            />
+            <DatePicker onChange={handleChangeDebut} picker="month" />
           ) : (
             <RangePicker
               onChange={handleChangeDebut}
               defaultValue={[
-                dayjs("2024/05/01", dateFormat),
-                dayjs("2024/05/07", dateFormat),
+                dayjs(today.subtract(6, "day"), dateFormat),
+                dayjs(today, dateFormat),
               ]}
               format={dateFormat}
             />

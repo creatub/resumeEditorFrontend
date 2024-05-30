@@ -144,7 +144,7 @@ const AdminResumeStat = () => {
     await Promise.all([
       fetchAccumulatedData("traffic"),
       fetchAccumulatedData("signup"),
-      fetchSquareData("editTotal"), //수정 데이터들
+      fetchSquareData("editTotal"),
       fetchSquareData("editToday"),
       fetchSquareData("boardToday"),
       fetchRankData("occupation"),

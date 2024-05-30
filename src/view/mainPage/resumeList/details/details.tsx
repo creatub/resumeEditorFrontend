@@ -4,10 +4,10 @@ import { Avatar, Button, Divider, Modal } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { UserOutlined, DeleteOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 import { jwtDecode } from "jwt-decode";
 import { DecodedToken } from "@/types/globalTypes";
-
+import { StarOutlined, StarFilled } from "@ant-design/icons";
 interface Resume {
   content: string;
   r_num: number;
@@ -37,6 +37,7 @@ const ResumeListDetails = () => {
   const [editId, setEditId] = useState<number | null>(null);
   const [writeComment, setWriteComment] = useState<string>("");
   const [editComment, setEditComment] = useState<string>("");
+  const [starClicked, setStarClicked] = useState<boolean>(false); // 별점 클릭 여부
   const accessToken = localStorage.getItem("access") ?? "";
   const DecodedToken: DecodedToken = jwtDecode(accessToken);
   const userInfo = DecodedToken.username;
@@ -88,8 +89,8 @@ const ResumeListDetails = () => {
       },
     });
   };
+
   useEffect(() => {
-    console.log(resume);
     let res = Promise.all([fetchResume(), fetchComment(0)]);
   }, []);
   return (
@@ -105,6 +106,39 @@ const ResumeListDetails = () => {
           padding: "5%",
         }}
       >
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          {starClicked ? (
+            <StarFilled
+              onClick={() => {
+                let res = axiosInstance
+                  .post("/board/bookmark", {
+                    rnum: resume.r_num,
+                    unum: DecodedToken.uNum,
+                  })
+                  .then((res) => {
+                    alert("즐겨찾기에서 삭제되었습니다.");
+                    setStarClicked(false);
+                  });
+              }}
+              style={{ fontSize: "25px", color: "#FFA808", cursor: "pointer" }}
+            />
+          ) : (
+            <StarOutlined
+              onClick={() => {
+                let res = axiosInstance
+                  .post("/board/bookmark", {
+                    rnum: resume.r_num,
+                    unum: DecodedToken.uNum,
+                  })
+                  .then((res) => {
+                    setStarClicked(true);
+                    alert("즐겨찾기에 추가되었습니다.");
+                  });
+              }}
+              style={{ fontSize: "25px", cursor: "pointer" }}
+            />
+          )}
+        </div>
         <div className="DetailContentHeader">
           <h1>{resume.title}</h1>
         </div>

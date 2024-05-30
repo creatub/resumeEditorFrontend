@@ -5,6 +5,7 @@ import Select from "antd/es/select";
 import Table from "antd/es/table";
 import Space from "antd/es/space";
 import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const { Search } = Input;
 
@@ -126,6 +127,13 @@ const AdminUserList = () => {
           });
           setUserList(newData);
           setTotalPage(res.data.totalPages);
+        })
+        .catch((err) => {
+          Swal.fire({
+            icon: "error",
+            title: "검색 결과가 없습니다",
+            text: "다시 시도해주세요",
+          });
         });
     }
   };
