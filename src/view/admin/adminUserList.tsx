@@ -102,39 +102,43 @@ const AdminUserList = () => {
   const [userList, setUserList] = useState<UserList[]>([]);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [searchOption, setSearchOption] = useState("");
+  const [searchText, setSearchText] = useState("");
 
+  const fetchSearch = (page: number, search: string) => {
+    let res = axiosInstance
+      .get("/admin/user/search", {
+        params: {
+          page: page,
+          keyword: search,
+          group: searchOption,
+        },
+      })
+      .then((res) => {
+        let newData = res.data.response.map((data: any, idx: number) => {
+          return {
+            ...data,
+            key: idx,
+            inDate: data.inDate.slice(0, 10),
+            delDate: data.delDate ? data.delDate.slice(0, 10) : null,
+          };
+        });
+        setUserList(newData);
+        setTotalPage(res.data.totalPages);
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          title: "검색 결과가 없습니다",
+          text: "다시 시도해주세요",
+        });
+      });
+  };
   const onSearch = (search: string) => {
     if (searchOption === "") {
       alert("검색 옵션을 선택해주세요");
       return;
     } else {
-      let res = axiosInstance
-        .get("/admin/user/search", {
-          params: {
-            page: 0,
-            keyword: search,
-            group: searchOption,
-          },
-        })
-        .then((res) => {
-          let newData = res.data.response.map((data: any, idx: number) => {
-            return {
-              ...data,
-              key: idx,
-              inDate: data.inDate.slice(0, 10),
-              delDate: data.delDate ? data.delDate.slice(0, 10) : null,
-            };
-          });
-          setUserList(newData);
-          setTotalPage(res.data.totalPages);
-        })
-        .catch((err) => {
-          Swal.fire({
-            icon: "error",
-            title: "검색 결과가 없습니다",
-            text: "다시 시도해주세요",
-          });
-        });
+      fetchSearch(0, search);
     }
   };
   const fetchUserList = (page: number) => {
@@ -176,13 +180,20 @@ const AdminUserList = () => {
             defaultValue="검색 옵션"
             options={dropDownOptions}
           />
-          <Search size="large" onSearch={onSearch} />
+          <Search
+            onChange={(e) => setSearchText(e.target.value)}
+            size="large"
+            onSearch={onSearch}
+          />
         </Space.Compact>
       </div>
       <Table
         pagination={{
           onChange: (page) => {
-            fetchUserList(page - 1);
+            if (searchOption === "") fetchUserList(page - 1);
+            else {
+              fetchSearch(page - 1, searchText);
+            }
           },
           pageSize: 20,
           total: totalPage * 20,
