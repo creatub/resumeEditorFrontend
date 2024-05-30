@@ -189,6 +189,7 @@ const AdminUserList = () => {
       </div>
       <Table
         pagination={{
+          current: 1,
           onChange: (page) => {
             if (searchOption === "") fetchUserList(page - 1);
             else {
