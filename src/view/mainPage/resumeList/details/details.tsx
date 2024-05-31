@@ -229,7 +229,11 @@ const ResumeListDetails = () => {
             <b>작성일:</b> {resume.w_date}
           </div>
           <div>
-            <b>평점:</b> {resume.rating} / 5{" "}
+            <b>평점:</b>
+            <span>{resume.rating} / 5</span>
+            <span style={{ marginLeft: "3%" }}>
+              (<UserOutlined /> {resume.rating_count}명 참여)
+            </span>
           </div>
 
           {!rated && (
