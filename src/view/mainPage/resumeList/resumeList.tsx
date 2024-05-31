@@ -123,7 +123,7 @@ const ResumeList = () => {
             }}
           >
             <img
-              src="/img/most_viewed.webp"
+              src="/img/recommended.webp"
               alt="Resume"
               style={{
                 width: "80px",
@@ -191,7 +191,7 @@ const ResumeList = () => {
             }}
           >
             <img
-              src="/img/recommended.webp"
+              src="/img/most_viewed.webp"
               alt="Resume"
               style={{
                 width: "80px",

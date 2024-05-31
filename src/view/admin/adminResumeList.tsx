@@ -20,10 +20,22 @@ const tableColumns = [
   {
     title: "평점",
     dataIndex: "rating",
+    sorter: (a, b) => a.rating - b.rating,
   },
   {
     title: "조회수",
     dataIndex: "read_num",
+    sorter: (a, b) => a.read_num - b.read_num,
+  },
+  {
+    title: "사용자",
+    dataIndex: "username",
+  },
+  {
+    title: "작성날짜",
+    dataIndex: "w_date",
+    sorter: (a, b) =>
+      new Date(a.w_date).getTime() - new Date(b.w_date).getTime(),
   },
 ];
 const AdminResumeList = () => {
@@ -33,7 +45,7 @@ const AdminResumeList = () => {
     let res = axiosInstance
       .get("/admin/board/list", {
         params: {
-          page: 1,
+          page: page,
         },
       })
       .then((res) => {
@@ -55,6 +67,7 @@ const AdminResumeList = () => {
     <div style={{ padding: "2% 5%" }}>
       <Table
         pagination={{
+          showSizeChanger: false,
           onChange: (page) => {
             fetchResumeList(page - 1);
           },

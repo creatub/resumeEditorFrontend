@@ -4,7 +4,6 @@ import Form from "antd/es/form";
 import Input from "antd/es/input";
 import Table from "antd/es/table";
 import Tooltip from "antd/es/tooltip";
-import Tabs from "antd/es/tabs";
 import Pagination from "antd/es/pagination";
 import { useForm } from "antd/es/form/Form";
 import axios from "axios";
@@ -263,6 +262,7 @@ const MyPage = () => {
         </div>
         {renderTable()}
         <Pagination
+          showSizeChanger={false}
           current={currentPage}
           total={totalPages * 10}
           onChange={(page) => setCurrentPage(page)}
