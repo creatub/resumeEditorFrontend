@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Search from "antd/es/input/Search";
 import { Link } from "react-router-dom";
 import React from "react";
+import Swal from "sweetalert2";
 
 interface ResumeList {
   num: number;
@@ -23,16 +24,28 @@ const ResumeList = () => {
   const [topRatedResumes, setTopRatedResumes] = useState<ResumeList[]>([]);
   const [topReadResumes, setTopReadResumes] = useState<ResumeList[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [searchText, setSearchText] = useState<string>("");
 
-  async function fetchSearch(search: string) {
-    let res = await axiosInstance.get("/board/list/search", {
-      params: {
-        page: 0,
-        keyword: search,
-      },
-    });
-    setResumeList(res.data.response);
-    setTotalPages(res.data.totalPages);
+  async function fetchSearch(search: string, page: number) {
+    let res = await axiosInstance
+      .get("/board/list/search", {
+        params: {
+          page: page,
+          keyword: search,
+        },
+      })
+      .then((res) => {
+        if (res.data.response == "검색 결과가 없습니다.") {
+          Swal.fire({
+            icon: "error",
+            title: "검색 결과가 없습니다",
+            text: "다시 시도해주세요",
+          });
+        } else {
+          setTotalPages(res.data.totalPages);
+          setResumeList(res.data.response);
+        }
+      });
   }
 
   async function fetchList(page: number) {
@@ -231,8 +244,11 @@ const ResumeList = () => {
           }}
         >
           <Search
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
             onSearch={(value) => {
-              fetchSearch(value);
+              fetchSearch(value, 0);
             }}
             size="large"
             placeholder="검색어를 입력하세요"
@@ -244,11 +260,16 @@ const ResumeList = () => {
         >
           <Pagination
             onChange={(page) => {
-              fetchList(page);
+              console.log(searchText);
+              if (searchText == "") {
+                fetchList(page);
+              } else {
+                fetchSearch(searchText, page - 1);
+              }
             }}
             pageSize={5}
             showSizeChanger={false}
-            total={totalPages * 5 - 5}
+            total={totalPages * 5}
           />
         </div>
         <div className="wrapper">

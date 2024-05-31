@@ -66,6 +66,7 @@ const ResumeListDetails = () => {
   const accessToken = localStorage.getItem("access") ?? "";
   const DecodedToken: DecodedToken = jwtDecode(accessToken);
   const userInfo = DecodedToken.username;
+  const userRole = DecodedToken.role;
   const param = useParams();
   const fetchComment = (page: number) => {
     let res = axiosInstance
@@ -264,7 +265,8 @@ const ResumeListDetails = () => {
                       <Avatar size={23} icon={<UserOutlined />} />{" "}
                       {comment.username}
                     </div>
-                    {userInfo == comment.username && (
+                    {(userInfo == comment.username ||
+                      userRole == "ROLE_ADMIN") && (
                       <div
                         style={{
                           display: "flex",
@@ -414,7 +416,6 @@ const ResumeListDetails = () => {
               style={{ backgroundColor: "#85DAD2", color: "white" }}
               size="large"
               onClick={() => {
-                console.log(typeof rating);
                 let res = axiosInstance
 
                   .post("/board/rating", {
