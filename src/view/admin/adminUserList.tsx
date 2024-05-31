@@ -6,6 +6,7 @@ import Table from "antd/es/table";
 import Space from "antd/es/space";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { Modal } from "antd";
 
 const { Search } = Input;
 
@@ -51,59 +52,71 @@ const dropDownOptions = [
   },
 ];
 
-const tableColumns = [
-  {
-    title: "아이디",
-    dataIndex: "username",
-  },
-  {
-    title: "이메일",
-    dataIndex: "email",
-  },
-  {
-    title: "성별",
-    dataIndex: "gender",
-    filters: [
-      {
-        text: "남성",
-        value: "M",
-      },
-      {
-        text: "여성",
-        value: "F",
-      },
-    ],
-    onFilter: (value, record) => record.gender.indexOf(value as string) === 0,
-  },
-  {
-    title: "유형",
-    dataIndex: "role",
-  },
-  {
-    title: "가입일",
-    dataIndex: "inDate",
-    sorter: (a, b) =>
-      new Date(a.inDate).getTime() - new Date(b.inDate).getTime(),
-  },
-  {
-    title: "삭제일",
-    dataIndex: "delDate",
-    sorter: (a, b) =>
-      new Date(a.delDate).getTime() - new Date(b.delDate).getTime(),
-  },
-  {
-    title: "Action",
-    dataIndex: "",
-    render: () => <Button onClick={(e) => console.log(e)}>삭제</Button>,
-  },
-];
-
 const AdminUserList = () => {
   const [userList, setUserList] = useState<UserList[]>([]);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [searchOption, setSearchOption] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [selectedRow, setSelectedRow] = useState<Partial<UserList>>({});
+  const [selectedUser, setSelectedUser] = useState<number | undefined>(0);
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
+  const tableColumns = [
+    {
+      title: "아이디",
+      dataIndex: "username",
+    },
+    {
+      title: "이메일",
+      dataIndex: "email",
+    },
+    {
+      title: "성별",
+      dataIndex: "gender",
+      filters: [
+        {
+          text: "남성",
+          value: "M",
+        },
+        {
+          text: "여성",
+          value: "F",
+        },
+      ],
+      onFilter: (value, record) => record.gender.indexOf(value as string) === 0,
+    },
+    {
+      title: "유형",
+      dataIndex: "role",
+    },
+    {
+      title: "가입일",
+      dataIndex: "inDate",
+      sorter: (a, b) =>
+        new Date(a.inDate).getTime() - new Date(b.inDate).getTime(),
+    },
+    {
+      title: "삭제일",
+      dataIndex: "delDate",
+      sorter: (a, b) =>
+        new Date(a.delDate).getTime() - new Date(b.delDate).getTime(),
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      render: () => (
+        <Button
+          onClick={() => {
+            setSelectedUser(selectedRow?.unum);
+            setOpenDeleteModal(true);
+          }}
+        >
+          삭제
+        </Button>
+      ),
+    },
+  ];
   const fetchSearch = (page: number, search: string) => {
     let res = axiosInstance
       .get("/admin/user/search", {
@@ -122,6 +135,7 @@ const AdminUserList = () => {
             delDate: data.delDate ? data.delDate.slice(0, 10) : null,
           };
         });
+        setCurrentPage(1);
         setUserList(newData);
         setTotalPage(res.data.totalPages);
       })
@@ -188,9 +202,17 @@ const AdminUserList = () => {
         </Space.Compact>
       </div>
       <Table
+        onRow={(r) => {
+          return {
+            onClick: () => {
+              setSelectedRow(r);
+            },
+          };
+        }}
         pagination={{
-          current: 1,
+          current: currentPage,
           onChange: (page) => {
+            setCurrentPage(page);
             if (searchOption === "") fetchUserList(page - 1);
             else {
               fetchSearch(page - 1, searchText);
@@ -199,10 +221,53 @@ const AdminUserList = () => {
           pageSize: 20,
           total: totalPage * 20,
         }}
-        onChange={(e) => console.log(e)}
         dataSource={userList}
         columns={tableColumns}
       />
+      <Modal
+        centered
+        closeIcon={false}
+        open={openDeleteModal}
+        footer={[
+          <Button
+            style={{ backgroundColor: "#001529", color: "white" }}
+            key={"ok"}
+            onClick={() => {
+              let res = axiosInstance
+                .post(`/admin/user/delete/${selectedRow.unum}`, {
+                  unum: selectedRow.unum,
+                })
+                .then((res) => {
+                  fetchUserList(currentPage - 1);
+                })
+                .catch((err) => {
+                  if (err.response.status === 400) {
+                    Swal.fire({
+                      icon: "error",
+                      title: "삭제 실패",
+                      text: "이미 삭제된 유저입니다",
+                    });
+                  }
+                })
+                .finally(() => {
+                  setOpenDeleteModal(false);
+                });
+            }}
+          >
+            예
+          </Button>,
+          <Button
+            key={"no"}
+            onClick={() => {
+              setOpenDeleteModal(false);
+            }}
+          >
+            아니오
+          </Button>,
+        ]}
+      >
+        정말 {selectedRow.username} 유저를 블랙리스트 처리 하시겠습니까?
+      </Modal>
     </div>
   );
 };
