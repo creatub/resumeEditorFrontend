@@ -57,8 +57,8 @@ const AdminUserList = () => {
   const [totalPage, setTotalPage] = useState<number>(0);
   const [searchOption, setSearchOption] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [searchedText, setSearchedText] = useState<string>("");
   const [selectedRow, setSelectedRow] = useState<Partial<UserList>>({});
-  const [selectedUser, setSelectedUser] = useState<number | undefined>(0);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -108,7 +108,6 @@ const AdminUserList = () => {
       render: () => (
         <Button
           onClick={() => {
-            setSelectedUser(selectedRow?.unum);
             setOpenDeleteModal(true);
           }}
         >
@@ -152,6 +151,7 @@ const AdminUserList = () => {
       return;
     } else {
       setCurrentPage(1);
+      setSearchedText(search);
       fetchSearch(0, search);
     }
   };
@@ -210,6 +210,7 @@ const AdminUserList = () => {
           };
         }}
         pagination={{
+          showSizeChanger: false,
           current: currentPage,
           onChange: (page) => {
             setCurrentPage(page);
@@ -238,7 +239,10 @@ const AdminUserList = () => {
                   unum: selectedRow.unum,
                 })
                 .then((res) => {
-                  fetchUserList(currentPage - 1);
+                  if (searchedText === "") fetchUserList(currentPage - 1);
+                  else {
+                    fetchSearch(currentPage - 1, searchText);
+                  }
                 })
                 .catch((err) => {
                   if (err.response.status === 400) {
