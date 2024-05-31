@@ -135,7 +135,6 @@ const AdminUserList = () => {
             delDate: data.delDate ? data.delDate.slice(0, 10) : null,
           };
         });
-        setCurrentPage(1);
         setUserList(newData);
         setTotalPage(res.data.totalPages);
       })
@@ -152,6 +151,7 @@ const AdminUserList = () => {
       alert("검색 옵션을 선택해주세요");
       return;
     } else {
+      setCurrentPage(1);
       fetchSearch(0, search);
     }
   };
