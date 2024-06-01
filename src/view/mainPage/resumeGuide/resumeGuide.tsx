@@ -1,19 +1,19 @@
-import { Button, Form, Input, Select, Spin, Tooltip } from 'antd';
+import { Button, Form, Input, Radio, Tooltip } from 'antd';
 import {
   InfoCircleOutlined,
   PlusOutlined,
   MinusOutlined,
 } from '@ant-design/icons';
-import { CSSProperties, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { useForm } from 'antd/es/form/Form';
-import axiosInstance from '@/api/api';
-import TextArea from 'antd/es/input/TextArea';
+import axios from 'axios';
 import PacmanLoader from 'react-spinners/PacmanLoader';
 import PuffLoader from 'react-spinners/PuffLoader';
 import BounceLoader from 'react-spinners/BounceLoader';
 import { DecodedToken } from '@/types/globalTypes';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
+import axiosInstance from '@/api/api';
 
 const ResumeEdit = () => {
   const [userInputForm] = useForm();
@@ -27,6 +27,50 @@ const ResumeEdit = () => {
   const [experienceList, setExperienceList] = useState([
     { value: '', iconType: 'plus' },
   ]);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('access') ?? '';
+    const decodedToken: DecodedToken = jwtDecode(accessToken);
+    const uNum = decodedToken.uNum;
+
+    axiosInstance
+      .get(`/resume-guide/load/${uNum}`)
+      .then((res) => {
+        if (res.data.status === 'Success') {
+          const { awards, experiences } = res.data;
+          if (awards) {
+            const formattedAwards = awards.split('\n').map((award) => ({
+              value: award,
+              iconType: 'minus',
+            }));
+            setAwardList([...formattedAwards, { value: '', iconType: 'plus' }]);
+          }
+          if (experiences) {
+            const formattedExperiences = experiences.split('\n').map((exp) => ({
+              value: exp,
+              iconType: 'minus',
+            }));
+            setExperienceList([
+              ...formattedExperiences,
+              { value: '', iconType: 'plus' },
+            ]);
+          }
+        } else if (res.data.status === 'Error') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res.data.message,
+          });
+        }
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Failed to connect to the server. Please try again later.',
+        });
+      });
+  }, []);
 
   const randomSpinner = () => {
     const descriptionStyle: CSSProperties = {
@@ -44,8 +88,7 @@ const ResumeEdit = () => {
           <PacmanLoader color="#36d7b7" size={10} />
         </div>
         <div style={descriptionStyle}>
-          PRO모드는 LITE모드 보다 정교한 첨삭이 이루어지는
-          <br /> 대신 게시판에 업로드가 됩니다
+          가이드받은 내용을 토대로 나만의 자기소개서를 만들어보세요
         </div>
         <div style={tipStyle}>
           Tip. 자기소개서에는 특별한 경험을 녹여낼 수록 좋아요.{' '}
@@ -59,7 +102,9 @@ const ResumeEdit = () => {
           Reditor는 Resume Editor의 줄임말입니다!
         </div>
         <div style={tipStyle}>
-          Tip. 지나치게 전문적인 용어만 가득한 자기소개서는 읽기 힘들어요.
+          Tip. 자소서를 쓰기 전에 내세울 수 있는 나의 경험을 정리하면
+          <br />
+          훨씬 좋은 자소서를 쓸 수 있어요!
         </div>
       </div>,
       <div>
@@ -67,8 +112,7 @@ const ResumeEdit = () => {
           <BounceLoader color="#36d7b7" size={20} />
         </div>
         <div style={descriptionStyle}>
-          수 만개의 정교한 자기소개서를 기반으로 지원자님의 자기소개서를
-          <br /> 더욱 빛나게 해드리는 중입니다!
+          수 만개의 자기소개서를 기반으로 가이드를 생성 중입니다!
         </div>
         <div style={tipStyle}>
           Tip. 추상적인 표현보다는 명료한 표현이 좋아요!
@@ -83,8 +127,7 @@ const ResumeEdit = () => {
           <br /> 다시 자기소개서 첨삭AI에 활용돼요.
         </div>
         <div style={tipStyle}>
-          Tip. 데이터와 결과를 강조해보세요! 구체적인 숫자가 있을수록 신빙성이
-          올라갑니다.
+          Tip. 자기소개서 목록에서 다른 사람들의 자기소개서도 참고해보세요!
         </div>
       </div>,
     ];
@@ -94,8 +137,16 @@ const ResumeEdit = () => {
     return spinner[randomIndex];
   };
 
-  const onFinish = ({ company, occupation }) => {
-    if (company == undefined || occupation == undefined) {
+  const onFinish = ({ status, company, occupation }) => {
+    const questions = questionList.filter((q) => q.value.trim() !== '');
+    const awards = awardList.filter((a) => a.value.trim() !== '');
+    const experiences = experienceList.filter((e) => e.value.trim() !== '');
+
+    if (
+      status === undefined ||
+      company === undefined ||
+      occupation === undefined
+    ) {
       Swal.fire({
         icon: 'error',
         title: '입력되지 않은 항목이 있습니다.',
@@ -103,45 +154,111 @@ const ResumeEdit = () => {
       });
       return;
     }
+
+    if (questions.length === 0) {
+      Swal.fire({
+        icon: 'error',
+        title: '입력되지 않은 항목이 있습니다.',
+        text: '질문을 한 개 이상 입력해주세요.',
+      });
+      return;
+    }
+
+    if (awards.length === 0 && experiences.length === 0) {
+      Swal.fire({
+        icon: 'error',
+        title: '입력되지 않은 항목이 있습니다.',
+        text: '수상경력/직무경험을 한 개 이상 작성해주세요.',
+      });
+      return;
+    }
+
     setGenerated(true);
     setIsLoading(true);
 
-    const questions = questionList.map((q, index) => ({
+    const formattedQuestions = questions.map((q, index) => ({
       [`question${index + 1}`]: q.value,
     }));
-    const awards = awardList.map((a, index) => ({
+    const formattedAwards = awards.map((a, index) => ({
       [`award${index + 1}`]: a.value,
     }));
-    const experiences = experienceList.map((e, index) => ({
+    const formattedExperiences = experiences.map((e, index) => ({
       [`experience${index + 1}`]: e.value,
     }));
 
-    let res = axiosInstance
+    const accessToken = localStorage.getItem('access') ?? '';
+    const decodedToken: DecodedToken = jwtDecode(accessToken);
+    const uNum = decodedToken.uNum;
+    const axiosInstance_python = axios.create({
+      baseURL: 'https://resume-gpt-qdrant.vercel.app',
+      timeout: 100000,
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    axiosInstance
       .post(
-        'https://resume-gpt-qdrant.vercel.app/resume_guide',
+        '/resume-guide/upload',
         {
-          company: company,
-          occupation: occupation,
-          questions: questions,
-          awards: awards,
-          experiences: experiences,
+          uNum,
+          awards: awards.map((a) => a.value).join('\n'), // 배열을 문자열로 변환하여 전송
+          experiences: experiences.map((e) => e.value).join('\n'), // 배열을 문자열로 변환하여 전송
         },
         {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
       )
-      .then((res) => {
-        if (res.data.status === 'Success') {
-          setIsLoading(false);
-          setResult(res.data.result);
-          let accessToken = localStorage.getItem('access') ?? '';
-          let DecodedToken: DecodedToken = jwtDecode(accessToken);
-        }
+      .then((uploadRes) => {
+        axiosInstance_python
+          .post(
+            '/resume_guide',
+            {
+              status: status,
+              company: company,
+              occupation: occupation,
+              questions: formattedQuestions,
+              awards: formattedAwards,
+              experiences: formattedExperiences,
+            },
+            {
+              withCredentials: true,
+            }
+          )
+          .then((res) => {
+            if (res.data.status === 'Success') {
+              setIsLoading(false);
+              setResult(res.data.result);
+            }
+          })
+          .catch((err) => {
+            console.log(
+              company,
+              occupation,
+              questions,
+              formattedAwards,
+              formattedExperiences
+            );
+            console.log(err);
+            setIsLoading(false);
+            Swal.fire({
+              icon: 'error',
+              title: 'Network Error',
+              text: 'Failed to connect to the server. Please try again later.',
+            });
+          });
       })
       .catch((err) => {
-        console.log(company, occupation, questions, awards, experiences);
         console.log(err);
         setIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Failed to connect to the server. Please try again later.',
+        });
       });
   };
 
@@ -178,12 +295,8 @@ const ResumeEdit = () => {
   };
 
   return (
-    <div style={{ padding: '1% 5%' }}>
-      <h1 style={{ textAlign: 'center' }}>자기소개서 가이드</h1>
-      <div
-        className="Wrapper"
-        style={{ padding: '2% 5%', display: 'flex', justifyContent: 'center' }}
-      >
+    <div style={{ padding: '5% 5%' }}>
+      <div className="Wrapper" style={{ padding: '2% 5%', display: 'flex' }}>
         <div
           className="userInnerWrapper"
           style={{
@@ -191,11 +304,21 @@ const ResumeEdit = () => {
             boxShadow: '0 0 10px 0 rgb(220, 220, 220)',
             borderRadius: '5px',
             height: '100%',
-            width: '90%',
+            width: '55%',
           }}
         >
           <div className="userInputWrapper" style={{ padding: '5% 5%' }}>
             <Form layout={'vertical'} form={userInputForm} onFinish={onFinish}>
+              <Form.Item
+                name="status"
+                label={<b>신입/경력</b>}
+                style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+              >
+                <Radio.Group>
+                  <Radio value="신입"> 신입 </Radio>
+                  <Radio value="경력"> 경력 </Radio>
+                </Radio.Group>
+              </Form.Item>
               <Form.Item style={{ marginBottom: 0 }}>
                 <Form.Item
                   name="company"
@@ -326,54 +449,6 @@ const ResumeEdit = () => {
                 ))}
               </div>
 
-              <Form.Item
-                style={{ marginBottom: '0' }}
-                name="guide"
-                label={<b>자기소개서 가이드</b>}
-              >
-                <div
-                  style={{
-                    border: '1px solid #d9d9d9',
-                    borderRadius: '2px',
-                    padding: '10px',
-                    minHeight: '200px', // 기본 크기
-                    maxHeight: '600px', // 최대 높이
-                    overflowY: 'auto',
-                    backgroundColor: '#fafafa',
-                    position: 'relative', // randomSpinner와 겹치지 않게 하기 위해 position 속성 추가
-                  }}
-                >
-                  {generated &&
-                    (isLoading ? (
-                      <div
-                        style={{
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          transform: 'translate(-50%, -50%)',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          textAlign: 'center',
-                        }}
-                      >
-                        {randomSpinner()}
-                      </div>
-                    ) : null)}
-                  <p>
-                    {!isLoading && (result || '이 곳에는 결과가 출력됩니다.')}
-                  </p>
-                </div>
-              </Form.Item>
-              <Form.Item>
-                <div
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                  }}
-                ></div>
-              </Form.Item>
-
               <Form.Item style={{ textAlign: 'center', marginTop: '40px' }}>
                 <Button
                   onClick={() => {
@@ -388,6 +463,69 @@ const ResumeEdit = () => {
                 </Button>
               </Form.Item>
             </Form>
+          </div>
+        </div>
+        <div
+          className="gptInnerWrapper"
+          style={{
+            border: '1px solid rgb(220,220,220)',
+            boxShadow: '0 0 10px 0 rgb(220, 220, 220)',
+            borderRadius: '5px',
+            height: document.querySelector('.userInnerWrapper')?.clientHeight,
+            width: '50%',
+            marginLeft: '4%',
+          }}
+        >
+          <div
+            className="gptResultWrapper"
+            style={{ padding: '5% 5%', height: '100%' }}
+          >
+            <div className="gptResult" style={{ height: '100%' }}>
+              {generated ? (
+                isLoading ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '100%',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        textAlign: 'center',
+                      }}
+                    >
+                      {randomSpinner()}
+                    </div>
+                  </div>
+                ) : (
+                  <p
+                    style={{
+                      whiteSpace: 'pre-wrap',
+                      fontWeight: 'bold',
+                      fontSize: '1rem',
+                    }}
+                  >
+                    {result}
+                  </p>
+                )
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    fontWeight: 'bold',
+                    fontSize: '1.1rem',
+                  }}
+                >
+                  자기소개서 가이드가 이 곳에 출력돼요!
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

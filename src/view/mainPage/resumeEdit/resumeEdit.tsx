@@ -137,6 +137,14 @@ const ResumeEdit = () => {
       });
       return;
     }
+    if (answer.length < 100) {
+      Swal.fire({
+        icon: 'error',
+        title: '자기소개서의 길이가 너무 짧습니다.',
+        text: '답변은 최소 100자 이상 입력해주세요.',
+      });
+      return;
+    }
     setGenerated(true);
     let mode = 1; // 라이트
     if (pro) {
@@ -144,7 +152,7 @@ const ResumeEdit = () => {
     }
     let res = axiosInstance
       .post(
-        'https://resume-gpt-qdrant.vercel.app/rag_chat',
+        'https://resume-editor-python.vercel.app/rag_chat',
         {
           status: status,
           company: company,
