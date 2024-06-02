@@ -66,7 +66,7 @@ const ResumeList = () => {
       <div
         className="leftWrapper"
         style={{
-          width: '25%',
+          width: '30%',
           padding: '1%',
           marginLeft: '5%',
           marginTop: '10.2%',
@@ -100,23 +100,25 @@ const ResumeList = () => {
               src="/src/view/mainPage/resumeList/imgs/recommended.png"
               alt="Resume"
               style={{
-                width: '80px',
-                height: '80px',
+                width: '60px',
+                height: '60px',
                 marginRight: '20px',
-                marginTop: '25px',
+                marginTop: '30px',
               }}
             />
             <div style={{ flex: '1' }}>
-              <h3 style={{ color: 'black' }}>
+              <h4 style={{ color: 'black', marginBottom: '4px' }}>
                 <Link
                   to={`/main/resumelist/${resume.r_num}`}
                   style={{ color: 'black' }}
                 >
                   {resume.title}
                 </Link>
-              </h3>
+              </h4>
               <p
                 style={{
+                  marginTop: '4px',
+                  fontSize: '13px',
                   display: '-webkit-box',
                   WebkitBoxOrient: 'vertical',
                   WebkitLineClamp: 2,
@@ -168,23 +170,25 @@ const ResumeList = () => {
               src="/src/view/mainPage/resumeList/imgs/most_viewed.png"
               alt="Resume"
               style={{
-                width: '80px',
-                height: '80px',
+                width: '60px',
+                height: '60px',
                 marginRight: '20px',
-                marginTop: '25px',
+                marginTop: '30px',
               }}
             />
             <div style={{ flex: '1' }}>
-              <h3 style={{ color: 'black' }}>
+              <h4 style={{ color: 'black', marginBottom: '4px' }}>
                 <Link
                   to={`/main/resumelist/${resume.r_num}`}
                   style={{ color: 'black' }}
                 >
                   {resume.title}
                 </Link>
-              </h3>
+              </h4>
               <p
                 style={{
+                  fontSize: '13px',
+                  marginTop: '4px',
                   display: '-webkit-box',
                   WebkitBoxOrient: 'vertical',
                   WebkitLineClamp: 2,

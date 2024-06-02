@@ -1,8 +1,9 @@
-import { Button, Form, Input, Radio, Tooltip } from 'antd';
+import { Button, Form, Input, Radio, Tooltip, Modal, Table } from 'antd';
 import {
   InfoCircleOutlined,
   PlusOutlined,
   MinusOutlined,
+  SearchOutlined,
 } from '@ant-design/icons';
 import { CSSProperties, useEffect, useState } from 'react';
 import { useForm } from 'antd/es/form/Form';
@@ -10,6 +11,7 @@ import axios from 'axios';
 import PacmanLoader from 'react-spinners/PacmanLoader';
 import PuffLoader from 'react-spinners/PuffLoader';
 import BounceLoader from 'react-spinners/BounceLoader';
+import FadeLoader from 'react-spinners/FadeLoader';
 import { DecodedToken } from '@/types/globalTypes';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
@@ -27,6 +29,14 @@ const ResumeEdit = () => {
   const [experienceList, setExperienceList] = useState([
     { value: '', iconType: 'plus' },
   ]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState('');
+  const [isOccupationModalOpen, setIsOccupationModalOpen] = useState(false);
+  const [occupationSearchResults, setOccupationSearchResults] = useState([]);
+  const [occupationSearchLoading, setOccupationSearchLoading] = useState(false);
+  const [occupationSearchError, setOccupationSearchError] = useState('');
 
   useEffect(() => {
     const accessToken = localStorage.getItem('access') ?? '';
@@ -39,21 +49,20 @@ const ResumeEdit = () => {
         if (res.data.status === 'Success') {
           const { awards, experiences } = res.data;
           if (awards) {
-            const formattedAwards = awards.split('\n').map((award) => ({
+            const formattedAwards = awards.split('\n').map((award, index) => ({
               value: award,
-              iconType: 'minus',
+              iconType: index === 0 ? 'plus' : 'minus',
             }));
-            setAwardList([...formattedAwards, { value: '', iconType: 'plus' }]);
+            setAwardList(formattedAwards);
           }
           if (experiences) {
-            const formattedExperiences = experiences.split('\n').map((exp) => ({
-              value: exp,
-              iconType: 'minus',
-            }));
-            setExperienceList([
-              ...formattedExperiences,
-              { value: '', iconType: 'plus' },
-            ]);
+            const formattedExperiences = experiences
+              .split('\n')
+              .map((exp, index) => ({
+                value: exp,
+                iconType: index === 0 ? 'plus' : 'minus',
+              }));
+            setExperienceList(formattedExperiences);
           }
         } else if (res.data.status === 'Error') {
           Swal.fire({
@@ -79,13 +88,13 @@ const ResumeEdit = () => {
     };
 
     const tipStyle: CSSProperties = {
-      fontSize: '0.5rem',
+      fontSize: '0.8rem',
       marginTop: '5%',
     };
     let spinner = [
       <div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <PacmanLoader color="#36d7b7" size={10} />
+          <PacmanLoader color="#36d7b7" />
         </div>
         <div style={descriptionStyle}>
           가이드받은 내용을 토대로 나만의 자기소개서를 만들어보세요
@@ -96,7 +105,7 @@ const ResumeEdit = () => {
       </div>,
       <div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <PuffLoader color="#36d7b7" size={20} />
+          <PuffLoader color="#36d7b7" />
         </div>
         <div style={descriptionStyle}>
           Reditor는 Resume Editor의 줄임말입니다!
@@ -109,7 +118,7 @@ const ResumeEdit = () => {
       </div>,
       <div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <BounceLoader color="#36d7b7" size={20} />
+          <BounceLoader color="#36d7b7" />
         </div>
         <div style={descriptionStyle}>
           수 만개의 자기소개서를 기반으로 가이드를 생성 중입니다!
@@ -120,7 +129,7 @@ const ResumeEdit = () => {
       </div>,
       <div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <BounceLoader color="#36d7b7" size={20} />
+          <FadeLoader color="#36d7b7" />
         </div>
         <div style={descriptionStyle}>
           Reditor에 등록된 높은 평점의 자기소개서는
@@ -276,6 +285,84 @@ const ResumeEdit = () => {
     setExperienceList([...experienceList, { value: '', iconType: 'minus' }]);
   const removeExperience = (index) =>
     setExperienceList(experienceList.filter((_, i) => i !== index));
+  const openSearchModal = () => {
+    setIsModalOpen(true);
+  };
+  //추가
+  const closeSearchModal = () => {
+    setIsModalOpen(false);
+    setSearchResults([]);
+    setSearchLoading(false);
+    setSearchError('');
+  };
+
+  const handleSearch = async (value) => {
+    setSearchLoading(true);
+    setSearchError('');
+
+    try {
+      const response = await axiosInstance.get(`/resume-items/load/${value}`);
+      if (response.data.status === 'Not found') {
+        setSearchError('Not found');
+      } else if (response.data.status === 'Success') {
+        setSearchResults(response.data.itemsList);
+      }
+    } catch (error) {
+      setSearchError('Failed to search');
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  const handleRowClick = (record) => {
+    const { company, items } = record;
+    const itemList = items.split('||');
+    userInputForm.setFieldsValue({ company });
+    setQuestionList(
+      itemList.map((item, index) => ({
+        value: item,
+        iconType: index === 0 ? 'plus' : 'minus',
+      }))
+    );
+    closeSearchModal();
+  };
+
+  const openOccupationSearchModal = () => {
+    setIsOccupationModalOpen(true);
+  };
+
+  const closeOccupationSearchModal = () => {
+    setIsOccupationModalOpen(false);
+    setOccupationSearchResults([]);
+    setOccupationSearchLoading(false);
+    setOccupationSearchError('');
+  };
+
+  const handleOccupationSearch = async (value) => {
+    setOccupationSearchLoading(true);
+    setOccupationSearchError('');
+
+    try {
+      const response = await axiosInstance.get(
+        `/resume-occupation/load/${value}`
+      );
+      if (response.data.status === 'Not found') {
+        setOccupationSearchError('Not found');
+      } else if (response.data.status === 'Success') {
+        setOccupationSearchResults(response.data.occupationList);
+      }
+    } catch (error) {
+      setOccupationSearchError('Failed to search');
+    } finally {
+      setOccupationSearchLoading(false);
+    }
+  };
+
+  const handleOccupationRowClick = (record) => {
+    const { occupation } = record;
+    userInputForm.setFieldsValue({ occupation });
+    closeOccupationSearchModal();
+  };
 
   const handleInputChange = (e, index, list, setList) => {
     const newValue = e.target.value;
@@ -293,7 +380,25 @@ const ResumeEdit = () => {
       setList(newList);
     }
   };
-
+  const occupationColumns = [
+    {
+      title: 'Occupation',
+      dataIndex: 'occupation',
+      key: 'occupation',
+    },
+  ];
+  const columns = [
+    {
+      title: 'Company',
+      dataIndex: 'company',
+      key: 'company',
+    },
+    {
+      title: 'Items',
+      dataIndex: 'items',
+      key: 'items',
+    },
+  ];
   return (
     <div style={{ padding: '5% 5%' }}>
       <div className="Wrapper" style={{ padding: '2% 5%', display: 'flex' }}>
@@ -308,24 +413,53 @@ const ResumeEdit = () => {
           }}
         >
           <div className="userInputWrapper" style={{ padding: '5% 5%' }}>
+            <Tooltip
+              title="자기소개서 가이드는 수상경력이나 직무 관련 경험을 정리해 놓으면 자기소개서 항목에 분배해주고 예시를 만들어 드려요! 지원 회사를 검색하면 예시 자기소개서 항목을 로드할 수 있어요!"
+              placement="topLeft"
+              overlayStyle={{ fontSize: '1rem', maxWidth: '400px' }}
+            >
+              <InfoCircleOutlined
+                style={{
+                  fontSize: '15px',
+                  top: '10px',
+                  bottom: '10px',
+                  left: '10px',
+                  cursor: 'pointer',
+                }}
+              />
+            </Tooltip>
             <Form layout={'vertical'} form={userInputForm} onFinish={onFinish}>
               <Form.Item
                 name="status"
                 label={<b>신입/경력</b>}
-                style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+                style={{
+                  display: 'inline-block',
+                  width: 'calc(50% - 8px)',
+                  marginTop: '15px',
+                }}
               >
                 <Radio.Group>
                   <Radio value="신입"> 신입 </Radio>
                   <Radio value="경력"> 경력 </Radio>
                 </Radio.Group>
               </Form.Item>
+
               <Form.Item style={{ marginBottom: 0 }}>
                 <Form.Item
                   name="company"
                   label={<b>지원 회사</b>}
                   style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
                 >
-                  <Input placeholder="회사 이름" size="large" />
+                  <Input
+                    suffix={
+                      <Button
+                        icon={<SearchOutlined />}
+                        onClick={openSearchModal}
+                      />
+                    }
+                    placeholder="회사 이름"
+                    size="large"
+                  />
                 </Form.Item>
                 <Form.Item
                   label={<b>지원 직무</b>}
@@ -336,7 +470,16 @@ const ResumeEdit = () => {
                     margin: '0 8px',
                   }}
                 >
-                  <Input placeholder="직무 이름" size="large" />
+                  <Input
+                    suffix={
+                      <Button
+                        icon={<SearchOutlined />}
+                        onClick={openOccupationSearchModal}
+                      />
+                    }
+                    placeholder="직무 이름"
+                    size="large"
+                  />
                 </Form.Item>
               </Form.Item>
 
@@ -471,7 +614,7 @@ const ResumeEdit = () => {
             border: '1px solid rgb(220,220,220)',
             boxShadow: '0 0 10px 0 rgb(220, 220, 220)',
             borderRadius: '5px',
-            height: document.querySelector('.userInnerWrapper')?.clientHeight,
+            height: 'auto',
             width: '50%',
             marginLeft: '4%',
           }}
@@ -529,6 +672,72 @@ const ResumeEdit = () => {
           </div>
         </div>
       </div>
+      <Modal
+        title="Search Company"
+        visible={isModalOpen}
+        onCancel={closeSearchModal}
+        footer={null}
+        width={600}
+      >
+        <Input.Search
+          placeholder="Search company"
+          enterButton
+          onSearch={handleSearch}
+        />
+        {searchLoading ? (
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            <PuffLoader color="#36d7b7" size={20} />
+          </div>
+        ) : searchError ? (
+          <div style={{ textAlign: 'center', marginTop: '20px', color: 'red' }}>
+            {searchError}
+          </div>
+        ) : (
+          <Table
+            columns={columns}
+            dataSource={searchResults}
+            rowKey="company"
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record),
+            })}
+            pagination={false}
+            style={{ marginTop: '20px' }}
+          />
+        )}
+      </Modal>
+      <Modal
+        title="Search Occupation"
+        visible={isOccupationModalOpen}
+        onCancel={closeOccupationSearchModal}
+        footer={null}
+        width={600}
+      >
+        <Input.Search
+          placeholder="Search occupation"
+          enterButton
+          onSearch={handleOccupationSearch}
+        />
+        {occupationSearchLoading ? (
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            <PuffLoader color="#36d7b7" size={20} />
+          </div>
+        ) : occupationSearchError ? (
+          <div style={{ textAlign: 'center', marginTop: '20px', color: 'red' }}>
+            {occupationSearchError}
+          </div>
+        ) : (
+          <Table
+            columns={occupationColumns}
+            dataSource={occupationSearchResults}
+            rowKey="occupation"
+            onRow={(record) => ({
+              onClick: () => handleOccupationRowClick(record),
+            })}
+            pagination={false}
+            style={{ marginTop: '20px' }}
+          />
+        )}
+      </Modal>
     </div>
   );
 };
