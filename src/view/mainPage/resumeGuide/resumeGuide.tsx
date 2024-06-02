@@ -17,7 +17,7 @@ import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import axiosInstance from '@/api/api';
 
-const ResumeEdit = () => {
+const ResumeGuide = () => {
   const [userInputForm] = useForm();
   const [generated, setGenerated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -269,6 +269,25 @@ const ResumeEdit = () => {
           text: 'Failed to connect to the server. Please try again later.',
         });
       });
+  };
+  const applyStyleToText = (text) => {
+    // '*' 개수를 세는 정규 표현식
+    const asteriskCount = (text.match(/\*/g) || []).length;
+    // '#' 개수를 세는 정규 표현식
+    const hashCount = (text.match(/#/g) || []).length;
+
+    // '*' 개수에 따라 스타일 적용
+    const style = {
+      fontWeight: asteriskCount > 0 ? 'bold' : 'normal',
+      fontSize: asteriskCount > 0 ? '1.1rem' : '1rem',
+      color: hashCount > 0 ? 'blue' : 'inherit',
+    };
+
+    return (
+      <div>
+        <p style={style}>{text.replace(/\*/g, '').replace(/#/g, '')}</p>
+      </div>
+    );
   };
 
   const addQuestion = () =>
@@ -645,15 +664,11 @@ const ResumeEdit = () => {
                     </div>
                   </div>
                 ) : (
-                  <p
-                    style={{
-                      whiteSpace: 'pre-wrap',
-                      fontWeight: 'bold',
-                      fontSize: '1rem',
-                    }}
-                  >
-                    {result}
-                  </p>
+                  result
+                    .split('\n')
+                    .map((text, index) => (
+                      <div key={index}>{applyStyleToText(text)}</div>
+                    ))
                 )
               ) : (
                 <div
@@ -742,4 +757,4 @@ const ResumeEdit = () => {
   );
 };
 
-export default ResumeEdit;
+export default ResumeGuide;
