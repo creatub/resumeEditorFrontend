@@ -1,5 +1,4 @@
-import { Button, Spin } from "antd";
-import { useEffect, useState, CSSProperties } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "@/api/api";
 import { jwtDecode } from "jwt-decode";

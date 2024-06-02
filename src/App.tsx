@@ -5,6 +5,7 @@ import LandingPage from "./view/landingPage/landing";
 import NotFound from "./view/error/notFound/notFound";
 import MainPage from "./view/mainPage/mainPage";
 import ResumeEdit from "./view/mainPage/resumeEdit/resumeEdit";
+import ResumeGuide from "./view/mainPage/resumeGuide/resumeGuide";
 import ResumeList from "./view/mainPage/resumeList/resumeList";
 import MyPage from "./view/mainPage/myPage/myPage";
 import ResumeListDetails from "./view/mainPage/resumeList/details/details";
@@ -13,10 +14,14 @@ import ProtectedRoute from "./routes/protectedRoutes";
 import ProtectLoginRoute from "./routes/protectLoginRoute";
 import ResumeHistoryDetail from "./view/mainPage/resumeList/details/resumeHistory";
 import React from "react";
+import LayoutRoute from "./routes/layoutRoute";
+import AuthRoute from "./routes/authRoute";
 
 function App() {
   return (
     <div className="App" style={{ margin: "0" }}>
+      {/* <LayoutRoute />
+      <AuthRoute /> */}
       <Routes>
         <Route path="/auth/signup" element={<SignUp />} />
         <Route path="/auth/login" element={<Login />} />
@@ -30,6 +35,7 @@ function App() {
         />
         <Route path="/main" element={<MainPage />}>
           <Route path="resume" element={<ResumeEdit />} />
+          <Route path="resumeguide" element={<ResumeGuide />} />
           <Route path="resumelist/:id" element={<ResumeListDetails />} />
           <Route path="resumelist" element={<ResumeList />} />
           <Route path="mypage" element={<MyPage />} />

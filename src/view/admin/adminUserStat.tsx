@@ -1,15 +1,11 @@
 import axiosInstance from "@/api/api";
 import { useEffect, useState } from "react";
 import DougnutGraph from "./dougnutGraph";
-import {
-  Divider,
-  Input,
-  DatePicker,
-  Button,
-  Dropdown,
-  MenuProps,
-  Menu,
-} from "antd";
+import Divider from "antd/es/divider";
+import DatePicker from "antd/es/date-picker";
+import Button from "antd/es/button";
+import Dropdown from "antd/es/dropdown";
+import type { MenuProps } from "antd";
 import LineGraph from "./lineGraph";
 import React from "react";
 import dayjs from "dayjs";

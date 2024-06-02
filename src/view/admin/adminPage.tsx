@@ -1,6 +1,9 @@
 import React, { Suspense, useState } from "react";
 import type { MenuProps } from "antd";
-import { Button, Layout, Menu, theme } from "antd";
+import Button from "antd/es/button";
+import Layout from "antd/es/layout";
+import Menu from "antd/es/menu";
+import theme from "antd/es/theme";
 import axiosInstance from "@/api/api";
 import { useNavigate } from "react-router-dom";
 

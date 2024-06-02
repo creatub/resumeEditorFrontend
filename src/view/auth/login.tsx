@@ -1,4 +1,9 @@
-import { Avatar, Button, Divider, Form, Input, notification } from "antd";
+import Avatar from "antd/es/avatar/avatar";
+import Button from "antd/es/button";
+import Divider from "antd/es/divider";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import notification from "antd/es/notification";
 import { Link } from "react-router-dom";
 import CustomFooter from "../../components/footer";
 import axios from "axios";

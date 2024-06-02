@@ -5,7 +5,7 @@ import Divider from "antd/es/divider";
 import DatePicker from "antd/es/date-picker";
 import Button from "antd/es/button";
 import Dropdown from "antd/es/dropdown";
-import { MenuProps } from "antd/es/menu";
+import type { MenuProps } from "antd";
 import LineGraph from "./lineGraph";
 import React from "react";
 import dayjs from "dayjs";

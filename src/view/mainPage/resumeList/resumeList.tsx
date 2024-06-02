@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Search from "antd/es/input/Search";
 import { Link } from "react-router-dom";
 import React from "react";
-import Swal from "sweetalert2";
+import axios from "axios";
 
 interface ResumeList {
   num: number;
@@ -24,42 +24,26 @@ const ResumeList = () => {
   const [topRatedResumes, setTopRatedResumes] = useState<ResumeList[]>([]);
   const [topReadResumes, setTopReadResumes] = useState<ResumeList[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [searchText, setSearchText] = useState<string>("");
 
-  async function fetchSearch(search: string, page: number) {
-    let res = await axiosInstance
-      .get("/board/list/search", {
-        params: {
-          page: page,
-          keyword: search,
-        },
-      })
-      .then((res) => {
-        if (res.data.response == "검색 결과가 없습니다.") {
-          Swal.fire({
-            icon: "error",
-            title: "검색 결과가 없습니다",
-            text: "다시 시도해주세요",
-          });
-        } else {
-          setTotalPages(res.data.totalPages);
-          setResumeList(res.data.response);
-        }
-      });
+  async function fetchSearch(search: string) {
+    let res = await axiosInstance.get("/board/list/search", {
+      params: {
+        page: 0,
+        keyword: search,
+      },
+    });
+    setResumeList(res.data.response);
+    setTotalPages(res.data.totalPages);
   }
 
   async function fetchList(page: number) {
-    let res = await axiosInstance
-      .get("/board/list", {
-        params: {
-          page: page - 1,
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        setResumeList(res.data.response);
-        setTotalPages(res.data.totalPages);
-      });
+    let res = await axiosInstance.get("/board/list", {
+      params: {
+        page: page - 1,
+      },
+    });
+    setResumeList(res.data.response);
+    setTotalPages(res.data.totalPages);
   }
 
   async function fetchTopResumes(
@@ -72,19 +56,10 @@ const ResumeList = () => {
     setter(res.data.response);
   }
 
-  const fetchData = async () => {
-    try {
-      let res = await Promise.all([
-        fetchList(0),
-        fetchTopResumes("rating", setTopRatedResumes),
-        fetchTopResumes("read_num", setTopReadResumes),
-      ]);
-    } catch (err) {
-      console.log(err);
-    }
-  };
   useEffect(() => {
-    fetchData();
+    fetchList(0);
+    fetchTopResumes("rating", setTopRatedResumes);
+    fetchTopResumes("read_num", setTopReadResumes);
   }, []);
 
   return (
@@ -92,7 +67,7 @@ const ResumeList = () => {
       <div
         className="leftWrapper"
         style={{
-          width: "25%",
+          width: "30%",
           padding: "1%",
           marginLeft: "5%",
           marginTop: "10.2%",
@@ -126,23 +101,25 @@ const ResumeList = () => {
               src="/img/recommended.webp"
               alt="Resume"
               style={{
-                width: "80px",
-                height: "80px",
+                width: "60px",
+                height: "60px",
                 marginRight: "20px",
-                marginTop: "25px",
+                marginTop: "30px",
               }}
             />
             <div style={{ flex: "1" }}>
-              <h3 style={{ color: "black" }}>
+              <h4 style={{ color: "black", marginBottom: "4px" }}>
                 <Link
                   to={`/main/resumelist/${resume.r_num}`}
                   style={{ color: "black" }}
                 >
                   {resume.title}
                 </Link>
-              </h3>
+              </h4>
               <p
                 style={{
+                  marginTop: "4px",
+                  fontSize: "13px",
                   display: "-webkit-box",
                   WebkitBoxOrient: "vertical",
                   WebkitLineClamp: 2,
@@ -194,23 +171,25 @@ const ResumeList = () => {
               src="/img/most_viewed.webp"
               alt="Resume"
               style={{
-                width: "80px",
-                height: "80px",
+                width: "60px",
+                height: "60px",
                 marginRight: "20px",
-                marginTop: "25px",
+                marginTop: "30px",
               }}
             />
             <div style={{ flex: "1" }}>
-              <h3 style={{ color: "black" }}>
+              <h4 style={{ color: "black", marginBottom: "4px" }}>
                 <Link
                   to={`/main/resumelist/${resume.r_num}`}
                   style={{ color: "black" }}
                 >
                   {resume.title}
                 </Link>
-              </h3>
+              </h4>
               <p
                 style={{
+                  fontSize: "13px",
+                  marginTop: "4px",
                   display: "-webkit-box",
                   WebkitBoxOrient: "vertical",
                   WebkitLineClamp: 2,
@@ -244,11 +223,8 @@ const ResumeList = () => {
           }}
         >
           <Search
-            onChange={(e) => {
-              setSearchText(e.target.value);
-            }}
             onSearch={(value) => {
-              fetchSearch(value, 0);
+              fetchSearch(value);
             }}
             size="large"
             placeholder="검색어를 입력하세요"
@@ -260,16 +236,11 @@ const ResumeList = () => {
         >
           <Pagination
             onChange={(page) => {
-              console.log(searchText);
-              if (searchText == "") {
-                fetchList(page);
-              } else {
-                fetchSearch(searchText, page - 1);
-              }
+              fetchList(page);
             }}
             pageSize={5}
             showSizeChanger={false}
-            total={totalPages * 5}
+            total={totalPages * 5 - 5}
           />
         </div>
         <div className="wrapper">
@@ -325,18 +296,8 @@ const ResumeList = () => {
                     }}
                   >
                     <div className="contentDate">{resume.w_date}</div>
-                    <div
-                      className="contentView"
-                      style={{
-                        width: "20%",
-                        display: "flex",
-                        justifyContent: "flex-end",
-                      }}
-                    >
-                      <StarOutlined />
-                      {resume.rating}{" "}
-                      <EyeOutlined style={{ marginLeft: "7%" }} />{" "}
-                      {resume.read_num}
+                    <div className="contentView">
+                      <EyeOutlined /> {resume.read_num}
                     </div>
                   </div>
                 </div>

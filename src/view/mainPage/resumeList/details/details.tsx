@@ -1,6 +1,9 @@
 import React from "react";
 import axiosInstance from "@/api/api";
-import { Avatar, Button, Divider, Modal } from "antd";
+import Avatar from "antd/es/avatar";
+import Button from "antd/es/button";
+import Divider from "antd/es/divider";
+import Modal from "antd/es/modal";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
