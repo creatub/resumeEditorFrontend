@@ -155,7 +155,7 @@ const SignUp = () => {
                 <span>이미 계정이 있으신가요?</span>
                 <Link
                   className="backToLogin"
-                  to="/"
+                  to="/auth/login"
                   style={{
                     color: "black",
                     marginLeft: "5px",

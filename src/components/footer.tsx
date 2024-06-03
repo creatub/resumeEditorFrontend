@@ -14,7 +14,7 @@ const CustomFooter = () => {
       }}
     >
       <span>
-        Copyright 2024 © <b>Team2</b> All rights reserved.
+        Copyright 2024 © <b>TPGCH</b> All rights reserved.
       </span>
     </footer>
   );
