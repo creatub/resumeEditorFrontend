@@ -57,6 +57,9 @@ const Navbar = () => {
           <li>
             <Link to="/main/mypage">마이페이지</Link>
           </li>
+          <li>
+            <Link to="/main/mypage">FAQ</Link>
+          </li>
         </ul>
         {user == true ? (
           <ul className="navbar_links" style={{ alignItems: "center" }}>
