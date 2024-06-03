@@ -53,7 +53,7 @@ const LandingStat = () => {
       fetchLandingStatData("countUser"),
       fetchLandingStatData("visitTotal"),
       fetchLandingStatData("editTotal"),
-      fetchLandingStatData("boardToday"),
+      fetchLandingStatData("boardTotal"),
     ]);
   }, []);
 
