@@ -71,7 +71,7 @@ const LandingStat = () => {
         }}
       >
         <div style={{ fontWeight: "bold", fontSize: "2.5rem" }}>
-          당신만을 위한 자소서 AI 자소서 컨설턴트
+          당신만을 위한 AI 자소서 컨설턴트
         </div>
         <div style={{ width: "30%", fontSize: "1.3rem", marginTop: "3%" }}>
           <p>
