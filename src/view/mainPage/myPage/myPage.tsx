@@ -11,6 +11,7 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import React from "react";
 import Swal from "sweetalert2";
+import { Modal } from "antd";
 interface DecodedToken {
   category: string;
   exp: number;
@@ -81,6 +82,9 @@ const MyPage = () => {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [bookmarkClicked, setBookmarkClicked] = useState<boolean>(false);
+  const [editRecordClicked, setEditRecordClicked] = useState<boolean>(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const fetchUserInfo = () => {
     let res = axiosInstance
       .post("/user/search")
@@ -97,6 +101,8 @@ const MyPage = () => {
           birthDate: res.data.response.birthDate,
           wish: res.data.response.wish,
           resumeEditCount: res.data.response.resumeEditCount,
+          company: res.data.response.company,
+          occupation: res.data.response.occupation,
         });
       })
       .catch((err) => {
@@ -241,15 +247,31 @@ const MyPage = () => {
             <div>{userInfo.username}님</div>
             <div>
               <a
-                style={{ color: "gray", cursor: "pointer" }}
-                onClick={() => setActiveTab("editHistory")}
+                style={{
+                  color: editRecordClicked ? "black" : "gray",
+                  fontWeight: editRecordClicked ? "bold" : "normal",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setActiveTab("editHistory");
+                  setEditRecordClicked(true);
+                  setBookmarkClicked(false);
+                }}
               >
                 첨삭 기록
               </a>{" "}
               ·{" "}
               <a
-                style={{ color: "gray", cursor: "pointer" }}
-                onClick={() => setActiveTab("bookmarks")}
+                style={{
+                  color: bookmarkClicked ? "black" : "gray",
+                  fontWeight: bookmarkClicked ? "bold" : "normal",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setActiveTab("bookmarks");
+                  setBookmarkClicked(true);
+                  setEditRecordClicked(false);
+                }}
               >
                 내 즐겨찾기
               </a>
@@ -319,7 +341,7 @@ const MyPage = () => {
                   marginLeft: "8px",
                 }}
               >
-                <Input size="large" />
+                <Input size="large" disabled />
               </Form.Item>
             </Form.Item>
             <Form.Item style={{ width: "100%", marginBottom: "0" }}>
@@ -328,7 +350,7 @@ const MyPage = () => {
                 label={<b>나이</b>}
                 style={{ width: "calc(50% - 8px)", display: "inline-block" }}
               >
-                <Input size="large" />
+                <Input size="large" disabled />
               </Form.Item>
               <Form.Item
                 name="birthDate"
@@ -339,7 +361,7 @@ const MyPage = () => {
                   marginLeft: "8px",
                 }}
               >
-                <Input size="large" />
+                <Input size="large" disabled />
               </Form.Item>
             </Form.Item>
             <Form.Item style={{ width: "100%", marginBottom: "0" }}>
@@ -360,6 +382,27 @@ const MyPage = () => {
                 }}
               >
                 <Input size="large" disabled />
+              </Form.Item>
+            </Form.Item>
+
+            <Form.Item style={{ width: "100%", marginBottom: "0" }}>
+              <Form.Item
+                name="company"
+                label={<b>회사</b>}
+                style={{ width: "calc(50% - 8px)", display: "inline-block" }}
+              >
+                <Input size="large" />
+              </Form.Item>
+              <Form.Item
+                name="occupation"
+                label={<b>직무</b>}
+                style={{
+                  width: "calc(50% - 8px)",
+                  display: "inline-block",
+                  marginLeft: "8px",
+                }}
+              >
+                <Input size="large" />
               </Form.Item>
             </Form.Item>
             <Form.Item style={{ width: "100%", marginBottom: "0" }}>
@@ -407,26 +450,10 @@ const MyPage = () => {
                 <Button
                   size="large"
                   onClick={() => {
-                    let accessToken = localStorage.getItem("access") ?? "";
-                    let Decoded: DecodedToken = jwtDecode(accessToken);
-                    axios
-                      .post("/user/delete", {
-                        unum: Decoded.uNum,
-                      })
-                      .then((res) => {
-                        Swal.fire({
-                          icon: "success",
-                          title: "회원 탈퇴 완료",
-                          text: "그동안 이용해주셔서 감사합니다.",
-                        }).then(() => {
-                          localStorage.clear();
-                          window.location.href = "/";
-                        });
-                      });
+                    setOpenDeleteModal(true);
                   }}
                   style={{
-                    backgroundColor: "#E8524D",
-                    color: "white",
+                    color: "black",
                     fontWeight: "bold",
                   }}
                 >
@@ -437,6 +464,52 @@ const MyPage = () => {
           </Form>
         </div>
       </div>
+      <Modal
+        centered
+        open={openDeleteModal}
+        closable={false}
+        footer={[
+          <Button
+            style={{
+              backgroundColor: "#001529",
+              color: "white",
+            }}
+            key={"ok"}
+            onClick={() => {
+              let accessToken = localStorage.getItem("access") ?? "";
+              let Decoded: DecodedToken = jwtDecode(accessToken);
+              axios
+                .post("/user/delete", {
+                  unum: Decoded.uNum,
+                })
+                .then((res) => {
+                  Swal.fire({
+                    icon: "success",
+                    title: "회원 탈퇴 완료",
+                    text: "그동안 이용해주셔서 감사합니다.",
+                  }).then(() => {
+                    localStorage.clear();
+                    window.location.href = "/";
+                  });
+                });
+            }}
+          >
+            예
+          </Button>,
+          <Button
+            key={"no"}
+            onClick={() => {
+              setOpenDeleteModal(false);
+            }}
+          >
+            아니오
+          </Button>,
+        ]}
+      >
+        <span style={{ fontSize: "1.2rem" }}>
+          <b>정말 탈퇴하시겠습니까?</b>
+        </span>
+      </Modal>
     </div>
   );
 };

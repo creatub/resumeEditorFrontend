@@ -87,7 +87,11 @@ const InitialLanding = ({ scrollToLandingStat }) => {
             justifyContent: "center",
           }}
         >
-          <img src="/img/Reditor_banner.png" alt="이미지를 표시할수 없습니다" />
+          <img
+            src="/img/logo.gif"
+            style={{ height: "68%", width: "90%", marginTop: "5%" }}
+            alt="이미지를 표시할수 없습니다"
+          />
         </div>
       </div>
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
