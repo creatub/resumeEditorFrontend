@@ -15,47 +15,29 @@ const LandingStat = () => {
   });
 
   const animationDuration = 4;
-  const fetchUserStatData = async (group: string) => {
+
+  const fetchLandingStatData = async (group: string) => {
     let res = await axios
-      .get("/admin/stat/user", {
+      .get("/landing/stat", {
         params: {
           group: group,
         },
       })
       .then((res) => {
         switch (group) {
-          case "count":
+          case "countUser":
             setTotalUser(res.data.response.total_user);
             break;
           case "visitTotal":
             setTotalVisitor(res.data.response.total_visit);
             break;
-        }
-      })
-      .catch((err) => {
-        console.log("도넛데이터를 가져오는데 오류가 발생했습니다", err);
-      });
-  };
-
-  const fetchSquareData = async (group: string) => {
-    let res = await axios
-      .get(`admin/stat/resume/count`, {
-        params: {
-          group: group,
-        },
-      })
-      .then((res) => {
-        switch (group) {
-          case "editTotal": //엄청느림
+          case "editTotal":
             setTotalEdit(res.data.response.edit_count);
             break;
           case "boardToday":
             setTotalResume(res.data.response.total_board);
             break;
         }
-      })
-      .catch((err) => {
-        console.log("박스데이터를 가져오는데 오류가 발생했습니다", err);
       });
   };
 
@@ -68,10 +50,10 @@ const LandingStat = () => {
   };
   useEffect(() => {
     Promise.all([
-      fetchUserStatData("count"),
-      fetchUserStatData("visitTotal"),
-      fetchSquareData("editTotal"),
-      fetchSquareData("boardToday"),
+      fetchLandingStatData("countUser"),
+      fetchLandingStatData("visitTotal"),
+      fetchLandingStatData("editTotal"),
+      fetchLandingStatData("boardToday"),
     ]);
   }, []);
 
