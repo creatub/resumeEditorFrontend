@@ -10,6 +10,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import React from "react";
+import Swal from "sweetalert2";
 interface DecodedToken {
   category: string;
   exp: number;
@@ -128,6 +129,11 @@ const MyPage = () => {
         wish: wish,
       })
       .then((res) => {
+        Swal.fire({
+          icon: "success",
+          title: "수정 완료",
+          text: "회원정보가 수정되었습니다.",
+        });
         fetchUserInfo();
       });
   };
@@ -408,7 +414,14 @@ const MyPage = () => {
                         unum: Decoded.uNum,
                       })
                       .then((res) => {
-                        console.log(res);
+                        Swal.fire({
+                          icon: "success",
+                          title: "회원 탈퇴 완료",
+                          text: "그동안 이용해주셔서 감사합니다.",
+                        }).then(() => {
+                          localStorage.clear();
+                          window.location.href = "/";
+                        });
                       });
                   }}
                   style={{
