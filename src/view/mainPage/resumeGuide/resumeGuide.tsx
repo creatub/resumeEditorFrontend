@@ -271,6 +271,25 @@ const ResumeGuide = () => {
         });
       });
   };
+  const applyStyleToText = (text) => {
+    // '*' 개수를 세는 정규 표현식
+    const asteriskCount = (text.match(/\*/g) || []).length;
+    // '#' 개수를 세는 정규 표현식
+    const hashCount = (text.match(/#/g) || []).length;
+
+    // '*' 개수에 따라 스타일 적용
+    const style = {
+      fontWeight: asteriskCount > 0 ? "bold" : "normal",
+      fontSize: asteriskCount > 0 ? "1.1rem" : "1rem",
+      color: hashCount > 0 ? "blue" : "inherit",
+    };
+
+    return (
+      <div>
+        <p style={style}>{text.replace(/\*/g, "").replace(/#/g, "")}</p>
+      </div>
+    );
+  };
 
   const addQuestion = () =>
     setQuestionList([...questionList, { value: "", iconType: "minus" }]);
@@ -646,15 +665,11 @@ const ResumeGuide = () => {
                     </div>
                   </div>
                 ) : (
-                  <p
-                    style={{
-                      whiteSpace: "pre-wrap",
-                      fontWeight: "bold",
-                      fontSize: "1rem",
-                    }}
-                  >
-                    {result}
-                  </p>
+                  result
+                    .split("\n")
+                    .map((text, index) => (
+                      <div key={index}>{applyStyleToText(text)}</div>
+                    ))
                 )
               ) : (
                 <div
@@ -675,7 +690,7 @@ const ResumeGuide = () => {
       </div>
       <Modal
         title="Search Company"
-        open={isModalOpen}
+        visible={isModalOpen}
         onCancel={closeSearchModal}
         footer={null}
         width={600}
@@ -708,7 +723,7 @@ const ResumeGuide = () => {
       </Modal>
       <Modal
         title="Search Occupation"
-        open={isOccupationModalOpen}
+        visible={isOccupationModalOpen}
         onCancel={closeOccupationSearchModal}
         footer={null}
         width={600}
