@@ -83,7 +83,7 @@ const ReviewBox = ({ username, comment, avatar }) => {
         marginLeft: "80px",
         borderRadius: "10px",
         padding: "1% 5%",
-        border: "1px solid black",
+        border: "1px solid rgb(150,150,150)",
       }}
     >
       <h3>{username}</h3>
