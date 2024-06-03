@@ -118,6 +118,19 @@ const MyPage = () => {
         setEditRecords([]);
       });
   };
+
+  const onEdit = ({ email, age, birthDate, wish }) => {
+    let res = axiosInstance
+      .post("/user/update", {
+        email: email,
+        age: age,
+        birthDate: birthDate,
+        wish: wish,
+      })
+      .then((res) => {
+        fetchUserInfo();
+      });
+  };
   const fetchBookmarks = (page: number) => {
     axiosInstance
       .get(`/user/bookmark?page=${page}`)
@@ -282,7 +295,7 @@ const MyPage = () => {
         }}
       >
         <div className="myPageContentWrapper">
-          <Form form={userForm}>
+          <Form onFinish={onEdit} form={userForm}>
             <Form.Item style={{ width: "100%", marginBottom: "0" }}>
               <Form.Item
                 name="username"
@@ -375,6 +388,7 @@ const MyPage = () => {
                 }}
               >
                 <Button
+                  htmlType="submit"
                   size="large"
                   style={{
                     backgroundColor: "#85DAD2",
