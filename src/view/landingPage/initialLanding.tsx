@@ -8,7 +8,12 @@ const InitialLanding = ({ scrollToLandingStat }) => {
   const navigate = useNavigate();
   return (
     <div>
-      <div style={{ height: "90vh", display: "flex" }}>
+      <div
+        style={{
+          height: "90vh",
+          display: "flex",
+        }}
+      >
         <div
           className="leftWrapper"
           style={{

@@ -34,7 +34,7 @@ const LandingStat = () => {
           case "editTotal":
             setTotalEdit(res.data.response.edit_count);
             break;
-          case "boardToday":
+          case "boardTotal":
             setTotalResume(res.data.response.total_board);
             break;
         }
