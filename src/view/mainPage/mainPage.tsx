@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
 import CustomFooter from "../../components/footer";
 import Navbar from "@/components/navbar/navbar";
-import Loading from "@/components/loading";
+import FAQ from "./faq/faq";
 
 // Lazy load nested components
 const ResumeEdit = lazy(() => import("./resumeEdit/resumeEdit"));
@@ -27,6 +27,7 @@ const MainPage = () => {
           <Route path="resumelist" element={<ResumeList />} />
           <Route path="mypage" element={<MyPage />} />
           <Route path="mypage/:id" element={<ResumeHistoryDetail />} />
+          <Route path="faq" element={<FAQ />} />
         </Routes>
       </Suspense>
       <CustomFooter />

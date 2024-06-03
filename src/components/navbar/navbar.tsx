@@ -58,7 +58,7 @@ const Navbar = () => {
             <Link to="/main/mypage">마이페이지</Link>
           </li>
           <li>
-            <Link to="/main/mypage">FAQ</Link>
+            <Link to="/main/faq">FAQ</Link>
           </li>
         </ul>
         {user == true ? (
