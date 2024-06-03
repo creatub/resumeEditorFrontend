@@ -111,7 +111,7 @@ const AdminUserList = () => {
             setOpenDeleteModal(true);
           }}
         >
-          삭제
+          블랙리스트
         </Button>
       ),
     },
