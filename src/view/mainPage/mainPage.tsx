@@ -1,19 +1,36 @@
+import React, { Suspense, lazy } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
 import CustomFooter from "../../components/footer";
 import Navbar from "@/components/navbar/navbar";
-import React from "react";
-import ResumeEdit from "./resumeEdit/resumeEdit";
-import MyPage from "./myPage/myPage";
-import ResumeListDetails from "./resumeList/details/details";
-import ResumeList from "./resumeList/resumeList";
-import ResumeHistoryDetail from "./resumeList/details/resumeHistory";
+import Loading from "@/components/loading";
+
+// Lazy load nested components
+const ResumeEdit = lazy(() => import("./resumeEdit/resumeEdit"));
+const ResumeGuide = lazy(() => import("./resumeGuide/resumeGuide"));
+const ResumeListDetails = lazy(() => import("./resumeList/details/details"));
+const ResumeHistoryDetail = lazy(
+  () => import("./resumeList/details/resumeHistory")
+);
+const ResumeList = lazy(() => import("./resumeList/resumeList"));
+const MyPage = lazy(() => import("./myPage/myPage"));
 
 const MainPage = () => {
   return (
     <div>
       <Navbar />
-      <Outlet />
+      <Suspense fallback={<></>}>
+        <Routes>
+          <Route index element={<ResumeEdit />} />
+          <Route path="resumeguide" element={<ResumeGuide />} />
+          <Route path="resume" element={<ResumeEdit />} />
+          <Route path="resumelist/:id" element={<ResumeListDetails />} />
+          <Route path="resumelist" element={<ResumeList />} />
+          <Route path="mypage" element={<MyPage />} />
+          <Route path="mypage/:id" element={<ResumeHistoryDetail />} />
+        </Routes>
+      </Suspense>
       <CustomFooter />
+      <Outlet />
     </div>
   );
 };

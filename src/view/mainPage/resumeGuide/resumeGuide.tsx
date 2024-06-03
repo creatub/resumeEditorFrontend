@@ -675,7 +675,7 @@ const ResumeGuide = () => {
       </div>
       <Modal
         title="Search Company"
-        visible={isModalOpen}
+        open={isModalOpen}
         onCancel={closeSearchModal}
         footer={null}
         width={600}
@@ -708,7 +708,7 @@ const ResumeGuide = () => {
       </Modal>
       <Modal
         title="Search Occupation"
-        visible={isOccupationModalOpen}
+        open={isOccupationModalOpen}
         onCancel={closeOccupationSearchModal}
         footer={null}
         width={600}

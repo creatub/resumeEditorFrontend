@@ -84,7 +84,6 @@ const MyPage = () => {
     let res = axiosInstance
       .post("/user/search")
       .then((res) => {
-        console.log(res);
         setUserInfo(res.data.response);
         userForm.setFieldsValue({
           username: res.data.response.username,

@@ -409,7 +409,7 @@ const ResumeEdit = () => {
           border: "1px solid rgb(220,220,220)",
           boxShadow: "0 0 10px 0 rgb(220, 220, 220)",
           borderRadius: "5px",
-          height: document.querySelector(".userInnerWrapper")?.clientHeight,
+          height: "auto",
           width: "50%",
           marginLeft: "4%",
         }}

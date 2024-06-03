@@ -94,7 +94,6 @@ const AdminUserStat = () => {
       const res = await axiosInstance
         .get(`/admin/stat/user/${group}`)
         .then((res) => {
-          console.log(res);
           switch (group) {
             case "traffic":
               setTrafficData(res.data.response.traffic_data);

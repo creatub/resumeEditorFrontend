@@ -1,22 +1,15 @@
-import LandingPage from "@/view/landingPage/landing";
-import { Outlet, Route, Routes } from "react-router-dom";
-import React from "react";
+import Login from "@/view/auth/login";
 import SignUp from "@/view/auth/signUp";
+import React from "react";
+import { Route, Routes } from "react-router-dom";
 
-const Auth = () => {
-  return (
-    <>
-      <Outlet />
-    </>
-  );
-};
+const AuthRoutes = () => (
+  <>
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <Route path="/auth/signup" element={<SignUp />} />
+      <Route path="/auth/login" element={<Login />} />
+    </React.Suspense>
+  </>
+);
 
-export default function AuthRoute() {
-  return (
-    <Routes>
-      <Route path="/auth" element={<Auth />}>
-        <Route index path="signup" element={<SignUp />} />
-      </Route>
-    </Routes>
-  );
-}
+export default AuthRoutes;
