@@ -236,6 +236,7 @@ const ResumeGuide = () => {
             },
             {
               withCredentials: true,
+              timeout: 200000,
             }
           )
           .then((res) => {

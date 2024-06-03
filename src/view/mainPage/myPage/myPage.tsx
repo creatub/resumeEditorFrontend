@@ -84,6 +84,7 @@ const MyPage = () => {
     let res = axiosInstance
       .post("/user/search")
       .then((res) => {
+        console.log(res);
         setUserInfo(res.data.response);
         userForm.setFieldsValue({
           username: res.data.response.username,
@@ -92,6 +93,9 @@ const MyPage = () => {
           gender: res.data.response.gender,
           inDate: res.data.response.inDate.slice(0, 10),
           mode: res.data.response.mode,
+          birthDate: res.data.response.birthDate,
+          wish: res.data.response.wish,
+          resumeEditCount: res.data.response.resumeEditCount,
         });
       })
       .catch((err) => {
@@ -279,11 +283,11 @@ const MyPage = () => {
       >
         <div className="myPageContentWrapper">
           <Form form={userForm}>
-            <Form.Item style={{ width: "100%" }}>
+            <Form.Item style={{ width: "100%", marginBottom: "0" }}>
               <Form.Item
                 name="username"
                 label={<b>유저ID</b>}
-                style={{ width: "calc(30%-8px)", display: "inline-block" }}
+                style={{ width: "calc(50% - 8px)", display: "inline-block" }}
               >
                 <Input size="large" disabled />
               </Form.Item>
@@ -291,30 +295,83 @@ const MyPage = () => {
                 name="email"
                 label={<b>이메일</b>}
                 style={{
-                  width: "calc(70%-8px)",
+                  width: "calc(50% - 8px)",
                   display: "inline-block",
                   marginLeft: "8px",
                 }}
               >
-                <Input style={{ width: "100%" }} size="large" />
+                <Input size="large" />
               </Form.Item>
             </Form.Item>
-            <Form.Item name="age" label={<b>나이</b>}>
-              <Input size="large" />
+            <Form.Item style={{ width: "100%", marginBottom: "0" }}>
+              <Form.Item
+                name="age"
+                label={<b>나이</b>}
+                style={{ width: "calc(50% - 8px)", display: "inline-block" }}
+              >
+                <Input size="large" />
+              </Form.Item>
+              <Form.Item
+                name="birthDate"
+                label={<b>생년월일</b>}
+                style={{
+                  width: "calc(50% - 8px)",
+                  display: "inline-block",
+                  marginLeft: "8px",
+                }}
+              >
+                <Input size="large" />
+              </Form.Item>
             </Form.Item>
-            <Form.Item name="gender" label={<b>성별</b>}>
-              <Input size="large" disabled />
+            <Form.Item style={{ width: "100%", marginBottom: "0" }}>
+              <Form.Item
+                name="wish"
+                label={<b>목표 직무</b>}
+                style={{ width: "calc(50% - 8px)", display: "inline-block" }}
+              >
+                <Input size="large" />
+              </Form.Item>
+              <Form.Item
+                name="inDate"
+                label={<b>가입일</b>}
+                style={{
+                  width: "calc(50% - 8px)",
+                  display: "inline-block",
+                  marginLeft: "8px",
+                }}
+              >
+                <Input size="large" disabled />
+              </Form.Item>
             </Form.Item>
-            <Form.Item name="inDate" label={<b>가입일</b>}>
-              <Input size="large" disabled />
+            <Form.Item style={{ width: "100%", marginBottom: "0" }}>
+              <Form.Item
+                name="gender"
+                label={<b>성별</b>}
+                style={{ width: "calc(50% - 8px)", display: "inline-block" }}
+              >
+                <Input size="large" disabled />
+              </Form.Item>
+              <Form.Item
+                name="resumeEditCount"
+                label={<b>첨삭한 자소서수</b>}
+                style={{
+                  width: "calc(50% - 8px)",
+                  display: "inline-block",
+                  marginLeft: "8px",
+                }}
+              >
+                <Input size="large" disabled />
+              </Form.Item>
             </Form.Item>
             <Form.Item>
               <div
                 className="buttonWrapper"
                 style={{
+                  marginTop: "5%",
                   width: "100%",
                   display: "flex",
-                  justifyContent: "flex-end",
+                  justifyContent: "center",
+                  gap: "8px",
                 }}
               >
                 <Button
@@ -323,7 +380,6 @@ const MyPage = () => {
                     backgroundColor: "#85DAD2",
                     color: "white",
                     fontWeight: "bold",
-                    marginRight: "1%",
                   }}
                 >
                   수정하기
