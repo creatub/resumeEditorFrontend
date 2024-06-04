@@ -200,7 +200,7 @@ const ResumeGuide = () => {
     const decodedToken: DecodedToken = jwtDecode(accessToken);
     const uNum = decodedToken.uNum;
     const axiosInstance_python = axios.create({
-      baseURL: "https://resume-gpt-qdrant.vercel.app",
+      baseURL: "https://resume-editor-python.vercel.app",
       timeout: 100000,
       withCredentials: true,
       headers: {

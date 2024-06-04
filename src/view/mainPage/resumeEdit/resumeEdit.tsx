@@ -152,7 +152,7 @@ const ResumeEdit = () => {
     }
     let res = axiosInstance
       .post(
-        "https://resume-gpt-qdrant.vercel.app/rag_chat",
+        "https://resume-editor-python.vercel.app",
         {
           status: status,
           company: company,
