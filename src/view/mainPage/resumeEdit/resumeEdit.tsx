@@ -152,7 +152,7 @@ const ResumeEdit = () => {
     }
     let res = axiosInstance
       .post(
-        "https://resume-editor-python.vercel.app",
+        "https://resume-editor-python.vercel.app/rag_chat",
         {
           status: status,
           company: company,
