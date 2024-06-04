@@ -73,7 +73,7 @@ ChatGPT API를 활용하여 자기소개서 첨삭 서비스를 개발하였습�
   </details>
 </details>
 
-## 💭 프로젝트 아키텍처
+## 🏛️ 프로젝트 아키텍처
 <details>
   <summary>프로젝트 아키텍처 이미지</summary>
 
