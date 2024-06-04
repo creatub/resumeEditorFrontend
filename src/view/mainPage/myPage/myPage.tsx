@@ -126,12 +126,14 @@ const MyPage = () => {
       });
   };
 
-  const onEdit = ({ email, age, birthDate, wish }) => {
+  const onEdit = ({ email, age, birthDate, wish, company, occupation }) => {
     let res = axiosInstance
       .post("/user/update", {
         email: email,
         age: age,
         birthDate: birthDate,
+        company: company,
+        occupation: occupation,
         wish: wish,
       })
       .then((res) => {
