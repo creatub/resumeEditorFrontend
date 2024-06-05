@@ -32,14 +32,14 @@
 7. [레포지토리](#레포지토리)
 
 
-## 💻 프로젝트 소개
+## 💻프로젝트 소개
 
 <p>멀티캠퍼스 백엔드 개발자 부트캠프(스프링) 21회차 <b>최우수</b> 프로젝트입니다.</p>
 <p>5명 모두 취업(이직)준비생으로 이루어진 팀이었기에 모두 자기소개서에 대한 관심이 많았습니다.</p>
 <p>좋은 자기소개서를 작성하기 위해 다양한 첨삭 서비스를 이용해 보았지만 결과는 만족스럽지 못하였습니다.</p>
 <p>이러한 부분을 저희가 배운 기술을 활용하여 직접 개선해 보고자 해당 프로젝트를 시작하게 되었습니다.</p>
 
-## ⏲️ 개발 기간
+## ⏲개발 기간
 
 2024.04 - 2024.06
 
@@ -51,7 +51,9 @@
 | 팀장 / AI    | 팀원 / Frontend | 팀원 / Backend | 팀원 / Backend | 팀원 / Backend |
 
 
-## 📷 주요기능 소개 (❗ gif 로딩이 느릴수 있으니 조금만 기다려주세요 ❗)
+## 📷주요기능 소개
+
+### ❗ gif 로딩이 느릴수 있으니 조금만 기다려주세요 ❗
 
 ### [자기소개서 가이드](#자기소개서-가이드)
 <p>자기소개서를 작성하는 첫번째 스텝은 경험을 나열하는것입니다</p>
@@ -99,10 +101,10 @@
 
 
 
-## 🏛️ 프로젝트 아키텍처
+## 🏛프로젝트 아키텍처
   ![reditor_architecture2](https://github.com/MinjoonHK/resumeEditorFrontend/assets/108560916/9e4adc18-e1b2-46b6-b1a2-1b0b7735ff50)
 
-## ⚙️ 개발 환경
+## ⚙개발 환경
 
 ![reditor_techstack](https://github.com/MinjoonHK/resumeEditorFrontend/assets/108560916/12504f9b-7c8c-4f52-ae25-68178cab348c)
 
@@ -120,7 +122,7 @@
 </ul>
 
 
-## 🏠 레포지토리
+## 🏠레포지토리
 
 <a href="https://github.com/MinjoonHK/resumeEditorFrontend">프론트엔드 레포지토리</a><br/>
 <a href="https://github.com/JavaBackEnd21st/resumeEditorBackend">백엔드 레포지토리</a><br/>
