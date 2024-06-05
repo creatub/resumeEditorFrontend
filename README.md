@@ -30,6 +30,12 @@
 5. [프로젝트 아키텍처](#프로젝트-아키텍처)
 6. [개발 환경](#개발-환경)
 7. [레포지토리](#레포지토리)
+8. [트러블 슈팅 & 기술적 경험](#트러블-슈팅--기술적-경험)
+   - [김상휘 AI](#김상휘)
+   - [박민준 FE](#박민준)
+   - [신아진 BE](#신아진)
+   - [박연경 BE](#박연경)
+   - [안은비 BE](#안은비)
 
 
 ## 💻프로젝트 소개
@@ -127,3 +133,20 @@
 <a href="https://github.com/MinjoonHK/resumeEditorFrontend">프론트엔드 레포지토리</a><br/>
 <a href="https://github.com/JavaBackEnd21st/resumeEditorBackend">백엔드 레포지토리</a><br/>
 <a href="https://github.com/JavaBackEnd21st/resume_gpt_qdrant">AI 레포지토리</a><br/>
+
+## 🛠트러블 슈팅 & 기술적 경험
+
+### 김상휘
+
+
+### 박민준
+
+
+### 신아진
+
+
+### 박연경
+
+
+### 안은비
+
