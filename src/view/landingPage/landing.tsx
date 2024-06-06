@@ -1,7 +1,5 @@
-import CustomFooter from "@/components/footer";
 import React, { CSSProperties, useRef, useState, useEffect } from "react";
 import LandingStat from "./landingStat";
-import LoginLanding from "./loginLanding";
 import LandingReview from "./landingReview";
 import InitialLanding from "./initialLanding";
 import { Modal, isMobileDevice } from "./mobileModal";
@@ -12,11 +10,15 @@ const LandingPage = () => {
   useEffect(() => {
     if (isMobileDevice()) {
       setModalVisible(true);
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
     }
   }, []);
 
   const closeModal = () => {
     setModalVisible(false);
+    document.body.style.overflow = "unset";
   };
 
   const sectionStyle: CSSProperties = {
@@ -25,10 +27,11 @@ const LandingPage = () => {
 
   const containerStyle: CSSProperties = {
     scrollSnapType: "y mandatory",
-    overflowY: "scroll",
+    overflowY: isModalVisible ? "hidden" : "scroll",
     height: "100vh",
     width: "100vw",
-    filter: isModalVisible ? "blur(5px)" : "none", // Add blur effect when modal is visible
+    filter: isModalVisible ? "blur(5px)" : "none",
+    pointerEvents: isModalVisible ? "none" : "auto",
   };
 
   const sectionSnapStyle: CSSProperties = {

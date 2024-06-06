@@ -35,6 +35,7 @@ export const Modal: React.FC<ModalProps> = ({
     padding: "20px",
     borderRadius: "8px",
     textAlign: "center",
+    whiteSpace: "pre-wrap",
   };
 
   const buttonStyle: CSSProperties = {
