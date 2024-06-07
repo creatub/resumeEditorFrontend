@@ -97,7 +97,7 @@
 
 ![reditor_admin_userstat](https://github.com/MinjoonHK/resumeEditorFrontend/assets/108560916/39be7a93-d9f6-47b9-96c0-becff1de0c4d)
 ### [랜딩페이지](#랜딩페이지)
-<p>서비스의 첫 인상인 만큼 다양한 애니메이션 효과를 통해 유저의 시선을 주의를 끕니다</p>
+<p>서비스의 첫 인상인 만큼 다양한 애니메이션 효과를 통해 유저의 시선을 사로잡습니다</p>
 <p>서비스의 통계, 후기등 사용자들이 참고할만한 정보들을 보여줍니다.</p>
 
 ![reditor_landing](https://github.com/MinjoonHK/resumeEditorFrontend/assets/108560916/2669efa6-b87a-40a3-bb7d-dab9d3c9d314)
