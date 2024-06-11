@@ -240,7 +240,7 @@ const SignUp = () => {
                                 });
                               }
                               let checkCode = axios
-                                .post("/signup/auth-code", {
+                                .post("/signup/auth-check", {
                                   email: submitForm.getFieldValue("email"),
                                 })
                                 .then((res) => {
