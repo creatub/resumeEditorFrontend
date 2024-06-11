@@ -242,6 +242,8 @@ const SignUp = () => {
                               let checkCode = axios
                                 .post("/signup/auth-check", {
                                   email: submitForm.getFieldValue("email"),
+                                  authCode:
+                                    submitForm.getFieldValue("authCode"),
                                 })
                                 .then((res) => {
                                   if (res.status == 200) {
