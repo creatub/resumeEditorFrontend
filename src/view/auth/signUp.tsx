@@ -246,14 +246,15 @@ const SignUp = () => {
                                 .then((res) => {
                                   if (res.status == 200) {
                                     setVerified(true);
-                                  } else if (res.status == 500) {
-                                    Swal.fire({
-                                      icon: "error",
-                                      title: "인증번호가 일치하지 않습니다!",
-                                      showConfirmButton: true,
-                                      timer: 2000,
-                                    });
                                   }
+                                })
+                                .catch((err) => {
+                                  Swal.fire({
+                                    icon: "error",
+                                    title: "인증번호가 일치하지 않습니다!",
+                                    showConfirmButton: true,
+                                    timer: 2000,
+                                  });
                                 });
                             }}
                             style={{ width: "100%" }}
