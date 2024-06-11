@@ -31,11 +31,7 @@
 6. [개발 환경](#개발-환경)
 7. [레포지토리](#레포지토리)
 8. [트러블 슈팅 & 기술적 경험](#트러블-슈팅--기술적-경험)
-   - [김상휘 AI](#김상휘)
    - [박민준 FE](#박민준)
-   - [신아진 BE](#신아진)
-   - [박연경 BE](#박연경)
-   - [안은비 BE](#안은비)
 
 
 ## 💻프로젝트 소개
@@ -101,7 +97,7 @@
 
 ![reditor_admin_userstat](https://github.com/MinjoonHK/resumeEditorFrontend/assets/108560916/39be7a93-d9f6-47b9-96c0-becff1de0c4d)
 ### [랜딩페이지](#랜딩페이지)
-<p>서비스의 첫 인상인 만큼 다양한 애니메이션 효과를 통해 유저의 시선을 주의를 끕니다</p>
+<p>서비스의 첫 인상인 만큼 다양한 애니메이션 효과를 통해 유저의 시선을 사로잡습니다</p>
 <p>서비스의 통계, 후기등 사용자들이 참고할만한 정보들을 보여줍니다.</p>
 
 ![reditor_landing](https://github.com/MinjoonHK/resumeEditorFrontend/assets/108560916/2669efa6-b87a-40a3-bb7d-dab9d3c9d314)
@@ -137,21 +133,10 @@
 
 ## 🛠트러블 슈팅 & 기술적 경험
 
-### 김상휘
-
-
 ### 박민준
 <ul>
   
   <li><a href="https://github.com/MinjoonHK/resumeEditorFrontend/wiki/FE-%E2%80%90-UX-%EA%B0%9C%EC%84%A0">FE-UX개선</a></li>
   <li><a href="https://github.com/MinjoonHK/resumeEditorFrontend/wiki/FE-%E2%80%90-%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94%EC%97%90-%EB%8C%80%ED%95%B4">FE-성능 최적화</li>
+    <li><a href="https://github.com/MinjoonHK/resumeEditorFrontend/wiki/FE-%E2%80%90-JWT-%EC%99%80-Axios-Instance">FE-Axios Instance와 JWT에 대해</a></li>
 </ul>
-
-### 신아진
-
-
-### 박연경
-
-
-### 안은비
-
