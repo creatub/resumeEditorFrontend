@@ -43,7 +43,7 @@ const Recommendation = () => {
     const uNum = decodedToken.uNum;
     let res = axios
       .get(
-        "http://openapi.work.go.kr/opi/opi/opia/wantedApi.do?authKey=WNKXZRZNR5AUCD0GJSCZJ2VR1HK&callTp=L&returnType=XML&empTpGb=1&startPage=2&display=100"
+        "https://openapi.work.go.kr/opi/opi/opia/wantedApi.do?authKey=WNKXZRZNR5AUCD0GJSCZJ2VR1HK&callTp=L&returnType=XML&empTpGb=1&startPage=2&display=100"
       )
       .then((res) => {
         console.log(res);
