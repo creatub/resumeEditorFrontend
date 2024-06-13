@@ -2,12 +2,13 @@ import React, { Suspense, lazy } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
 import CustomFooter from "../../components/footer";
 import Navbar from "@/components/navbar/navbar";
-import FAQ from "./faq/faq";
 
 // Lazy load nested components
 const ResumeEdit = lazy(() => import("./resumeEdit/resumeEdit"));
 const ResumeGuide = lazy(() => import("./resumeGuide/resumeGuide"));
 const ResumeListDetails = lazy(() => import("./resumeList/details/details"));
+const Recommendation = lazy(() => import("./recommendation/recommendation"));
+const FAQ = lazy(() => import("./faq/faq"));
 const ResumeHistoryDetail = lazy(
   () => import("./resumeList/details/resumeHistory")
 );
@@ -23,6 +24,7 @@ const MainPage = () => {
           <Route index element={<ResumeEdit />} />
           <Route path="resumeguide" element={<ResumeGuide />} />
           <Route path="resume" element={<ResumeEdit />} />
+          <Route path="recommendation" element={<Recommendation />} />
           <Route path="resumelist/:id" element={<ResumeListDetails />} />
           <Route path="resumelist" element={<ResumeList />} />
           <Route path="mypage" element={<MyPage />} />

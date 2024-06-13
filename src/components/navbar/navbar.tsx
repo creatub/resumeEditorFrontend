@@ -52,6 +52,9 @@ const Navbar = () => {
             <Link to="/main/resume">자소서 첨삭</Link>
           </li>
           <li>
+            <Link to="/main/recommendation">맞춤 일자리</Link>
+          </li>
+          <li>
             <Link to="/main/resumelist">자소서 목록</Link>
           </li>
           <li>
