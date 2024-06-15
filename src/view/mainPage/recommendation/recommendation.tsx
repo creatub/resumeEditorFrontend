@@ -1,4 +1,13 @@
-import { Button, Form, Input, Radio, Tooltip, Modal, Table } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Radio,
+  Tooltip,
+  Modal,
+  Table,
+  Select,
+} from "antd";
 import {
   InfoCircleOutlined,
   PlusOutlined,
@@ -17,6 +26,7 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import axiosInstance from "@/api/api";
 import React from "react";
+import { TableData, TableColumns } from "./tableData";
 
 const Recommendation = () => {
   const [userInputForm] = useForm();
@@ -36,55 +46,7 @@ const Recommendation = () => {
   const [occupationSearchResults, setOccupationSearchResults] = useState([]);
   const [occupationSearchLoading, setOccupationSearchLoading] = useState(false);
   const [occupationSearchError, setOccupationSearchError] = useState("");
-
-  useEffect(() => {
-    const accessToken = localStorage.getItem("access") ?? "";
-    const decodedToken: DecodedToken = jwtDecode(accessToken);
-    const uNum = decodedToken.uNum;
-    let res = axios
-      .get(
-        "https://openapi.work.go.kr/opi/opi/opia/wantedApi.do?authKey=WNKXZRZNR5AUCD0GJSCZJ2VR1HK&callTp=L&returnType=XML&empTpGb=1&startPage=2&display=100"
-      )
-      .then((res) => {
-        console.log(res);
-      });
-    axiosInstance
-      .get(`/resume-guide/load/${uNum}`)
-      .then((res) => {
-        if (res.data.status === "Success") {
-          const { awards, experiences } = res.data;
-          if (awards) {
-            const formattedAwards = awards.split("\n").map((award, index) => ({
-              value: award,
-              iconType: index === 0 ? "plus" : "minus",
-            }));
-            setAwardList(formattedAwards);
-          }
-          if (experiences) {
-            const formattedExperiences = experiences
-              .split("\n")
-              .map((exp, index) => ({
-                value: exp,
-                iconType: index === 0 ? "plus" : "minus",
-              }));
-            setExperienceList(formattedExperiences);
-          }
-        } else if (res.data.status === "Error") {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res.data.message,
-          });
-        }
-      })
-      .catch((err) => {
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "Failed to connect to the server. Please try again later.",
-        });
-      });
-  }, []);
+  const [selectedEducation, setSelectedEducation] = useState("");
 
   const randomSpinner = () => {
     const descriptionStyle: CSSProperties = {
@@ -151,130 +113,21 @@ const Recommendation = () => {
     return spinner[randomIndex];
   };
 
-  const onFinish = ({ status, company, occupation }) => {
-    const questions = certList.filter((q) => q.value.trim() !== "");
-    const awards = awardList.filter((a) => a.value.trim() !== "");
-    const experiences = experienceList.filter((e) => e.value.trim() !== "");
-
-    if (
-      status === undefined ||
-      company === undefined ||
-      occupation === undefined
-    ) {
-      Swal.fire({
-        icon: "error",
-        title: "입력되지 않은 항목이 있습니다.",
-        text: "모든 항목을 입력해주세요.",
-      });
-      return;
-    }
-
-    if (questions.length === 0) {
-      Swal.fire({
-        icon: "error",
-        title: "입력되지 않은 항목이 있습니다.",
-        text: "질문을 한 개 이상 입력해주세요.",
-      });
-      return;
-    }
-
-    if (awards.length === 0 && experiences.length === 0) {
-      Swal.fire({
-        icon: "error",
-        title: "입력되지 않은 항목이 있습니다.",
-        text: "수상경력/직무경험을 한 개 이상 작성해주세요.",
-      });
-      return;
-    }
-
+  const onFinish = ({ career, education, keyword, minPay, maxPay }) => {
+    // let res = axios
+    //   .get("https://resume-editor-python.vercel.app/job_search", {
+    //     params: {
+    //       career: career,
+    //       education: education,
+    //       keyword: keyword,
+    //       minPay: minPay,
+    //       maxPay: maxPay,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //   });
     setGenerated(true);
-    setIsLoading(true);
-
-    const formattedQuestions = questions.map((q, index) => ({
-      [`question${index + 1}`]: q.value,
-    }));
-    const formattedAwards = awards.map((a, index) => ({
-      [`award${index + 1}`]: a.value,
-    }));
-    const formattedExperiences = experiences.map((e, index) => ({
-      [`experience${index + 1}`]: e.value,
-    }));
-
-    const accessToken = localStorage.getItem("access") ?? "";
-    const decodedToken: DecodedToken = jwtDecode(accessToken);
-    const uNum = decodedToken.uNum;
-    const axiosInstance_python = axios.create({
-      baseURL: "https://resume-editor-python.vercel.app",
-      timeout: 100000,
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    axiosInstance
-      .post(
-        "/resume-guide/upload",
-        {
-          uNum,
-          awards: awards.map((a) => a.value).join("\n"), // 배열을 문자열로 변환하여 전송
-          experiences: experiences.map((e) => e.value).join("\n"), // 배열을 문자열로 변환하여 전송
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
-      .then((uploadRes) => {
-        axiosInstance_python
-          .post(
-            "/resume_guide",
-            {
-              status: status,
-              company: company,
-              occupation: occupation,
-              questions: formattedQuestions,
-              awards: formattedAwards,
-              experiences: formattedExperiences,
-            },
-            {
-              withCredentials: true,
-              timeout: 200000,
-            }
-          )
-          .then((res) => {
-            if (res.data.status === "Success") {
-              setIsLoading(false);
-              setResult(res.data.result);
-            }
-          })
-          .catch((err) => {
-            console.log(
-              company,
-              occupation,
-              questions,
-              formattedAwards,
-              formattedExperiences
-            );
-            console.log(err);
-            setIsLoading(false);
-            Swal.fire({
-              icon: "error",
-              title: "Network Error",
-              text: "Failed to connect to the server. Please try again later.",
-            });
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-        setIsLoading(false);
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "Failed to connect to the server. Please try again later.",
-        });
-      });
   };
   const applyStyleToText = (text) => {
     // '*' 개수를 세는 정규 표현식
@@ -353,10 +206,6 @@ const Recommendation = () => {
     closeSearchModal();
   };
 
-  const openOccupationSearchModal = () => {
-    setIsOccupationModalOpen(true);
-  };
-
   const closeOccupationSearchModal = () => {
     setIsOccupationModalOpen(false);
     setOccupationSearchResults([]);
@@ -388,6 +237,10 @@ const Recommendation = () => {
     const { occupation } = record;
     userInputForm.setFieldsValue({ occupation });
     closeOccupationSearchModal();
+  };
+
+  const handleChangeSelect = (value: string) => {
+    setSelectedEducation(value);
   };
 
   const handleInputChange = (e, index, list, setList) => {
@@ -426,8 +279,8 @@ const Recommendation = () => {
     },
   ];
   return (
-    <div style={{ padding: "5% 5%" }}>
-      <div className="Wrapper" style={{ padding: "2% 5%", display: "flex" }}>
+    <div>
+      <div className="Wrapper" style={{ padding: "2%", display: "flex" }}>
         <div
           className="userInnerWrapper"
           style={{
@@ -435,7 +288,7 @@ const Recommendation = () => {
             boxShadow: "0 0 10px 0 rgb(220, 220, 220)",
             borderRadius: "5px",
             height: "100%",
-            width: "55%",
+            width: "30%",
           }}
         >
           <div className="userInputWrapper" style={{ padding: "5% 5%" }}>
@@ -456,60 +309,77 @@ const Recommendation = () => {
             </Tooltip>
             <Form layout={"vertical"} form={userInputForm} onFinish={onFinish}>
               <Form.Item
-                name="status"
-                label={<b>신입/경력</b>}
+                name="career"
+                label={<b>경력</b>}
                 style={{
                   display: "inline-block",
-                  width: "calc(50% - 8px)",
                   marginTop: "15px",
                 }}
               >
                 <Radio.Group>
-                  <Radio value="신입"> 신입 </Radio>
-                  <Radio value="경력"> 경력 </Radio>
+                  <Radio value="N"> 신입 </Radio>
+                  <Radio value="E"> 경력 </Radio>
+                  <Radio value="Z"> 관계없음 </Radio>
                 </Radio.Group>
               </Form.Item>
-              <Form.Item label={<b>지원 직무</b>} name="occupation">
-                <Input
-                  suffix={
-                    <Button
-                      icon={<SearchOutlined />}
-                      onClick={openOccupationSearchModal}
-                    />
-                  }
-                  placeholder="직무 이름"
-                  size="large"
-                />
+              <Form.Item label={<b>지원 직무</b>} name="keyword1">
+                <Input size="large" />
               </Form.Item>
-              <Form.Item
-                name="degree"
-                label={<b>최종 학력</b>}
-                style={{ marginBottom: "10px" }}
-              >
-                <Input size="large" placeholder="OO대학교" />
-              </Form.Item>
-
               <Form.Item style={{ marginBottom: 0 }}>
+                <Form.Item
+                  name="education"
+                  label={<b>최종 학력</b>}
+                  style={{
+                    display: "inline-block",
+                    width: "calc(50% - 8px)",
+                  }}
+                >
+                  <Select
+                    size="large"
+                    defaultValue="00"
+                    onChange={handleChangeSelect}
+                    options={[
+                      { value: "00", label: "학력무관" },
+                      { value: "01", label: "초졸이하" },
+                      { value: "02", label: "중졸" },
+                      { value: "03", label: "고졸" },
+                      { value: "04", label: "대졸(2~3년)" },
+                      { value: "05", label: "대졸(4년)" },
+                      { value: "06", label: "석사" },
+                      { value: "07", label: "박사" },
+                    ]}
+                  />
+                </Form.Item>
                 <Form.Item
                   name="major"
                   label={<b>학과</b>}
                   style={{
                     display: "inline-block",
                     width: "calc(50% - 8px)",
+                    margin: "0 8px",
                   }}
                 >
                   <Input size="large" placeholder="전기공학과" />
                 </Form.Item>
+              </Form.Item>
+              <Form.Item style={{ marginBottom: 0 }}>
                 <Form.Item
-                  name="gpa"
-                  label={<b>학점</b>}
+                  name="minPay"
+                  label={<b>최소 연봉</b>}
+                  style={{ display: "inline-block", width: "calc(50% - 8px)" }}
+                >
+                  <Input placeholder="3000만원" size="large" />
+                </Form.Item>
+                <Form.Item
+                  label={<b>최대 연봉</b>}
+                  name="maxPay"
                   style={{
                     display: "inline-block",
                     width: "calc(50% - 8px)",
                     margin: "0 8px",
                   }}
                 >
-                  <Input size="large" />
+                  <Input placeholder="8000만원" size="large" />
                 </Form.Item>
               </Form.Item>
 
@@ -622,9 +492,6 @@ const Recommendation = () => {
 
               <Form.Item style={{ textAlign: "center", marginTop: "40px" }}>
                 <Button
-                  onClick={() => {
-                    setIsLoading(true);
-                  }}
                   style={{ backgroundColor: "#85dad2" }}
                   type="primary"
                   htmlType="submit"
@@ -638,7 +505,7 @@ const Recommendation = () => {
         </div>
         <div
           className="rightWrapper"
-          style={{ width: "50%", marginLeft: "4%" }}
+          style={{ width: "70%", marginLeft: "4%" }}
         >
           <div
             className="adWrapper"
@@ -656,7 +523,7 @@ const Recommendation = () => {
               justifyContent: "center",
             }}
           >
-            이곳에 광고가 들어올거에요!
+            (주)엔사이트 2058601461 울산 3 전력전자분야구조설계신규인력채용
           </div>
           <div
             className="gptInnerWrapper"
@@ -693,11 +560,7 @@ const Recommendation = () => {
                       </div>
                     </div>
                   ) : (
-                    result
-                      .split("\n")
-                      .map((text, index) => (
-                        <div key={index}>{applyStyleToText(text)}</div>
-                      ))
+                    <Table dataSource={TableData} columns={TableColumns} />
                   )
                 ) : (
                   <div

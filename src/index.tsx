@@ -9,6 +9,7 @@ import { store } from "./store/store";
 import React from "react";
 
 axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
