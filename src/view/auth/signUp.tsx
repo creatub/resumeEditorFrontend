@@ -15,19 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { start } from "@/store/features/timer/timerSlice";
 import React from "react";
-
-interface signUpParameter {
-  email: string;
-  password: string;
-  username?: string;
-  userBirthDate?: string;
-  age: number;
-  gender: string;
-  company?: string;
-  occupation?: string;
-  wish?: string;
-  status: number;
-}
+import "./signUp.scss";
 
 const SignUp = () => {
   let [submitForm] = useForm();
@@ -106,75 +94,29 @@ const SignUp = () => {
   };
 
   return (
-    <div style={{ marginTop: "5vh" }}>
-      <div
-        style={{ textAlign: "center", fontWeight: "bold", fontSize: "36px" }}
-      >
-        Resume Editor
-      </div>
-      <div
-        className="wrapper"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          height: "100%",
-        }}
-      >
-        <div
-          className="signUpWrpper"
-          style={{
-            width: "40vw",
-            height: "80%",
-            border: "1px solid rgb(224,224,224)",
-            marginTop: "2.5%",
-            marginBottom: "5%",
-          }}
-        >
-          <div
-            className="signUpInnerWrapper"
-            style={{
-              textAlign: "center",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <div
-              className="signUpInnerContent"
-              style={{ marginTop: "10%", marginBottom: "10%", width: "50%" }}
-            >
-              <div>
-                <span style={{ fontSize: "28px" }}>가입을 환영합니다!</span>
-              </div>
-              <div
-                className="subMessage"
-                style={{ color: "rgb(143,143,143)", marginTop: "5%" }}
-              >
+    <div className="signUpOuterContainer">
+      <div className="signUpTitle">Resume Editor</div>
+      <div className="signUpContainer">
+        <div className="signUpFormWrapper">
+          <div className="signUpFormInnerWrapper">
+            <div className="signUpInnerContent">
+              <div className="signUpWelcomeMessage">가입을 환영합니다!</div>
+              <div className="signUpSubMessage">
                 <p>고객님에 대해 더 자세히 알아가고 싶어요!</p>
               </div>
               <div>
                 <span>이미 계정이 있으신가요?</span>
-                <Link
-                  className="backToLogin"
-                  to="/auth/login"
-                  style={{
-                    color: "black",
-                    marginLeft: "5px",
-                    fontWeight: "bold",
-                    textDecoration: "underline",
-                  }}
-                >
+                <Link className="backToLogin" to="/auth/login">
                   로그인
                 </Link>
               </div>
-              <div className="buttonWrapper" style={{ marginTop: "15%" }}>
+              <div className="signUpBtnWrapper">
                 <div className="signUpForm">
                   <Form
                     form={submitForm}
                     onFinish={onSubmitForm}
                     layout="vertical"
-                    initialValues={{
-                      ["gender"]: "성별을 선택해 주세요",
-                    }}
+                    initialValues={{ gender: "성별을 선택해 주세요" }}
                     fields={[{ name: ["age"], value: userAge }]}
                   >
                     <Form.Item

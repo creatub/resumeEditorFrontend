@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { CSSProperties, useEffect, useState } from "react";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
+import "./styles/landingStat.scss";
 
 const LandingStat = () => {
   const [totalUser, setTotalUser] = useState<number>(0);
@@ -11,7 +12,7 @@ const LandingStat = () => {
 
   const { ref, inView } = useInView({
     triggerOnce: false,
-    threshold: 0.1, // Trigger when 10% of the component is visible
+    threshold: 0.1,
   });
 
   const animationDuration = 4;
@@ -41,13 +42,6 @@ const LandingStat = () => {
       });
   };
 
-  const dataStyle: CSSProperties = {
-    textAlign: "center",
-  };
-
-  const dataHeaderStyle: CSSProperties = {
-    marginBottom: "5%",
-  };
   useEffect(() => {
     Promise.all([
       fetchLandingStatData("countUser"),
@@ -58,47 +52,20 @@ const LandingStat = () => {
   }, []);
 
   return (
-    <div ref={ref} style={{ paddingTop: "8%" }}>
-      <div
-        className="landingStatHeader"
-        style={{
-          width: "100%",
-          textAlign: "center",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-        }}
-      >
-        <div style={{ fontWeight: "bold", fontSize: "2.5rem" }}>
-          당신만을 위한 AI 자소서 컨설턴트
-        </div>
-        <div style={{ width: "30%", fontSize: "1.3rem", marginTop: "3%" }}>
+    <div className="landingStatWrapper" ref={ref}>
+      <div className="landingStatHeader">
+        <div className="landingStatTitle">당신만을 위한 AI 자소서 컨설턴트</div>
+        <div className="landingStatSubTitle">
           <p>
             수많은 취업 준비생들과 이직 준비생들이 Reditor로 자기소개서를
             첨삭하고 있어요.
           </p>
         </div>
       </div>
-      <div className="statWrapper" style={{ marginTop: "3%" }}>
-        <div
-          className="statInnerWrapper"
-          style={{
-            fontSize: "2rem",
-            fontWeight: "bold",
-            display: "flex",
-            justifyContent: "center",
-            padding: "5%",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "80%",
-            }}
-          >
-            <div style={dataStyle}>
+      <div className="statWrapper">
+        <div className="statInnerWrapper">
+          <div className="statDataWrapper">
+            <div className="dataStyle">
               <div>
                 <img
                   width={50}
@@ -107,7 +74,7 @@ const LandingStat = () => {
                   alt="이미지를 표시할수 없습니다!"
                 />
               </div>
-              <div style={dataHeaderStyle}>첨삭 횟수</div>
+              <div className="dataHeaderStyle">첨삭 횟수</div>
               {inView && (
                 <CountUp
                   start={0}
@@ -117,14 +84,14 @@ const LandingStat = () => {
               )}
               회
             </div>
-            <div style={dataStyle}>
+            <div className="dataStyle">
               <img
                 width={50}
                 height={50}
                 src="/img/human.png"
                 alt="이미지를 표시할수 없습니다!"
               />
-              <div style={dataHeaderStyle}>가입한 유저</div>
+              <div className="dataHeaderStyle">가입한 유저</div>
               {inView && (
                 <CountUp
                   start={0}
@@ -134,14 +101,14 @@ const LandingStat = () => {
               )}
               명
             </div>
-            <div style={dataStyle}>
+            <div className="dataStyle">
               <img
                 width={50}
                 height={50}
                 src="/img/memo.png"
                 alt="이미지를 표시할수 없습니다!"
               />
-              <div style={dataHeaderStyle}>저장된 자소서</div>
+              <div className="dataHeaderStyle">저장된 자소서</div>
               {inView && (
                 <CountUp
                   start={0}
@@ -151,14 +118,14 @@ const LandingStat = () => {
               )}
               개
             </div>
-            <div style={dataStyle}>
+            <div className="dataStyle">
               <img
                 width={50}
                 height={50}
                 src="/img/graph.png"
                 alt="이미지를 표시할수 없습니다!"
               />
-              <div style={dataHeaderStyle}>총 방문자</div>
+              <div className="dataHeaderStyle">총 방문자</div>
               {inView && (
                 <CountUp
                   start={0}

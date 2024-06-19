@@ -14,6 +14,7 @@ import { setToken } from "@/store/features/token/tokenSlice";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { DecodedToken } from "@/types/globalTypes";
+import "./login.scss";
 
 const Login = () => {
   const [notify, contextHolder] = notification.useNotification();
@@ -75,118 +76,48 @@ const Login = () => {
   };
 
   return (
-    <div style={{ marginTop: "5vh" }}>
+    <div className="loginWrapper">
       {contextHolder}
-      <div
-        className="wrapper"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          height: "100vh",
-        }}
-      >
-        <div
-          className="signUpWrpper"
-          style={{
-            width: "40vw",
-            height: "70%",
-            border: "1px solid rgb(224,224,224)",
-            marginTop: "5vh",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "column",
-              textAlign: "center",
-              marginTop: "5%",
-            }}
-          >
+      <div className="loginInnerWrapper">
+        <div className="loginFormWrapper">
+          <div className="loginFormHeader">
             <div>
-              <span style={{ fontSize: "28px" }}>돌아오신걸 환영합니다!</span>
+              <span className="welcomeMessage">돌아오신걸 환영합니다!</span>
             </div>
-            <div className="subMessage" style={{ color: "rgb(143,143,143)" }}>
+            <div className="subMessage">
               <p>오늘도 REDITOR가 최선을 다해 도와줄게요!</p>
             </div>
-            <div>
+            <div className="linkMessage">
               <span>더 알아보고 싶으신가요?</span>
-              <Link
-                to="/"
-                style={{
-                  color: "black",
-                  marginLeft: "5px",
-                  fontWeight: "bold",
-                  textDecoration: "underline",
-                }}
-              >
+              <Link to="/" className="bannerLink">
                 배너로 이동하기
               </Link>
             </div>
           </div>
-          <div
-            className="signUpInnerWrapper"
-            style={{
-              textAlign: "center",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <div
-              className="formWrapper"
-              style={{ marginTop: "7%", width: "60%" }}
-            >
+          <div className="loginFormInnerWrapper">
+            <div className="loginInputWrapper">
               <Form onFinish={tryLogin}>
                 <Form.Item name="username" style={{ marginBottom: "2%" }}>
-                  <Input
-                    style={{ width: "100%" }}
-                    size="large"
-                    placeholder="아이디 입력"
-                  />
+                  <Input size="large" placeholder="아이디 입력" />
                 </Form.Item>
                 <Form.Item name="password">
                   <Input
                     type="password"
-                    style={{ width: "100%" }}
                     size="large"
                     placeholder="비밀번호 입력"
                   />
                 </Form.Item>
                 <Form.Item>
-                  <Button
-                    htmlType="submit"
-                    style={{
-                      width: "100%",
-
-                      fontWeight: "bold",
-                      fontSize: "16px",
-                      height: "50px",
-                    }}
-                  >
+                  <Button htmlType="submit" className="loginButton">
                     로그인
                   </Button>
                 </Form.Item>
               </Form>
-              <Divider
-                orientation="center"
-                style={{ color: "rgb(200,200,200)" }}
-              >
+              <Divider orientation="center" className="divider">
                 또는
               </Divider>
               <Button
-                style={{
-                  width: "100%",
-
-                  display: "flex",
-                  textAlign: "center",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                  color: "white",
-                  backgroundColor: "#85dad2",
-                  height: "50px",
-                }}
+                className="signupButton"
                 onClick={() => {
                   navigate("/auth/signup");
                 }}

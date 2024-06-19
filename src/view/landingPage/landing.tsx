@@ -5,21 +5,21 @@ import InitialLanding from "./initialLanding";
 import { Modal, isMobileDevice } from "./mobileModal";
 
 const LandingPage = () => {
-  const [isModalVisible, setModalVisible] = useState(false);
+  // const [isModalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    if (isMobileDevice()) {
-      setModalVisible(true);
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (isMobileDevice()) {
+  //     setModalVisible(true);
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "unset";
+  //   }
+  // }, []);
 
-  const closeModal = () => {
-    setModalVisible(false);
-    document.body.style.overflow = "unset";
-  };
+  // const closeModal = () => {
+  //   setModalVisible(false);
+  //   document.body.style.overflow = "unset";
+  // };
 
   const sectionStyle: CSSProperties = {
     height: "100vh",
@@ -27,11 +27,11 @@ const LandingPage = () => {
 
   const containerStyle: CSSProperties = {
     scrollSnapType: "y mandatory",
-    overflowY: isModalVisible ? "hidden" : "scroll",
+    overflowY: "scroll",
     height: "100vh",
     width: "100vw",
-    filter: isModalVisible ? "blur(5px)" : "none",
-    pointerEvents: isModalVisible ? "none" : "auto",
+    filter: "none",
+    pointerEvents: "auto",
   };
 
   const sectionSnapStyle: CSSProperties = {
@@ -63,11 +63,12 @@ const LandingPage = () => {
           <LandingReview />
         </section>
       </div>
-      <Modal
+      {/*모바일인 경우 팝업 */}
+      {/* <Modal
         isVisible={isModalVisible}
         message={`자기소개서 첨삭은 PC에서\n더욱 원활하게 진행할 수 있어요\nPC로 접속해주세요!`}
         onClose={closeModal}
-      />
+      /> */}
     </div>
   );
 };
