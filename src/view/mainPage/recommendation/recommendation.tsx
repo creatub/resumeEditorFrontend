@@ -7,71 +7,113 @@ import {
   Modal,
   Table,
   Select,
-} from "antd";
+} from 'antd';
 import {
   InfoCircleOutlined,
   PlusOutlined,
   MinusOutlined,
   SearchOutlined,
-} from "@ant-design/icons";
-import { CSSProperties, useEffect, useState } from "react";
-import { useForm } from "antd/es/form/Form";
-import axios from "axios";
-import PacmanLoader from "react-spinners/PacmanLoader";
-import PuffLoader from "react-spinners/PuffLoader";
-import BounceLoader from "react-spinners/BounceLoader";
-import FadeLoader from "react-spinners/FadeLoader";
-import { DecodedToken } from "@/types/globalTypes";
-import { jwtDecode } from "jwt-decode";
-import Swal from "sweetalert2";
-import axiosInstance from "@/api/api";
-import React from "react";
-import { TableData, TableColumns } from "./tableData";
+} from '@ant-design/icons';
+import { CSSProperties, useEffect, useState } from 'react';
+import { useForm } from 'antd/es/form/Form';
+import axios from 'axios';
+import PacmanLoader from 'react-spinners/PacmanLoader';
+import PuffLoader from 'react-spinners/PuffLoader';
+import BounceLoader from 'react-spinners/BounceLoader';
+import FadeLoader from 'react-spinners/FadeLoader';
+import { DecodedToken } from '@/types/globalTypes';
+import { jwtDecode } from 'jwt-decode';
+import Swal from 'sweetalert2';
+import axiosInstance from '@/api/api';
+import React from 'react';
+import { TableData, TableColumns } from './tableData';
 
 const Recommendation = () => {
   const [userInputForm] = useForm();
   const [generated, setGenerated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState("");
-  const [certList, setCertList] = useState([{ value: "", iconType: "plus" }]);
-  const [awardList, setAwardList] = useState([{ value: "", iconType: "plus" }]);
+  const [result, setResult] = useState('');
+  const [certList, setCertList] = useState([{ value: '', iconType: 'plus' }]);
+  const [awardList, setAwardList] = useState([{ value: '', iconType: 'plus' }]);
   const [experienceList, setExperienceList] = useState([
-    { value: "", iconType: "plus" },
+    { value: '', iconType: 'plus' },
   ]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [searchError, setSearchError] = useState("");
+  const [searchError, setSearchError] = useState('');
   const [isOccupationModalOpen, setIsOccupationModalOpen] = useState(false);
   const [occupationSearchResults, setOccupationSearchResults] = useState([]);
   const [occupationSearchLoading, setOccupationSearchLoading] = useState(false);
-  const [occupationSearchError, setOccupationSearchError] = useState("");
-  const [selectedEducation, setSelectedEducation] = useState("");
+  const [occupationSearchError, setOccupationSearchError] = useState('');
+  const [selectedEducation, setSelectedEducation] = useState('');
 
+  useEffect(() => {
+    const accessToken = localStorage.getItem('access') ?? '';
+    const decodedToken: DecodedToken = jwtDecode(accessToken);
+    const uNum = decodedToken.uNum;
+
+    axiosInstance
+      .get(`/resume-guide/load/${uNum}`)
+      .then((res) => {
+        if (res.data.status === 'Success') {
+          const { awards, experiences } = res.data;
+          if (awards) {
+            const formattedAwards = awards.split('\n').map((award, index) => ({
+              value: award,
+              iconType: index === 0 ? 'plus' : 'minus',
+            }));
+            setAwardList(formattedAwards);
+          }
+          if (experiences) {
+            const formattedExperiences = experiences
+              .split('\n')
+              .map((exp, index) => ({
+                value: exp,
+                iconType: index === 0 ? 'plus' : 'minus',
+              }));
+            setExperienceList(formattedExperiences);
+          }
+        } else if (res.data.status === 'Error') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res.data.message,
+          });
+        }
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Network Error',
+          text: 'Failed to connect to the server. Please try again later.',
+        });
+      });
+  }, []);
   const randomSpinner = () => {
     const descriptionStyle: CSSProperties = {
-      textAlign: "center",
-      marginTop: "3%",
+      textAlign: 'center',
+      marginTop: '3%',
     };
 
     const tipStyle: CSSProperties = {
-      fontSize: "0.8rem",
-      marginTop: "5%",
+      fontSize: '0.8rem',
+      marginTop: '5%',
     };
     let spinner = [
       <div>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <PacmanLoader color="#36d7b7" />
         </div>
         <div style={descriptionStyle}>
           가이드받은 내용을 토대로 나만의 자기소개서를 만들어보세요
         </div>
         <div style={tipStyle}>
-          Tip. 자기소개서에는 특별한 경험을 녹여낼 수록 좋아요.{" "}
+          Tip. 자기소개서에는 특별한 경험을 녹여낼 수록 좋아요.{' '}
         </div>
       </div>,
       <div>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <PuffLoader color="#36d7b7" />
         </div>
         <div style={descriptionStyle}>
@@ -84,7 +126,7 @@ const Recommendation = () => {
         </div>
       </div>,
       <div>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <BounceLoader color="#36d7b7" />
         </div>
         <div style={descriptionStyle}>
@@ -95,7 +137,7 @@ const Recommendation = () => {
         </div>
       </div>,
       <div>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <FadeLoader color="#36d7b7" />
         </div>
         <div style={descriptionStyle}>
@@ -114,19 +156,19 @@ const Recommendation = () => {
   };
 
   const onFinish = ({ career, education, keyword, minPay, maxPay }) => {
-    // let res = axios
-    //   .get("https://resume-editor-python.vercel.app/job_search", {
-    //     params: {
-    //       career: career,
-    //       education: education,
-    //       keyword: keyword,
-    //       minPay: minPay,
-    //       maxPay: maxPay,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //   });
+    let res = axios
+      .get('https://resume-editor-python.vercel.app/job_search', {
+        params: {
+          career: career,
+          education: education,
+          keyword: keyword,
+          minPay: minPay,
+          maxPay: maxPay,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      });
     setGenerated(true);
   };
   const applyStyleToText = (text) => {
@@ -137,30 +179,30 @@ const Recommendation = () => {
 
     // '*' 개수에 따라 스타일 적용
     const style = {
-      fontWeight: asteriskCount > 0 ? "bold" : "normal",
-      fontSize: asteriskCount > 0 ? "1.1rem" : "1rem",
-      color: hashCount > 0 ? "blue" : "inherit",
+      fontWeight: asteriskCount > 0 ? 'bold' : 'normal',
+      fontSize: asteriskCount > 0 ? '1.1rem' : '1rem',
+      color: hashCount > 0 ? 'blue' : 'inherit',
     };
 
     return (
       <div>
-        <p style={style}>{text.replace(/\*/g, "").replace(/#/g, "")}</p>
+        <p style={style}>{text.replace(/\*/g, '').replace(/#/g, '')}</p>
       </div>
     );
   };
 
   const addQuestion = () =>
-    setCertList([...certList, { value: "", iconType: "minus" }]);
+    setCertList([...certList, { value: '', iconType: 'minus' }]);
   const removeQuestion = (index) =>
     setCertList(certList.filter((_, i) => i !== index));
 
   const addAward = () =>
-    setAwardList([...awardList, { value: "", iconType: "minus" }]);
+    setAwardList([...awardList, { value: '', iconType: 'minus' }]);
   const removeAward = (index) =>
     setAwardList(awardList.filter((_, i) => i !== index));
 
   const addExperience = () =>
-    setExperienceList([...experienceList, { value: "", iconType: "minus" }]);
+    setExperienceList([...experienceList, { value: '', iconType: 'minus' }]);
   const removeExperience = (index) =>
     setExperienceList(experienceList.filter((_, i) => i !== index));
   const openSearchModal = () => {
@@ -172,22 +214,22 @@ const Recommendation = () => {
     setIsModalOpen(false);
     setSearchResults([]);
     setSearchLoading(false);
-    setSearchError("");
+    setSearchError('');
   };
 
   const handleSearch = async (value) => {
     setSearchLoading(true);
-    setSearchError("");
+    setSearchError('');
 
     try {
       const response = await axiosInstance.get(`/resume-items/load/${value}`);
-      if (response.data.status === "Not found") {
-        setSearchError("Not found");
-      } else if (response.data.status === "Success") {
+      if (response.data.status === 'Not found') {
+        setSearchError('Not found');
+      } else if (response.data.status === 'Success') {
         setSearchResults(response.data.itemsList);
       }
     } catch (error) {
-      setSearchError("Failed to search");
+      setSearchError('Failed to search');
     } finally {
       setSearchLoading(false);
     }
@@ -195,39 +237,41 @@ const Recommendation = () => {
 
   const handleRowClick = (record) => {
     const { company, items } = record;
-    const itemList = items.split("||");
+    const itemList = items.split('||');
     userInputForm.setFieldsValue({ company });
     setCertList(
       itemList.map((item, index) => ({
         value: item,
-        iconType: index === 0 ? "plus" : "minus",
+        iconType: index === 0 ? 'plus' : 'minus',
       }))
     );
     closeSearchModal();
   };
-
+  const openOccupationSearchModal = () => {
+    setIsOccupationModalOpen(true);
+  };
   const closeOccupationSearchModal = () => {
     setIsOccupationModalOpen(false);
     setOccupationSearchResults([]);
     setOccupationSearchLoading(false);
-    setOccupationSearchError("");
+    setOccupationSearchError('');
   };
 
   const handleOccupationSearch = async (value) => {
     setOccupationSearchLoading(true);
-    setOccupationSearchError("");
+    setOccupationSearchError('');
 
     try {
       const response = await axiosInstance.get(
         `/resume-occupation/load/${value}`
       );
-      if (response.data.status === "Not found") {
-        setOccupationSearchError("Not found");
-      } else if (response.data.status === "Success") {
+      if (response.data.status === 'Not found') {
+        setOccupationSearchError('Not found');
+      } else if (response.data.status === 'Success') {
         setOccupationSearchResults(response.data.occupationList);
       }
     } catch (error) {
-      setOccupationSearchError("Failed to search");
+      setOccupationSearchError('Failed to search');
     } finally {
       setOccupationSearchLoading(false);
     }
@@ -245,13 +289,13 @@ const Recommendation = () => {
 
   const handleInputChange = (e, index, list, setList) => {
     const newValue = e.target.value;
-    if (newValue.includes("\n")) {
-      const splitValues = newValue.split("\n");
+    if (newValue.includes('\n')) {
+      const splitValues = newValue.split('\n');
       const newList = [...list];
       newList[index].value = splitValues[0];
       const additionalItems = splitValues
         .slice(1)
-        .map((value) => ({ value, iconType: "minus" }));
+        .map((value) => ({ value, iconType: 'minus' }));
       setList([...newList, ...additionalItems]);
     } else {
       const newList = [...list];
@@ -261,59 +305,59 @@ const Recommendation = () => {
   };
   const occupationColumns = [
     {
-      title: "Occupation",
-      dataIndex: "occupation",
-      key: "occupation",
+      title: 'Occupation',
+      dataIndex: 'occupation',
+      key: 'occupation',
     },
   ];
   const columns = [
     {
-      title: "Company",
-      dataIndex: "company",
-      key: "company",
+      title: 'Company',
+      dataIndex: 'company',
+      key: 'company',
     },
     {
-      title: "Items",
-      dataIndex: "items",
-      key: "items",
+      title: 'Items',
+      dataIndex: 'items',
+      key: 'items',
     },
   ];
   return (
     <div>
-      <div className="Wrapper" style={{ padding: "2%", display: "flex" }}>
+      <div className="Wrapper" style={{ padding: '2%', display: 'flex' }}>
         <div
           className="userInnerWrapper"
           style={{
-            border: "1px solid rgb(220,220,220)",
-            boxShadow: "0 0 10px 0 rgb(220, 220, 220)",
-            borderRadius: "5px",
-            height: "100%",
-            width: "30%",
+            border: '1px solid rgb(220,220,220)',
+            boxShadow: '0 0 10px 0 rgb(220, 220, 220)',
+            borderRadius: '5px',
+            height: '100%',
+            width: '30%',
           }}
         >
-          <div className="userInputWrapper" style={{ padding: "5% 5%" }}>
+          <div className="userInputWrapper" style={{ padding: '5% 5%' }}>
             <Tooltip
               title="회사 추천 서비스는 지원자님의 지난 경험들을 기반으로 알맞는 회사를 추천해 주는 서비스에요!"
               placement="topLeft"
-              overlayStyle={{ fontSize: "1rem", maxWidth: "400px" }}
+              overlayStyle={{ fontSize: '1rem', maxWidth: '400px' }}
             >
               <InfoCircleOutlined
                 style={{
-                  fontSize: "15px",
-                  top: "10px",
-                  bottom: "10px",
-                  left: "10px",
-                  cursor: "pointer",
+                  fontSize: '15px',
+                  top: '10px',
+                  bottom: '10px',
+                  left: '10px',
+                  cursor: 'pointer',
                 }}
               />
             </Tooltip>
-            <Form layout={"vertical"} form={userInputForm} onFinish={onFinish}>
+            <Form layout={'vertical'} form={userInputForm} onFinish={onFinish}>
               <Form.Item
                 name="career"
                 label={<b>경력</b>}
                 style={{
-                  display: "inline-block",
-                  marginTop: "15px",
+                  display: 'inline-block',
+                  marginTop: '15px',
                 }}
               >
                 <Radio.Group>
@@ -323,15 +367,24 @@ const Recommendation = () => {
                 </Radio.Group>
               </Form.Item>
               <Form.Item label={<b>지원 직무</b>} name="keyword1">
-                <Input size="large" />
+                <Input
+                  suffix={
+                    <Button
+                      icon={<SearchOutlined />}
+                      onClick={openOccupationSearchModal}
+                    />
+                  }
+                  placeholder="직무 이름"
+                  size="large"
+                />
               </Form.Item>
               <Form.Item style={{ marginBottom: 0 }}>
                 <Form.Item
                   name="education"
                   label={<b>최종 학력</b>}
                   style={{
-                    display: "inline-block",
-                    width: "calc(50% - 8px)",
+                    display: 'inline-block',
+                    width: 'calc(50% - 8px)',
                   }}
                 >
                   <Select
@@ -339,14 +392,14 @@ const Recommendation = () => {
                     defaultValue="00"
                     onChange={handleChangeSelect}
                     options={[
-                      { value: "00", label: "학력무관" },
-                      { value: "01", label: "초졸이하" },
-                      { value: "02", label: "중졸" },
-                      { value: "03", label: "고졸" },
-                      { value: "04", label: "대졸(2~3년)" },
-                      { value: "05", label: "대졸(4년)" },
-                      { value: "06", label: "석사" },
-                      { value: "07", label: "박사" },
+                      { value: '00', label: '학력무관' },
+                      { value: '01', label: '초졸이하' },
+                      { value: '02', label: '중졸' },
+                      { value: '03', label: '고졸' },
+                      { value: '04', label: '대졸(2~3년)' },
+                      { value: '05', label: '대졸(4년)' },
+                      { value: '06', label: '석사' },
+                      { value: '07', label: '박사' },
                     ]}
                   />
                 </Form.Item>
@@ -354,9 +407,9 @@ const Recommendation = () => {
                   name="major"
                   label={<b>학과</b>}
                   style={{
-                    display: "inline-block",
-                    width: "calc(50% - 8px)",
-                    margin: "0 8px",
+                    display: 'inline-block',
+                    width: 'calc(50% - 8px)',
+                    margin: '0 8px',
                   }}
                 >
                   <Input size="large" placeholder="전기공학과" />
@@ -366,7 +419,7 @@ const Recommendation = () => {
                 <Form.Item
                   name="minPay"
                   label={<b>최소 연봉</b>}
-                  style={{ display: "inline-block", width: "calc(50% - 8px)" }}
+                  style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
                 >
                   <Input placeholder="3000만원" size="large" />
                 </Form.Item>
@@ -374,12 +427,12 @@ const Recommendation = () => {
                   label={<b>최대 연봉</b>}
                   name="maxPay"
                   style={{
-                    display: "inline-block",
-                    width: "calc(50% - 8px)",
-                    margin: "0 8px",
+                    display: 'inline-block',
+                    width: 'calc(50% - 8px)',
+                    margin: '0 8px',
                   }}
                 >
-                  <Input placeholder="8000만원" size="large" />
+                  <Input placeholder="5000만원" size="large" />
                 </Form.Item>
               </Form.Item>
 
@@ -389,24 +442,24 @@ const Recommendation = () => {
                   <div
                     key={index}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginBottom: "8px",
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginBottom: '8px',
                     }}
                   >
-                    {q.iconType === "plus" ? (
+                    {q.iconType === 'plus' ? (
                       <PlusOutlined
                         onClick={addQuestion}
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: 'pointer' }}
                       />
                     ) : (
                       <MinusOutlined
                         onClick={() => removeQuestion(index)}
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: 'pointer' }}
                       />
                     )}
                     <Input
-                      style={{ marginLeft: "8px" }}
+                      style={{ marginLeft: '8px' }}
                       value={q.value}
                       size="large"
                       onChange={(e) =>
@@ -423,24 +476,24 @@ const Recommendation = () => {
                   <div
                     key={index}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginBottom: "8px",
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginBottom: '8px',
                     }}
                   >
-                    {a.iconType === "plus" ? (
+                    {a.iconType === 'plus' ? (
                       <PlusOutlined
                         onClick={addAward}
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: 'pointer' }}
                       />
                     ) : (
                       <MinusOutlined
                         onClick={() => removeAward(index)}
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: 'pointer' }}
                       />
                     )}
                     <Input
-                      style={{ marginLeft: "8px" }}
+                      style={{ marginLeft: '8px' }}
                       value={a.value}
                       size="large"
                       onChange={(e) =>
@@ -457,24 +510,24 @@ const Recommendation = () => {
                   <div
                     key={index}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginBottom: "8px",
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginBottom: '8px',
                     }}
                   >
-                    {e.iconType === "plus" ? (
+                    {e.iconType === 'plus' ? (
                       <PlusOutlined
                         onClick={addExperience}
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: 'pointer' }}
                       />
                     ) : (
                       <MinusOutlined
                         onClick={() => removeExperience(index)}
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: 'pointer' }}
                       />
                     )}
                     <Input
-                      style={{ marginLeft: "8px" }}
+                      style={{ marginLeft: '8px' }}
                       value={e.value}
                       size="large"
                       onChange={(e) =>
@@ -490,9 +543,9 @@ const Recommendation = () => {
                 ))}
               </div>
 
-              <Form.Item style={{ textAlign: "center", marginTop: "40px" }}>
+              <Form.Item style={{ textAlign: 'center', marginTop: '40px' }}>
                 <Button
-                  style={{ backgroundColor: "#85dad2" }}
+                  style={{ backgroundColor: '#85dad2' }}
                   type="primary"
                   htmlType="submit"
                   size="large"
@@ -505,22 +558,22 @@ const Recommendation = () => {
         </div>
         <div
           className="rightWrapper"
-          style={{ width: "70%", marginLeft: "4%" }}
+          style={{ width: '70%', marginLeft: '4%' }}
         >
           <div
             className="adWrapper"
             style={{
-              width: "100%",
-              border: "1px solid rgb(220,220,220)",
-              boxShadow: "0 0 10px 0 rgb(220, 220, 220)",
-              borderRadius: "5px",
-              marginBottom: "10px",
-              height: "14%",
-              alignItems: "center",
-              display: "flex",
-              fontWeight: "bold",
-              fontSize: "1.1rem",
-              justifyContent: "center",
+              width: '100%',
+              border: '1px solid rgb(220,220,220)',
+              boxShadow: '0 0 10px 0 rgb(220, 220, 220)',
+              borderRadius: '5px',
+              marginBottom: '10px',
+              height: '14%',
+              alignItems: 'center',
+              display: 'flex',
+              fontWeight: 'bold',
+              fontSize: '1.1rem',
+              justifyContent: 'center',
             }}
           >
             (주)엔사이트 2058601461 울산 3 전력전자분야구조설계신규인력채용
@@ -528,32 +581,32 @@ const Recommendation = () => {
           <div
             className="gptInnerWrapper"
             style={{
-              border: "1px solid rgb(220,220,220)",
-              boxShadow: "0 0 10px 0 rgb(220, 220, 220)",
-              borderRadius: "5px",
-              height: generated ? "auto" : "84.3%",
+              border: '1px solid rgb(220,220,220)',
+              boxShadow: '0 0 10px 0 rgb(220, 220, 220)',
+              borderRadius: '5px',
+              height: generated ? 'auto' : '84.3%',
             }}
           >
             <div
               className="gptResultWrapper"
-              style={{ padding: "5% 5%", height: "100%" }}
+              style={{ padding: '5% 5%', height: '100%' }}
             >
-              <div className="gptResult" style={{ height: "100%" }}>
+              <div className="gptResult" style={{ height: '100%' }}>
                 {generated ? (
                   isLoading ? (
                     <div
                       style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: "100%",
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%',
                       }}
                     >
                       <div
                         style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          textAlign: "center",
+                          display: 'flex',
+                          flexDirection: 'column',
+                          textAlign: 'center',
                         }}
                       >
                         {randomSpinner()}
@@ -565,11 +618,11 @@ const Recommendation = () => {
                 ) : (
                   <div
                     style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      fontWeight: "bold",
-                      fontSize: "1.1rem",
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontWeight: 'bold',
+                      fontSize: '1.1rem',
                     }}
                   >
                     추천된 회사 목록이 이곳에 출력돼요!
@@ -593,11 +646,11 @@ const Recommendation = () => {
           onSearch={handleSearch}
         />
         {searchLoading ? (
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
             <PuffLoader color="#36d7b7" size={20} />
           </div>
         ) : searchError ? (
-          <div style={{ textAlign: "center", marginTop: "20px", color: "red" }}>
+          <div style={{ textAlign: 'center', marginTop: '20px', color: 'red' }}>
             {searchError}
           </div>
         ) : (
@@ -609,7 +662,7 @@ const Recommendation = () => {
               onClick: () => handleRowClick(record),
             })}
             pagination={false}
-            style={{ marginTop: "20px" }}
+            style={{ marginTop: '20px' }}
           />
         )}
       </Modal>
@@ -626,11 +679,11 @@ const Recommendation = () => {
           onSearch={handleOccupationSearch}
         />
         {occupationSearchLoading ? (
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
             <PuffLoader color="#36d7b7" size={20} />
           </div>
         ) : occupationSearchError ? (
-          <div style={{ textAlign: "center", marginTop: "20px", color: "red" }}>
+          <div style={{ textAlign: 'center', marginTop: '20px', color: 'red' }}>
             {occupationSearchError}
           </div>
         ) : (
@@ -642,7 +695,7 @@ const Recommendation = () => {
               onClick: () => handleOccupationRowClick(record),
             })}
             pagination={false}
-            style={{ marginTop: "20px" }}
+            style={{ marginTop: '20px' }}
           />
         )}
       </Modal>
