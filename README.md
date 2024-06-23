@@ -50,7 +50,7 @@
 |    김상휘    |    박민준    |    신아진    |    박연경    |    안은비    |
 |:------------:|:------------:|:------------:|:------------:|:------------:|
 |<a href="https://github.com/creatub"><img src="https://avatars.githubusercontent.com/u/157783929?s=70&v=4" width="70"/></a>              |<a href="https://github.com/minjoonHK"><img src="https://avatars.githubusercontent.com/u/108560916?v=4" width="70"/></a>               | <a href="https://github.com/aaajinnn"><img src="https://avatars.githubusercontent.com/u/120112210?s=70&v=4" width="70"/></a>             |<a href="https://github.com/yg0826"> <img src="https://avatars.githubusercontent.com/u/145968727?s=70&v=4" width="70"/></a> | <a href="https://github.com/ibnuena"><img src="https://avatars.githubusercontent.com/u/71430096?s=70&v=4" width="70"/></a> |
-| 팀장 / AI    | 팀원 / Frontend | 팀원 / Backend | 팀원 / Backend | 팀원 / Backend |
+| 팀장 / AI   | 팀원 / Frontend | 팀원 / Backend | 팀원 / Backend | 팀원 / Backend |
 
 
 ## 📷주요기능 소개
