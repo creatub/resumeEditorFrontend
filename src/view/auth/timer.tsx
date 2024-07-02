@@ -1,7 +1,8 @@
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { start, stop } from "@/store/features/timer/timerSlice";
+import { stop } from "@/store/features/timer/timerSlice";
+import React from "react";
 
 const Timer = (props) => {
   const [seconds, setSeconds] = useState(300); //seconds

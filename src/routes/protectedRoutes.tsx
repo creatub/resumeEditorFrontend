@@ -1,5 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import { Navigate } from "react-router-dom";
+import React from "react";
 
 interface DecodedToken {
   category: string;

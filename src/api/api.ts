@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 const axiosInstance = axios.create(); // 매 요청별로 코드 전송
 axiosInstance.defaults.withCredentials = true;
@@ -6,15 +6,15 @@ axiosInstance.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const accessToken = localStorage.getItem('access'); // 로컬 스토리지에서 토큰을 가져오기
-    const refreshToken = localStorage.getItem('refresh'); // 로컬 스토리지에서 리프레시 토큰을 가져오기
+    const accessToken = localStorage.getItem("access"); // 로컬 스토리지에서 토큰을 가져오기
+    const refreshToken = localStorage.getItem("refresh"); // 로컬 스토리지에서 리프레시 토큰을 가져오기
 
-    config.headers['Content-Type'] = 'application/json';
+    config.headers["Content-Type"] = "application/json";
 
-    if (config.url === '/reissue') {
-      config.headers['refresh'] = refreshToken;
+    if (config.url === "/reissue") {
+      config.headers["refresh"] = refreshToken;
     } else {
-      config.headers['access'] = accessToken;
+      config.headers["access"] = accessToken;
     }
     return config;
   },
@@ -35,25 +35,31 @@ axiosInstance.interceptors.response.use(
     } = error;
     if (status == 401) {
       const originalRequest = config;
-      const refreshToken = localStorage.getItem('refresh');
+      const refreshToken = localStorage.getItem("refresh");
 
       const response = await axios.post(
-        '/reissue',
+        "/reissue",
         {},
         { headers: { refresh: refreshToken } }
       );
-      const accessToken = response.headers['access'];
-      localStorage.removeItem('access');
+      const accessToken = response.headers["access"];
+      localStorage.removeItem("access");
 
-      localStorage.setItem('access', accessToken);
+      localStorage.setItem("access", accessToken);
 
-      originalRequest.headers['access'] = accessToken;
+      originalRequest.headers["access"] = accessToken;
 
       return originalRequest;
     }
 
-    if (status === 400 && data == 'You have already been logged out.') {
-      window.location.href = '/';
+    if (status === 400 && data == "You have already been logged out.") {
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      window.location.href = "/";
+    } else if (status === 400 && data == "invalid refresh token") {
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      window.location.href = "/";
     }
     return Promise.reject(error);
   }

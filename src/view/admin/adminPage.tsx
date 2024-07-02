@@ -1,19 +1,18 @@
-import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import React, { Suspense, useState } from "react";
 import type { MenuProps } from "antd";
-import { Breadcrumb, Button, Layout, Menu, theme } from "antd";
-import { Suspense, useState } from "react";
-import AdminUserList from "./adminUserList";
-import AdminResumeList from "./adminResumeList";
+import Button from "antd/es/button";
+import Layout from "antd/es/layout";
+import Menu from "antd/es/menu";
+import theme from "antd/es/theme";
 import axiosInstance from "@/api/api";
 import { useNavigate } from "react-router-dom";
-import AdminResumeStat from "./adminResumeStat";
-import AdminUserStat from "./adminUserStat";
 
 const { Header, Content, Sider } = Layout;
+
+const AdminUserList = React.lazy(() => import("./adminUserList"));
+const AdminResumeList = React.lazy(() => import("./adminResumeList"));
+const AdminResumeStat = React.lazy(() => import("./adminResumeStat"));
+const AdminUserStat = React.lazy(() => import("./adminUserStat"));
 
 const item3: MenuProps["items"] = [
   {
@@ -56,7 +55,7 @@ const item3: MenuProps["items"] = [
   },
 ];
 
-const AdminPage = () => {
+const AdminPage: React.FC = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();

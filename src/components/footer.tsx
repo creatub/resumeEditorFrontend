@@ -1,3 +1,5 @@
+import React from "react";
+
 const CustomFooter = () => {
   return (
     <footer
@@ -9,10 +11,11 @@ const CustomFooter = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        
       }}
     >
       <span>
-        Copyright 2024 © <b>Team2</b> All rights reserved.
+        Copyright 2024 © <b>TPGCH</b> All rights reserved.
       </span>
     </footer>
   );

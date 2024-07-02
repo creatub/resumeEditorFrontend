@@ -1,5 +1,10 @@
-import { Button, DatePicker, Form, Input, Radio, Select, Tooltip } from "antd";
 import { useForm } from "antd/es/form/Form";
+import Button from "antd/es/button";
+import DatePicker from "antd/es/date-picker";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import Radio from "antd/es/radio";
+import Select from "antd/es/select";
 import { Link, useNavigate } from "react-router-dom";
 import CustomFooter from "../../components/footer";
 import { ChangeEvent, useState } from "react";
@@ -9,19 +14,8 @@ import Timer from "./timer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { start } from "@/store/features/timer/timerSlice";
-
-interface signUpParameter {
-  email: string;
-  password: string;
-  username?: string;
-  userBirthDate?: string;
-  age: number;
-  gender: string;
-  company?: string;
-  occupation?: string;
-  wish?: string;
-  status: number;
-}
+import React from "react";
+import "./signUp.scss";
 
 const SignUp = () => {
   let [submitForm] = useForm();
@@ -100,75 +94,29 @@ const SignUp = () => {
   };
 
   return (
-    <div style={{ marginTop: "5vh" }}>
-      <div
-        style={{ textAlign: "center", fontWeight: "bold", fontSize: "36px" }}
-      >
-        Resume Editor
-      </div>
-      <div
-        className="wrapper"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          height: "100%",
-        }}
-      >
-        <div
-          className="signUpWrpper"
-          style={{
-            width: "40vw",
-            height: "80%",
-            border: "1px solid rgb(224,224,224)",
-            marginTop: "2.5%",
-            marginBottom: "5%",
-          }}
-        >
-          <div
-            className="signUpInnerWrapper"
-            style={{
-              textAlign: "center",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <div
-              className="signUpInnerContent"
-              style={{ marginTop: "10%", marginBottom: "10%", width: "50%" }}
-            >
-              <div>
-                <span style={{ fontSize: "28px" }}>가입을 환영합니다!</span>
-              </div>
-              <div
-                className="subMessage"
-                style={{ color: "rgb(143,143,143)", marginTop: "5%" }}
-              >
+    <div className="signUpOuterContainer">
+      <div className="signUpTitle">Resume Editor</div>
+      <div className="signUpContainer">
+        <div className="signUpFormWrapper">
+          <div className="signUpFormInnerWrapper">
+            <div className="signUpInnerContent">
+              <div className="signUpWelcomeMessage">가입을 환영합니다!</div>
+              <div className="signUpSubMessage">
                 <p>고객님에 대해 더 자세히 알아가고 싶어요!</p>
               </div>
               <div>
                 <span>이미 계정이 있으신가요?</span>
-                <Link
-                  className="backToLogin"
-                  to="/"
-                  style={{
-                    color: "black",
-                    marginLeft: "5px",
-                    fontWeight: "bold",
-                    textDecoration: "underline",
-                  }}
-                >
+                <Link className="backToLogin" to="/auth/login">
                   로그인
                 </Link>
               </div>
-              <div className="buttonWrapper" style={{ marginTop: "15%" }}>
+              <div className="signUpBtnWrapper">
                 <div className="signUpForm">
                   <Form
                     form={submitForm}
                     onFinish={onSubmitForm}
                     layout="vertical"
-                    initialValues={{
-                      ["gender"]: "성별을 선택해 주세요",
-                    }}
+                    initialValues={{ gender: "성별을 선택해 주세요" }}
                     fields={[{ name: ["age"], value: userAge }]}
                   >
                     <Form.Item
@@ -242,14 +190,15 @@ const SignUp = () => {
                                 .then((res) => {
                                   if (res.status == 200) {
                                     setVerified(true);
-                                  } else if (res.status == 500) {
-                                    Swal.fire({
-                                      icon: "error",
-                                      title: "인증번호가 일치하지 않습니다!",
-                                      showConfirmButton: true,
-                                      timer: 2000,
-                                    });
                                   }
+                                })
+                                .catch((err) => {
+                                  Swal.fire({
+                                    icon: "error",
+                                    title: "인증번호가 일치하지 않습니다!",
+                                    showConfirmButton: true,
+                                    timer: 2000,
+                                  });
                                 });
                             }}
                             style={{ width: "100%" }}
@@ -295,6 +244,18 @@ const SignUp = () => {
                                     Swal.fire({
                                       icon: "error",
                                       title: "이미 가입된 이메일 입니다!",
+                                      showConfirmButton: true,
+                                      timer: 2000,
+                                    });
+                                  } else if (err.response.status === 400) {
+                                    let deleted =
+                                      err.response.data.response.deleted;
+                                    let available =
+                                      err.response.data.response.available;
+                                    Swal.fire({
+                                      icon: "error",
+                                      title: "탈퇴한 계정입니다",
+                                      html: `해당 이메일은 ${deleted}에 탈퇴하였습니다.<br/> ${available}에 재가입이 가능합니다.`,
                                       showConfirmButton: true,
                                       timer: 2000,
                                     });
@@ -355,7 +316,7 @@ const SignUp = () => {
                               return Promise.resolve();
                             }
                             return Promise.reject(
-                              new Error("비밀 번호를 확인해 주세요!")
+                              new Error("비밀 번호가 일치하지 않습니다!")
                             );
                           },
                         }),
