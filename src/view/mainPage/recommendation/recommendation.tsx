@@ -14,35 +14,29 @@ import {
   MinusOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { CSSProperties, useEffect, useState } from 'react';
+import {useEffect, useState } from 'react';
 import { useForm } from 'antd/es/form/Form';
 import axios from 'axios';
-import PacmanLoader from 'react-spinners/PacmanLoader';
 import PuffLoader from 'react-spinners/PuffLoader';
-import BounceLoader from 'react-spinners/BounceLoader';
-import FadeLoader from 'react-spinners/FadeLoader';
 import { DecodedToken } from '@/types/globalTypes';
 import { jwtDecode } from 'jwt-decode';
 import Swal from 'sweetalert2';
 import axiosInstance from '@/api/api';
 import React from 'react';
 import { TableData, TableColumns } from './tableData';
+import useModal from '@/hooks/useModal';
+import LoadingSpinner from '@/components/loadlingSpinner';
 
 const Recommendation = () => {
   const [userInputForm] = useForm();
   const [generated, setGenerated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState('');
   const [certList, setCertList] = useState([{ value: '', iconType: 'plus' }]);
   const [awardList, setAwardList] = useState([{ value: '', iconType: 'plus' }]);
   const [experienceList, setExperienceList] = useState([
     { value: '', iconType: 'plus' },
   ]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [searchError, setSearchError] = useState('');
-  const [isOccupationModalOpen, setIsOccupationModalOpen] = useState(false);
+  const { isOpen: isOccupationModalOpen, open: openOccupationModal, close: closeOccupationModal } = useModal();
   const [occupationSearchResults, setOccupationSearchResults] = useState([]);
   const [occupationSearchLoading, setOccupationSearchLoading] = useState(false);
   const [occupationSearchError, setOccupationSearchError] = useState('');
@@ -90,70 +84,7 @@ const Recommendation = () => {
         });
       });
   }, []);
-  const randomSpinner = () => {
-    const descriptionStyle: CSSProperties = {
-      textAlign: 'center',
-      marginTop: '3%',
-    };
-
-    const tipStyle: CSSProperties = {
-      fontSize: '0.8rem',
-      marginTop: '5%',
-    };
-    let spinner = [
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <PacmanLoader color="#36d7b7" />
-        </div>
-        <div style={descriptionStyle}>
-          가이드받은 내용을 토대로 나만의 자기소개서를 만들어보세요
-        </div>
-        <div style={tipStyle}>
-          Tip. 자기소개서에는 특별한 경험을 녹여낼 수록 좋아요.{' '}
-        </div>
-      </div>,
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <PuffLoader color="#36d7b7" />
-        </div>
-        <div style={descriptionStyle}>
-          Reditor는 Resume Editor의 줄임말입니다!
-        </div>
-        <div style={tipStyle}>
-          Tip. 자소서를 쓰기 전에 내세울 수 있는 나의 경험을 정리하면
-          <br />
-          훨씬 좋은 자소서를 쓸 수 있어요!
-        </div>
-      </div>,
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <BounceLoader color="#36d7b7" />
-        </div>
-        <div style={descriptionStyle}>
-          수 만개의 자기소개서를 기반으로 가이드를 생성 중입니다!
-        </div>
-        <div style={tipStyle}>
-          Tip. 추상적인 표현보다는 명료한 표현이 좋아요!
-        </div>
-      </div>,
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <FadeLoader color="#36d7b7" />
-        </div>
-        <div style={descriptionStyle}>
-          Reditor에 등록된 높은 평점의 자기소개서는
-          <br /> 다시 자기소개서 첨삭AI에 활용돼요.
-        </div>
-        <div style={tipStyle}>
-          Tip. 자기소개서 목록에서 다른 사람들의 자기소개서도 참고해보세요!
-        </div>
-      </div>,
-    ];
-
-    let randomIndex = Math.floor(Math.random() * spinner.length);
-
-    return spinner[randomIndex];
-  };
+  
 
   const onFinish = ({ career, education, keyword, minPay, maxPay }) => {
     let res = axios
@@ -171,25 +102,6 @@ const Recommendation = () => {
       });
     setGenerated(true);
   };
-  const applyStyleToText = (text) => {
-    // '*' 개수를 세는 정규 표현식
-    const asteriskCount = (text.match(/\*/g) || []).length;
-    // '#' 개수를 세는 정규 표현식
-    const hashCount = (text.match(/#/g) || []).length;
-
-    // '*' 개수에 따라 스타일 적용
-    const style = {
-      fontWeight: asteriskCount > 0 ? 'bold' : 'normal',
-      fontSize: asteriskCount > 0 ? '1.1rem' : '1rem',
-      color: hashCount > 0 ? 'blue' : 'inherit',
-    };
-
-    return (
-      <div>
-        <p style={style}>{text.replace(/\*/g, '').replace(/#/g, '')}</p>
-      </div>
-    );
-  };
 
   const addQuestion = () =>
     setCertList([...certList, { value: '', iconType: 'minus' }]);
@@ -205,53 +117,9 @@ const Recommendation = () => {
     setExperienceList([...experienceList, { value: '', iconType: 'minus' }]);
   const removeExperience = (index) =>
     setExperienceList(experienceList.filter((_, i) => i !== index));
-  const openSearchModal = () => {
-    setIsModalOpen(true);
-  };
 
-  //추가
-  const closeSearchModal = () => {
-    setIsModalOpen(false);
-    setSearchResults([]);
-    setSearchLoading(false);
-    setSearchError('');
-  };
-
-  const handleSearch = async (value) => {
-    setSearchLoading(true);
-    setSearchError('');
-
-    try {
-      const response = await axiosInstance.get(`/resume-items/load/${value}`);
-      if (response.data.status === 'Not found') {
-        setSearchError('Not found');
-      } else if (response.data.status === 'Success') {
-        setSearchResults(response.data.itemsList);
-      }
-    } catch (error) {
-      setSearchError('Failed to search');
-    } finally {
-      setSearchLoading(false);
-    }
-  };
-
-  const handleRowClick = (record) => {
-    const { company, items } = record;
-    const itemList = items.split('||');
-    userInputForm.setFieldsValue({ company });
-    setCertList(
-      itemList.map((item, index) => ({
-        value: item,
-        iconType: index === 0 ? 'plus' : 'minus',
-      }))
-    );
-    closeSearchModal();
-  };
-  const openOccupationSearchModal = () => {
-    setIsOccupationModalOpen(true);
-  };
-  const closeOccupationSearchModal = () => {
-    setIsOccupationModalOpen(false);
+  const handleCloseOccupationModal = () => {
+    closeOccupationModal();
     setOccupationSearchResults([]);
     setOccupationSearchLoading(false);
     setOccupationSearchError('');
@@ -280,7 +148,7 @@ const Recommendation = () => {
   const handleOccupationRowClick = (record) => {
     const { occupation } = record;
     userInputForm.setFieldsValue({ occupation });
-    closeOccupationSearchModal();
+    handleCloseOccupationModal();
   };
 
   const handleChangeSelect = (value: string) => {
@@ -324,9 +192,9 @@ const Recommendation = () => {
   ];
   return (
     <div>
-      <div className="Wrapper" style={{ padding: '2%', display: 'flex' }}>
+      <div className="recommendationWrapper" style={{ padding: '2%', display: 'flex' }}>
         <div
-          className="userInnerWrapper"
+          className="recommendationInnerWrapper"
           style={{
             border: '1px solid rgb(220,220,220)',
             boxShadow: '0 0 10px 0 rgb(220, 220, 220)',
@@ -335,7 +203,7 @@ const Recommendation = () => {
             width: '30%',
           }}
         >
-          <div className="userInputWrapper" style={{ padding: '5% 5%' }}>
+          <div className="recommendationInputWrapper" style={{ padding: '5% 5%' }}>
             <Tooltip
               title="회사 추천 서비스는 지원자님의 지난 경험들을 기반으로 알맞는 회사를 추천해 주는 서비스에요!"
               placement="topLeft"
@@ -371,7 +239,7 @@ const Recommendation = () => {
                   suffix={
                     <Button
                       icon={<SearchOutlined />}
-                      onClick={openOccupationSearchModal}
+                      onClick={() => openOccupationModal()}
                     />
                   }
                   placeholder="직무 이름"
@@ -609,7 +477,7 @@ const Recommendation = () => {
                           textAlign: 'center',
                         }}
                       >
-                        {randomSpinner()}
+                        {LoadingSpinner()}
                       </div>
                     </div>
                   ) : (
@@ -634,42 +502,9 @@ const Recommendation = () => {
         </div>
       </div>
       <Modal
-        title="Search Company"
-        visible={isModalOpen}
-        onCancel={closeSearchModal}
-        footer={null}
-        width={600}
-      >
-        <Input.Search
-          placeholder="Search company"
-          enterButton
-          onSearch={handleSearch}
-        />
-        {searchLoading ? (
-          <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <PuffLoader color="#36d7b7" size={20} />
-          </div>
-        ) : searchError ? (
-          <div style={{ textAlign: 'center', marginTop: '20px', color: 'red' }}>
-            {searchError}
-          </div>
-        ) : (
-          <Table
-            columns={columns}
-            dataSource={searchResults}
-            rowKey="company"
-            onRow={(record) => ({
-              onClick: () => handleRowClick(record),
-            })}
-            pagination={false}
-            style={{ marginTop: '20px' }}
-          />
-        )}
-      </Modal>
-      <Modal
         title="Search Occupation"
-        visible={isOccupationModalOpen}
-        onCancel={closeOccupationSearchModal}
+        open={isOccupationModalOpen}
+        onCancel={handleCloseOccupationModal}
         footer={null}
         width={600}
       >
