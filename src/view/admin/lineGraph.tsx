@@ -7,9 +7,9 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
-import React from "react";
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+import React from 'react';
 
 ChartJS.register(
   CategoryScale,
@@ -28,8 +28,8 @@ function LineGraph({ dataObject, labelName, graphTitle }) {
       {
         label: labelName,
         data: Object.values(dataObject),
-        borderColor: "#85DAD2",
-        backgroundColor: "white",
+        borderColor: '#85DAD2',
+        backgroundColor: 'white',
       },
     ],
   };
@@ -38,7 +38,7 @@ function LineGraph({ dataObject, labelName, graphTitle }) {
     responsive: true,
     plugins: {
       legend: {
-        position: "top" as const,
+        position: 'top' as const,
       },
       title: {
         display: true,

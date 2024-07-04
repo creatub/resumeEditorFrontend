@@ -14,7 +14,7 @@ import {
   MinusOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import {useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'antd/es/form/Form';
 import axios from 'axios';
 import PuffLoader from 'react-spinners/PuffLoader';
@@ -36,7 +36,11 @@ const Recommendation = () => {
   const [experienceList, setExperienceList] = useState([
     { value: '', iconType: 'plus' },
   ]);
-  const { isOpen: isOccupationModalOpen, open: openOccupationModal, close: closeOccupationModal } = useModal();
+  const {
+    isOpen: isOccupationModalOpen,
+    open: openOccupationModal,
+    close: closeOccupationModal,
+  } = useModal();
   const [occupationSearchResults, setOccupationSearchResults] = useState([]);
   const [occupationSearchLoading, setOccupationSearchLoading] = useState(false);
   const [occupationSearchError, setOccupationSearchError] = useState('');
@@ -84,7 +88,6 @@ const Recommendation = () => {
         });
       });
   }, []);
-  
 
   const onFinish = ({ career, education, keyword, minPay, maxPay }) => {
     let res = axios
@@ -192,7 +195,10 @@ const Recommendation = () => {
   ];
   return (
     <div>
-      <div className="recommendationWrapper" style={{ padding: '2%', display: 'flex' }}>
+      <div
+        className="recommendationWrapper"
+        style={{ padding: '2%', display: 'flex' }}
+      >
         <div
           className="recommendationInnerWrapper"
           style={{
@@ -203,7 +209,10 @@ const Recommendation = () => {
             width: '30%',
           }}
         >
-          <div className="recommendationInputWrapper" style={{ padding: '5% 5%' }}>
+          <div
+            className="recommendationInputWrapper"
+            style={{ padding: '5% 5%' }}
+          >
             <Tooltip
               title="회사 추천 서비스는 지원자님의 지난 경험들을 기반으로 알맞는 회사를 추천해 주는 서비스에요!"
               placement="topLeft"

@@ -1,7 +1,7 @@
-import React from "react";
-import { Button } from "antd";
-import { useNavigate } from "react-router-dom";
-import "./styles/initialLanding.scss";
+import React from 'react';
+import { Button } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import './styles/initialLanding.scss';
 
 const InitialLanding = ({ scrollToLandingStat }) => {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const InitialLanding = ({ scrollToLandingStat }) => {
                 className="initialLoginBtn"
                 size="large"
                 onClick={() => {
-                  navigate("/auth/login");
+                  navigate('/auth/login');
                 }}
               >
                 REDITOR 로그인하기
@@ -34,7 +34,7 @@ const InitialLanding = ({ scrollToLandingStat }) => {
                 className="initialSignUpBtn"
                 size="large"
                 onClick={() => {
-                  navigate("/auth/signup");
+                  navigate('/auth/signup');
                 }}
               >
                 회원가입 먼저하기
