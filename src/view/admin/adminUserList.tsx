@@ -1,12 +1,12 @@
-import axiosInstance from "@/api/api";
-import Button from "antd/es/button";
-import Input from "antd/es/input";
-import Select from "antd/es/select";
-import Space from "antd/es/space";
-import Table from "antd/es/table";
-import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import { Modal } from "antd";
+import axiosInstance from '@/api/api';
+import Button from 'antd/es/button';
+import Input from 'antd/es/input';
+import Select from 'antd/es/select';
+import Space from 'antd/es/space';
+import Table from 'antd/es/table';
+import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import { Modal } from 'antd';
 
 const { Search } = Input;
 
@@ -31,80 +31,80 @@ interface UserList {
 }
 const dropDownOptions = [
   {
-    value: "username",
-    label: "유저아이디",
+    value: 'username',
+    label: '유저아이디',
   },
   {
-    value: "email",
-    label: "이메일",
+    value: 'email',
+    label: '이메일',
   },
   {
-    value: "company",
-    label: "회사",
+    value: 'company',
+    label: '회사',
   },
   {
-    value: "occupation",
-    label: "직업",
+    value: 'occupation',
+    label: '직업',
   },
   {
-    value: "wish",
-    label: "희망직종",
+    value: 'wish',
+    label: '희망직종',
   },
 ];
 
 const AdminUserList = () => {
   const [userList, setUserList] = useState<UserList[]>([]);
   const [totalPage, setTotalPage] = useState<number>(0);
-  const [searchOption, setSearchOption] = useState("");
-  const [searchText, setSearchText] = useState("");
-  const [searchedText, setSearchedText] = useState<string>("");
+  const [searchOption, setSearchOption] = useState('');
+  const [searchText, setSearchText] = useState('');
+  const [searchedText, setSearchedText] = useState<string>('');
   const [selectedRow, setSelectedRow] = useState<Partial<UserList>>({});
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const tableColumns = [
     {
-      title: "아이디",
-      dataIndex: "username",
+      title: '아이디',
+      dataIndex: 'username',
     },
     {
-      title: "이메일",
-      dataIndex: "email",
+      title: '이메일',
+      dataIndex: 'email',
     },
     {
-      title: "성별",
-      dataIndex: "gender",
+      title: '성별',
+      dataIndex: 'gender',
       filters: [
         {
-          text: "남성",
-          value: "M",
+          text: '남성',
+          value: 'M',
         },
         {
-          text: "여성",
-          value: "F",
+          text: '여성',
+          value: 'F',
         },
       ],
       onFilter: (value, record) => record.gender.indexOf(value as string) === 0,
     },
     {
-      title: "유형",
-      dataIndex: "role",
+      title: '유형',
+      dataIndex: 'role',
     },
     {
-      title: "가입일",
-      dataIndex: "inDate",
+      title: '가입일',
+      dataIndex: 'inDate',
       sorter: (a, b) =>
         new Date(a.inDate).getTime() - new Date(b.inDate).getTime(),
     },
     {
-      title: "삭제일",
-      dataIndex: "delDate",
+      title: '삭제일',
+      dataIndex: 'delDate',
       sorter: (a, b) =>
         new Date(a.delDate).getTime() - new Date(b.delDate).getTime(),
     },
     {
-      title: "Action",
-      dataIndex: "",
+      title: 'Action',
+      dataIndex: '',
       render: () => (
         <Button
           onClick={() => {
@@ -116,11 +116,11 @@ const AdminUserList = () => {
       ),
     },
   ];
-  const fetchSearch = (page: number, search: string) => {
+  const fetchSearch = (pageNo: number, search: string) => {
     let res = axiosInstance
-      .get("/admin/user/search", {
+      .get('/admin/user/search', {
         params: {
-          page: page,
+          pageNo: pageNo,
           keyword: search,
           group: searchOption,
         },
@@ -139,15 +139,15 @@ const AdminUserList = () => {
       })
       .catch((err) => {
         Swal.fire({
-          icon: "error",
-          title: "검색 결과가 없습니다",
-          text: "다시 시도해주세요",
+          icon: 'error',
+          title: '검색 결과가 없습니다',
+          text: '다시 시도해주세요',
         });
       });
   };
   const onSearch = (search: string) => {
-    if (searchOption === "") {
-      alert("검색 옵션을 선택해주세요");
+    if (searchOption === '') {
+      alert('검색 옵션을 선택해주세요');
       return;
     } else {
       setCurrentPage(1);
@@ -155,11 +155,11 @@ const AdminUserList = () => {
       fetchSearch(0, search);
     }
   };
-  const fetchUserList = (page: number) => {
+  const fetchUserList = (pageNo: number) => {
     let res = axiosInstance
-      .get("/admin/user/list", {
+      .get('/admin/user/list', {
         params: {
-          page: page,
+          pageNo: pageNo,
         },
       })
       .then((res) => {
@@ -179,15 +179,15 @@ const AdminUserList = () => {
     fetchUserList(0);
   }, []);
   return (
-    <div style={{ padding: "2% 5%" }}>
+    <div style={{ padding: '2% 5%' }}>
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: "3%",
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '3%',
         }}
       >
-        <Space.Compact style={{ width: "50%" }}>
+        <Space.Compact style={{ width: '50%' }}>
           <Select
             onChange={(e) => setSearchOption(e as string)}
             size="large"
@@ -212,11 +212,11 @@ const AdminUserList = () => {
         pagination={{
           showSizeChanger: false,
           current: currentPage,
-          onChange: (page) => {
-            setCurrentPage(page);
-            if (searchOption === "") fetchUserList(page - 1);
+          onChange: (pageNo) => {
+            setCurrentPage(pageNo);
+            if (searchOption === '') fetchUserList(pageNo - 1);
             else {
-              fetchSearch(page - 1, searchText);
+              fetchSearch(pageNo - 1, searchText);
             }
           },
           pageSize: 20,
@@ -231,15 +231,15 @@ const AdminUserList = () => {
         open={openDeleteModal}
         footer={[
           <Button
-            style={{ backgroundColor: "#001529", color: "white" }}
-            key={"ok"}
+            style={{ backgroundColor: '#001529', color: 'white' }}
+            key={'ok'}
             onClick={() => {
               let res = axiosInstance
                 .post(`/admin/user/delete/${selectedRow.unum}`, {
                   unum: selectedRow.unum,
                 })
                 .then((res) => {
-                  if (searchedText === "") fetchUserList(currentPage - 1);
+                  if (searchedText === '') fetchUserList(currentPage - 1);
                   else {
                     fetchSearch(currentPage - 1, searchText);
                   }
@@ -247,9 +247,9 @@ const AdminUserList = () => {
                 .catch((err) => {
                   if (err.response.status === 400) {
                     Swal.fire({
-                      icon: "error",
-                      title: "삭제 실패",
-                      text: "이미 삭제된 유저입니다",
+                      icon: 'error',
+                      title: '삭제 실패',
+                      text: '이미 삭제된 유저입니다',
                     });
                   }
                 })
@@ -261,7 +261,7 @@ const AdminUserList = () => {
             예
           </Button>,
           <Button
-            key={"no"}
+            key={'no'}
             onClick={() => {
               setOpenDeleteModal(false);
             }}

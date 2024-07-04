@@ -1,8 +1,8 @@
-import axios from "axios";
-import React, { CSSProperties, useEffect, useState } from "react";
-import CountUp from "react-countup";
-import { useInView } from "react-intersection-observer";
-import "./styles/landingStat.scss";
+import axios from 'axios';
+import React, { CSSProperties, useEffect, useState } from 'react';
+import CountUp from 'react-countup';
+import { useInView } from 'react-intersection-observer';
+import './styles/landingStat.scss';
 
 const LandingStat = () => {
   const [totalUser, setTotalUser] = useState<number>(0);
@@ -19,23 +19,23 @@ const LandingStat = () => {
 
   const fetchLandingStatData = async (group: string) => {
     let res = await axios
-      .get("/landing/stat", {
+      .get('/landing/statistics', {
         params: {
           group: group,
         },
       })
       .then((res) => {
         switch (group) {
-          case "countUser":
+          case 'countUser':
             setTotalUser(res.data.response.total_user);
             break;
-          case "visitTotal":
+          case 'visitTotal':
             setTotalVisitor(res.data.response.total_visit);
             break;
-          case "editTotal":
+          case 'editTotal':
             setTotalEdit(res.data.response.edit_count);
             break;
-          case "boardTotal":
+          case 'boardTotal':
             setTotalResume(res.data.response.total_board);
             break;
         }
@@ -44,10 +44,10 @@ const LandingStat = () => {
 
   useEffect(() => {
     Promise.all([
-      fetchLandingStatData("countUser"),
-      fetchLandingStatData("visitTotal"),
-      fetchLandingStatData("editTotal"),
-      fetchLandingStatData("boardTotal"),
+      fetchLandingStatData('countUser'),
+      fetchLandingStatData('visitTotal'),
+      fetchLandingStatData('editTotal'),
+      fetchLandingStatData('boardTotal'),
     ]);
   }, []);
 

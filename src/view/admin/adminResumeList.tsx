@@ -1,9 +1,9 @@
-import axiosInstance from "@/api/api";
-import Table from "antd/es/table";
-import React, { useEffect, useState } from "react";
+import axiosInstance from '@/api/api';
+import Table from 'antd/es/table';
+import React, { useEffect, useState } from 'react';
 
 interface ResumeList {
-  page: number;
+  pageNo: number;
   rating: number;
   rating_count: number;
   read_num: number;
@@ -14,26 +14,26 @@ interface ResumeList {
 
 const tableColumns = [
   {
-    title: "제목",
-    dataIndex: "title",
+    title: '제목',
+    dataIndex: 'title',
   },
   {
-    title: "평점",
-    dataIndex: "rating",
+    title: '평점',
+    dataIndex: 'rating',
     sorter: (a, b) => a.rating - b.rating,
   },
   {
-    title: "조회수",
-    dataIndex: "read_num",
+    title: '조회수',
+    dataIndex: 'read_num',
     sorter: (a, b) => a.read_num - b.read_num,
   },
   {
-    title: "사용자",
-    dataIndex: "username",
+    title: '사용자',
+    dataIndex: 'username',
   },
   {
-    title: "작성날짜",
-    dataIndex: "w_date",
+    title: '작성날짜',
+    dataIndex: 'w_date',
     sorter: (a, b) =>
       new Date(a.w_date).getTime() - new Date(b.w_date).getTime(),
   },
@@ -41,11 +41,11 @@ const tableColumns = [
 const AdminResumeList = () => {
   const [resumeList, setResumeList] = useState<ResumeList[]>([]);
   const [totalPage, setTotalPage] = useState<number>(0);
-  const fetchResumeList = (page: number) => {
+  const fetchResumeList = (pageNo: number) => {
     let res = axiosInstance
-      .get("/admin/board/list", {
+      .get('/admin/board/list', {
         params: {
-          page: page,
+          pageNo: pageNo,
         },
       })
       .then((res) => {
@@ -63,12 +63,12 @@ const AdminResumeList = () => {
     fetchResumeList(0);
   }, []);
   return (
-    <div style={{ padding: "2% 5%" }}>
+    <div style={{ padding: '2% 5%' }}>
       <Table
         pagination={{
           showSizeChanger: false,
-          onChange: (page) => {
-            fetchResumeList(page - 1);
+          onChange: (pageNo) => {
+            fetchResumeList(pageNo - 1);
           },
           pageSize: 10,
           total: totalPage * 10,

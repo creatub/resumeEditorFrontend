@@ -1,23 +1,23 @@
-import React from "react";
-import axiosInstance from "@/api/api";
-import Avatar from "antd/es/avatar";
-import Button from "antd/es/button";
-import Divider from "antd/es/divider";
-import Modal from "antd/es/modal";
-import TextArea from "antd/es/input/TextArea";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { UserOutlined } from "@ant-design/icons";
-import { jwtDecode } from "jwt-decode";
-import { DecodedToken } from "@/types/globalTypes";
-import "./star.css";
+import React from 'react';
+import axiosInstance from '@/api/api';
+import Avatar from 'antd/es/avatar';
+import Button from 'antd/es/button';
+import Divider from 'antd/es/divider';
+import Modal from 'antd/es/modal';
+import TextArea from 'antd/es/input/TextArea';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { UserOutlined } from '@ant-design/icons';
+import { jwtDecode } from 'jwt-decode';
+import { DecodedToken } from '@/types/globalTypes';
+import './star.css';
 import {
   StarOutlined,
   StarFilled,
   HeartOutlined,
   HeartFilled,
-} from "@ant-design/icons";
-import Swal from "sweetalert2";
+} from '@ant-design/icons';
+import Swal from 'sweetalert2';
 interface Resume {
   content: string;
   r_num: number;
@@ -45,8 +45,8 @@ const ResumeListDetails = () => {
   const [resume, setResume] = useState<Partial<Resume>>({});
   const [comment, setComment] = useState<Comment[]>([]); // Comment 타입의 배열로 초기화
   const [editId, setEditId] = useState<number | null>(null);
-  const [writeComment, setWriteComment] = useState<string>("");
-  const [editComment, setEditComment] = useState<string>("");
+  const [writeComment, setWriteComment] = useState<string>('');
+  const [editComment, setEditComment] = useState<string>('');
   const [starClicked, setStarClicked] = useState<boolean>(false); // 즐겨찾기 클릭 여부
   const [rated, setRated] = useState<boolean>(false); // 별점 평가 여부
   const [openRateModal, setOpenRateModal] = useState<boolean>(false); // 별점 모달 여부
@@ -66,20 +66,20 @@ const ResumeListDetails = () => {
   const handleMouseOut = () => {
     setHover(0);
   };
-  const accessToken = localStorage.getItem("access") ?? "";
+  const accessToken = localStorage.getItem('access') ?? '';
   const DecodedToken: DecodedToken = jwtDecode(accessToken);
   const userInfo = DecodedToken.username;
   const userRole = DecodedToken.role;
   const param = useParams();
-  const fetchComment = (page: number) => {
+  const fetchComment = (pageNo: number) => {
     let res = axiosInstance
       .get(`/comments/${param.id}`, {
         params: {
-          page: page,
+          pageNo: pageNo,
         },
       })
       .then((res) => {
-        if (res.data.response == "댓글이 없습니다.") {
+        if (res.data.response == '댓글이 없습니다.') {
           setComment([]);
         } else {
           setComment(res.data.response);
@@ -94,14 +94,14 @@ const ResumeListDetails = () => {
 
   const deleteComment = (c_num: number) => {
     Modal.confirm({
-      title: "댓글 삭제하기",
+      title: '댓글 삭제하기',
       content: (
         <div>
           <p>정말 해당 댓글을 삭제하시겠습니까?</p>
         </div>
       ),
-      okText: "삭제",
-      cancelText: "취소",
+      okText: '삭제',
+      cancelText: '취소',
       centered: true,
 
       onOk() {
@@ -121,7 +121,7 @@ const ResumeListDetails = () => {
 
   const fetchLiked = () => {
     let res = axiosInstance.get(`/board/bookmark/${param.id}`).then((res) => {
-      if (res.data.response == "false") {
+      if (res.data.response == 'false') {
         setStarClicked(false);
       } else {
         setStarClicked(true);
@@ -152,46 +152,46 @@ const ResumeListDetails = () => {
   return (
     <div
       className="Wrapper"
-      style={{ padding: "5% 7%", display: "flex", alignItems: "flex-start" }}
+      style={{ padding: '5% 7%', display: 'flex', alignItems: 'flex-start' }}
     >
       <div
         className="DetailContentWrapper"
         style={{
-          width: "50vw",
-          border: "1px solid rgb(220,220,220)",
-          padding: "5%",
+          width: '50vw',
+          border: '1px solid rgb(220,220,220)',
+          padding: '5%',
         }}
       >
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           {starClicked ? (
             <HeartFilled
               onClick={() => {
                 let res = axiosInstance
-                  .post("/board/bookmark", {
+                  .post('/board/bookmark', {
                     rnum: resume.r_num,
                     unum: DecodedToken.uNum,
                   })
                   .then((res) => {
-                    alert("즐겨찾기에서 삭제되었습니다.");
+                    alert('즐겨찾기에서 삭제되었습니다.');
                     setStarClicked(false);
                   });
               }}
-              style={{ fontSize: "25px", color: "#F1565C", cursor: "pointer" }}
+              style={{ fontSize: '25px', color: '#F1565C', cursor: 'pointer' }}
             />
           ) : (
             <HeartOutlined
               onClick={() => {
                 let res = axiosInstance
-                  .post("/board/bookmark", {
+                  .post('/board/bookmark', {
                     rnum: resume.r_num,
                     unum: DecodedToken.uNum,
                   })
                   .then((res) => {
                     setStarClicked(true);
-                    alert("즐겨찾기에 추가되었습니다.");
+                    alert('즐겨찾기에 추가되었습니다.');
                   });
               }}
-              style={{ fontSize: "25px", cursor: "pointer" }}
+              style={{ fontSize: '25px', cursor: 'pointer' }}
             />
           )}
         </div>
@@ -205,19 +205,19 @@ const ResumeListDetails = () => {
           <h3>{resume.item}</h3>
         </div>
         <div className="DetailContentMain">
-          <p style={{ whiteSpace: "pre-wrap" }}>{resume.content}</p>
+          <p style={{ whiteSpace: 'pre-wrap' }}>{resume.content}</p>
         </div>
       </div>
       <div
         style={{
-          marginLeft: "1%",
-          border: "1px solid rgb(220,220,220)",
-          width: "30vw",
-          height: "auto",
-          padding: "2% 3%",
+          marginLeft: '1%',
+          border: '1px solid rgb(220,220,220)',
+          width: '30vw',
+          height: 'auto',
+          padding: '2% 3%',
         }}
       >
-        <div className="commentHeader" style={{ fontSize: "1.1rem" }}>
+        <div className="commentHeader" style={{ fontSize: '1.1rem' }}>
           <div>
             <b>작성자: </b>
             {resume.username}
@@ -234,20 +234,20 @@ const ResumeListDetails = () => {
           <div>
             <b>평점:</b>
             <span>{resume.rating} / 5</span>
-            <span style={{ marginLeft: "3%" }}>
+            <span style={{ marginLeft: '3%' }}>
               (<UserOutlined /> {resume.rating_count}명 참여)
             </span>
           </div>
 
           {!rated && (
-            <div style={{ marginTop: "2%" }}>
+            <div style={{ marginTop: '2%' }}>
               <Button
                 onClick={() => {
                   setOpenRateModal(true);
                 }}
               >
-                <span style={{ fontWeight: "bold" }}>별점 추가하기!</span>
-                <StarFilled style={{ color: "#F7A000" }} />
+                <span style={{ fontWeight: 'bold' }}>별점 추가하기!</span>
+                <StarFilled style={{ color: '#F7A000' }} />
               </Button>
             </div>
           )}
@@ -259,39 +259,39 @@ const ResumeListDetails = () => {
               <div
                 key={`comment${idx}`}
                 style={{
-                  width: "95%",
-                  border: "1px solid rgb(220,220,220)",
-                  padding: "2% 3%",
+                  width: '95%',
+                  border: '1px solid rgb(220,220,220)',
+                  padding: '2% 3%',
                 }}
               >
-                <div style={{ marginBottom: "2%" }}>
+                <div style={{ marginBottom: '2%' }}>
                   <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
+                    style={{ display: 'flex', justifyContent: 'space-between' }}
                   >
                     <div>
-                      <Avatar size={23} icon={<UserOutlined />} />{" "}
+                      <Avatar size={23} icon={<UserOutlined />} />{' '}
                       {comment.username}
                     </div>
                     {(userInfo == comment.username ||
-                      userRole == "ROLE_ADMIN") && (
+                      userRole == 'ROLE_ADMIN') && (
                       <div
                         style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          width: "15%",
-                          fontSize: "0.8rem",
-                          color: "rgb(200,200,200)",
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          width: '15%',
+                          fontSize: '0.8rem',
+                          color: 'rgb(200,200,200)',
                         }}
                       >
                         <div
                           onClick={() => setEditId(comment.c_num)}
-                          style={{ cursor: "pointer" }}
+                          style={{ cursor: 'pointer' }}
                         >
                           수정
                         </div>
                         <div>|</div>
                         <div
-                          style={{ cursor: "pointer" }}
+                          style={{ cursor: 'pointer' }}
                           onClick={() => deleteComment(comment.c_num)}
                         >
                           삭제
@@ -300,7 +300,7 @@ const ResumeListDetails = () => {
                     )}
                   </div>
                   <div
-                    style={{ fontSize: "0.8rem", color: "rgb(150,150,150)" }}
+                    style={{ fontSize: '0.8rem', color: 'rgb(150,150,150)' }}
                   >
                     {comment.w_date.slice(0, 10)}
                   </div>
@@ -317,16 +317,16 @@ const ResumeListDetails = () => {
                     </div>
                     <div
                       style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        marginTop: "1%",
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        marginTop: '1%',
                       }}
                     >
                       <Button
                         onClick={() => {
                           setEditId(null);
                         }}
-                        style={{ fontWeight: "bold", marginRight: "1%" }}
+                        style={{ fontWeight: 'bold', marginRight: '1%' }}
                       >
                         취소
                       </Button>
@@ -343,9 +343,9 @@ const ResumeListDetails = () => {
                             });
                         }}
                         style={{
-                          backgroundColor: "#82D6CE",
-                          color: "white",
-                          fontWeight: "bold",
+                          backgroundColor: '#82D6CE',
+                          color: 'white',
+                          fontWeight: 'bold',
                         }}
                       >
                         수정
@@ -359,8 +359,8 @@ const ResumeListDetails = () => {
             );
           })}
         </div>
-        <div className="writeCommentWrapper" style={{ width: "100%" }}>
-          <div style={{ marginTop: "3%", marginBottom: "2%", width: "100%" }}>
+        <div className="writeCommentWrapper" style={{ width: '100%' }}>
+          <div style={{ marginTop: '3%', marginBottom: '2%', width: '100%' }}>
             <TextArea
               value={writeComment}
               onChange={(e) => {
@@ -371,13 +371,13 @@ const ResumeListDetails = () => {
           </div>
           <div
             style={{
-              display: "flex",
-              justifyContent: "flex-end",
+              display: 'flex',
+              justifyContent: 'flex-end',
             }}
           >
             <Button
               onClick={() => {
-                let accessToken = localStorage.getItem("access") ?? "";
+                let accessToken = localStorage.getItem('access') ?? '';
                 let DecodedToken: any = jwtDecode(accessToken);
                 let u_num = DecodedToken.uNum;
                 let res = axiosInstance
@@ -387,14 +387,14 @@ const ResumeListDetails = () => {
                     unum: u_num,
                   })
                   .then((res) => {
-                    setWriteComment("");
+                    setWriteComment('');
                     fetchComment(0);
                   });
               }}
               style={{
-                backgroundColor: "#82D6CE",
-                color: "white",
-                fontWeight: "bold",
+                backgroundColor: '#82D6CE',
+                color: 'white',
+                fontWeight: 'bold',
               }}
             >
               댓글 작성
@@ -405,7 +405,7 @@ const ResumeListDetails = () => {
 
       <Modal
         title={
-          <div style={{ textAlign: "center" }}>
+          <div style={{ textAlign: 'center' }}>
             해당 글에 대한 평점을 남겨주세요!
           </div>
         }
@@ -416,16 +416,16 @@ const ResumeListDetails = () => {
         }}
         footer={[
           <div
-            key={"onOk"}
-            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+            key={'onOk'}
+            style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
           >
             <Button
-              style={{ backgroundColor: "#85DAD2", color: "white" }}
+              style={{ backgroundColor: '#85DAD2', color: 'white' }}
               size="large"
               onClick={() => {
                 let res = axiosInstance
 
-                  .post("/board/rating", {
+                  .post('/board/rating', {
                     rating: rating,
                     unum: DecodedToken.uNum,
                     rnum: resume.r_num,
@@ -435,9 +435,9 @@ const ResumeListDetails = () => {
                     setRated(true);
                     fetchResume();
                     Swal.fire({
-                      icon: "success",
-                      title: "평가가 완료되었습니다!",
-                      text: "감사합니다 :)",
+                      icon: 'success',
+                      title: '평가가 완료되었습니다!',
+                      text: '감사합니다 :)',
                     });
                   });
               }}
@@ -463,17 +463,17 @@ const ResumeListDetails = () => {
               >
                 {hover >= value || rating >= value / 2 ? (
                   <StarFilled
-                    style={{ color: hover >= value ? "#ffc107" : "#ffa500" }}
+                    style={{ color: hover >= value ? '#ffc107' : '#ffa500' }}
                   />
                 ) : hover >= halfValue || rating >= halfValue / 2 ? (
                   <StarFilled
                     style={{
-                      color: hover >= halfValue ? "#ffc107" : "#ffa500",
+                      color: hover >= halfValue ? '#ffc107' : '#ffa500',
                     }}
                     className="half"
                   />
                 ) : (
-                  <StarOutlined style={{ color: "#ddd" }} />
+                  <StarOutlined style={{ color: '#ddd' }} />
                 )}
               </span>
             );
