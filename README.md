@@ -121,7 +121,7 @@
   <li>DB: MySQL</li>
   <li>CI/CD: Github Actions</li>
   <li>Deploy: Vercel, CloudType</li>
-  <li>Collaboration: Github, Slack, Notion, Swagger@2.0.2, Figjam</li>
+  <li>Collaboration: Github, Slack, Notion, Swagger@2.0.2</li>
 </ul>
 
 
