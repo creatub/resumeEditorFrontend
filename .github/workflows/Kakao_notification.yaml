@@ -1,0 +1,32 @@
+name: kakao notification
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Send KakaoTalk notification on success
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        uses: Alfex4936/kakaotalk-ci-action@main
+        with:
+          kakao_access_token: ${{ secrets.KAKAO_ACCESS_TOKEN }}
+          function_name: send_to_me_custom
+          template_id: "93112"
+          template_args: '{"title": "Main Branch Merge", "desc": "ResumeEditorFrontend 메인 브랜치에 머지가 발생했습니다"}'
+
+      - name: Send KakaoTalk notification on failure
+        if: failure()
+        uses: Alfex4936/kakaotalk-ci-action@main
+        with:
+          kakao_access_token: ${{ secrets.KAKAO_ACCESS_TOKEN }}
+          function_name: send_to_me_custom
+          template_id: "93112"
+          template_args: '{"title": "Build Failure", "desc": "메인 브랜치에 머지 시 빌드 실패가 발생했습니다"}'
